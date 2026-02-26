@@ -901,6 +901,147 @@ function getLoanEffectiveAnnualRate() {
     return getElementValue("loan-rate") / 100;
 }
 
+let loanAmortizationChart = null;
+
+function buildLoanAmortizationSchedule(principal, months, annualRate, moratoriumMonths) {
+    const P0 = Number(principal);
+    const n = Number(months);
+    const rA = Number(annualRate);
+    const mor = Math.max(0, Math.min(Number(moratoriumMonths) || 0, n));
+    if (!Number.isFinite(P0) || !Number.isFinite(n) || !Number.isFinite(rA) || P0 <= 0 || n <= 0 || rA < 0) return null;
+
+    const rM = rA / 12;
+    const amortMonths = Math.max(0, n - mor);
+    const annuity = amortMonths > 0 ? calcAnnuityPayment(P0, amortMonths, rA) : 0;
+
+    let balance = P0;
+    let cumInterest = 0;
+
+    const labels = [];
+    const remainingPrincipal = [];
+    const cumulativeInterest = [];
+
+    for (let m = 1; m <= n; m++) {
+        const interest = balance * rM;
+        let principalPaid = 0;
+
+        if (m > mor && amortMonths > 0) {
+            principalPaid = annuity - interest;
+            if (!Number.isFinite(principalPaid) || principalPaid < 0) principalPaid = 0;
+            if (principalPaid > balance) principalPaid = balance;
+            balance -= principalPaid;
+        }
+
+        cumInterest += interest;
+        labels.push(m);
+        remainingPrincipal.push(balance);
+        cumulativeInterest.push(cumInterest);
+    }
+
+    return {
+        labels,
+        remainingPrincipal,
+        cumulativeInterest,
+        annuity,
+        amortMonths,
+        moratoriumMonths: mor,
+    };
+}
+
+function drawLoanAmortizationChart(schedule) {
+    const canvas = document.getElementById("loan-amortization-chart");
+    if (!canvas) return;
+
+    const formatNumberNoDecimals = (val) => {
+        const n = Number(val);
+        if (!Number.isFinite(n)) return "–";
+        const text = n.toLocaleString("sl-SI", { maximumFractionDigits: 0, minimumFractionDigits: 0, useGrouping: true });
+        return text;
+    };
+
+    if (!schedule) {
+        if (loanAmortizationChart) {
+            loanAmortizationChart.destroy();
+            loanAmortizationChart = null;
+        }
+        return;
+    }
+
+    if (typeof Chart === "undefined") return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    if (loanAmortizationChart) {
+        loanAmortizationChart.destroy();
+        loanAmortizationChart = null;
+    }
+
+    loanAmortizationChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: schedule.labels,
+            datasets: [
+                {
+                    label: "Preostala glavnica",
+                    data: schedule.remainingPrincipal,
+                    borderColor: "#0B6B3A",
+                    backgroundColor: "rgba(11, 107, 58, 0.12)",
+                    tension: 0.25,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                },
+                {
+                    label: "Kumulativne obresti",
+                    data: schedule.cumulativeInterest,
+                    borderColor: "#6b7280",
+                    backgroundColor: "rgba(107, 114, 128, 0.10)",
+                    tension: 0.25,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: {
+                legend: { display: true, position: "bottom" },
+                tooltip: {
+                    callbacks: {
+                        title: (items) => {
+                            const first = Array.isArray(items) && items.length ? items[0] : null;
+                            const label = first ? first.label : "";
+                            const m = Number(label);
+                            if (!Number.isFinite(m)) return "";
+                            return `${m} mesecev`;
+                        },
+                        label: (ctx) => {
+                            const v = ctx.parsed.y;
+                            return `${ctx.dataset.label}: ${formatNumberNoDecimals(v)}`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: "Čas (meseci)" },
+                    ticks: { maxTicksLimit: 12 },
+                    grid: { color: "rgba(0,0,0,0.06)" },
+                },
+                y: {
+                    title: { display: true, text: "Znesek (€)" },
+                    grid: { color: "rgba(0,0,0,0.06)" },
+                    ticks: {
+                        callback: (value) => formatNumberNoDecimals(value),
+                    },
+                },
+            },
+        },
+    });
+}
+
 function calculateLoan() {
     try {
         const amount = getElementValue("loan-amount");
@@ -934,12 +1075,10 @@ function calculateLoan() {
         // 2) Obresti v času moratorija (NE kapitalizirajo se)
         const moratoriumInterest = amount * monthlyRate * safeMoratorium;
 
-        // 3) Anuiteta
-        const monthlyPayment =
-            (amount * monthlyRate) /
-            (1 - Math.pow(1 + monthlyRate, -months));
-
-        const annuityTotalPayment = monthlyPayment * months;
+        // 3) Anuiteta (moratorij ne podaljša ročnosti; v času moratorija se ne odplačuje glavnice)
+        const amortMonths = Math.max(1, months - safeMoratorium);
+        const monthlyPayment = calcAnnuityPayment(amount, amortMonths, rate);
+        const annuityTotalPayment = monthlyPayment * amortMonths;
 
         // 4) Skupaj plačano
         const totalPayment = moratoriumInterest + annuityTotalPayment + intercalaryInterest;
@@ -953,6 +1092,10 @@ function calculateLoan() {
             totalPayment,
             intercalaryInterest,
             amount
+        );
+
+        drawLoanAmortizationChart(
+            buildLoanAmortizationSchedule(amount, months, rate, safeMoratorium)
         );
 
     } catch (error) {

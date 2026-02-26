@@ -250,32 +250,41 @@
                             </details>
                         </div>
 
-                        <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                            <h3 class="text-xl font-semibold mb-6">Rezultat izračuna</h3>
+                        <div class="space-y-6">
+                            <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                                <h3 class="text-xl font-semibold mb-6">Rezultat izračuna</h3>
 
-                            <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                                <span class="fp-result-label">Mesečni obrok</span>
-                                <span id="loan-monthly" class="fp-result-value fp-result-value--primary">–</span>
+                                <div class="flex justify-between items-center py-4 border-b border-gray-200">
+                                    <span class="fp-result-label">Mesečni obrok</span>
+                                    <span id="loan-monthly" class="fp-result-value fp-result-value--primary">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4 border-b border-gray-200">
+                                    <span class="fp-result-label">Skupaj obresti</span>
+                                    <span id="loan-interest" class="fp-result-value">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4 border-b border-gray-200">
+                                    <span class="fp-result-label">Interkalarne obresti</span>
+                                    <span id="loan-intercalary" class="fp-result-value">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="fp-result-label">Glavnica po moratoriju</span>
+                                    <span id="loan-principal-after" class="fp-result-value">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="fp-result-label">Skupaj za plačilo</span>
+                                    <span id="loan-total" class="fp-result-value">–</span>
+                                </div>
                             </div>
 
-                            <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                                <span class="fp-result-label">Skupaj obresti</span>
-                                <span id="loan-interest" class="fp-result-value">–</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                                <span class="fp-result-label">Interkalarne obresti</span>
-                                <span id="loan-intercalary" class="fp-result-value">–</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-4">
-                                <span class="fp-result-label">Glavnica po moratoriju</span>
-                                <span id="loan-principal-after" class="fp-result-value">–</span>
-                            </div>
-
-                            <div class="flex justify-between items-center py-4">
-                                <span class="fp-result-label">Skupaj za plačilo</span>
-                                <span id="loan-total" class="fp-result-value">–</span>
+                            <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                                <h3 class="text-xl font-semibold mb-6">Amortizacija kredita</h3>
+                                <div class="relative w-full" style="height: 280px;">
+                                    <canvas id="loan-amortization-chart"></canvas>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -337,6 +346,7 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="script.js?v=2026-02-20" type="text/javascript"></script>
 </body>
 
