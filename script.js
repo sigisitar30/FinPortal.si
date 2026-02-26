@@ -557,6 +557,75 @@ function initEomUiBindings() {
     });
 }
 
+function formatPercentInputSI(val, decimals = 2) {
+    const n = Number(val);
+    if (!Number.isFinite(n)) return "";
+    return n.toFixed(decimals).replace(".", ",");
+}
+
+function initLostInterestBenchmarkBindings() {
+    const benchmarkEl = document.getElementById("lost-benchmark");
+    if (!benchmarkEl) return;
+
+    // Ensure EURIBOR cache is available for the dropdown on this page as well.
+    // loadEuriborRates() is safe to call here; updateLoanRateUi() will no-op if loan UI isn't present.
+    loadEuriborRates();
+
+    const apply = () => applyLostInterestBenchmark(String(benchmarkEl.value ?? "manual"));
+    benchmarkEl.addEventListener("change", apply);
+    apply();
+}
+
+function applyLostInterestBenchmark(benchmark) {
+    const rateEl = document.getElementById("lost-rate");
+    const etfReturnEl = document.getElementById("lost-etf-return");
+    const etfFeeEl = document.getElementById("lost-etf-fee");
+    const infoEl = document.getElementById("lost-benchmark-info");
+
+    if (!rateEl || !etfReturnEl || !etfFeeEl) return;
+
+    if (infoEl) infoEl.textContent = "";
+
+    const b = String(benchmark || "manual");
+
+    if (b === "euribor_3m" || b === "euribor_6m") {
+        const tenor = b === "euribor_6m" ? "6m" : "3m";
+        const eur = euriborCache[tenor] || euriborCache["3m"];
+        if (eur && Number.isFinite(eur.value)) {
+            // EURIBOR values come as % (e.g. 3.85). Input expects percent.
+            rateEl.value = formatPercentInputSI(eur.value, 2);
+            normalizeRateInput("lost-rate");
+            if (infoEl) {
+                if (eur.period) {
+                    infoEl.textContent = `Veljavni EURIBOR ${tenor.toUpperCase()} (${eur.period}): ${formatRateSI(eur.value)}%`;
+                } else {
+                    infoEl.textContent = `Veljavni EURIBOR ${tenor.toUpperCase()}: ${formatRateSI(eur.value)}%`;
+                }
+            }
+        } else {
+            if (infoEl) infoEl.textContent = `EURIBOR ${tenor.toUpperCase()} se nalaga...`;
+        }
+        return;
+    }
+
+    if (b === "etf_vwce") {
+        // Typical long-term estimate + typical TER. User can still override.
+        etfReturnEl.value = formatPercentInputSI(7.0, 2);
+        etfFeeEl.value = formatPercentInputSI(0.22, 2);
+        normalizeRateInput("lost-etf-return");
+        normalizeRateInput("lost-etf-fee");
+        return;
+    }
+
+    if (b === "etf_sp500") {
+        etfReturnEl.value = formatPercentInputSI(9.0, 2);
+        etfFeeEl.value = formatPercentInputSI(0.07, 2);
+        normalizeRateInput("lost-etf-return");
+        normalizeRateInput("lost-etf-fee");
+        return;
+    }
+}
+
 /* ============================
    MENJALNIŠKI KALKULATOR (ECB)
 ============================ */
@@ -757,6 +826,7 @@ function calculateLostInterest() {
         setElementText("lost-final", "–");
         setElementText("lost-etf-final", "–");
         setElementText("lost-etf-vs-deposit", "–");
+        drawLostInterestChart(null);
         return;
     }
 
@@ -766,6 +836,7 @@ function calculateLostInterest() {
         setElementText("lost-final", "–");
         setElementText("lost-etf-final", "–");
         setElementText("lost-etf-vs-deposit", "–");
+        drawLostInterestChart(null);
         return;
     }
 
@@ -788,6 +859,183 @@ function calculateLostInterest() {
 
     setElementText("lost-etf-final", formatSIWholeEuro(etfFinal));
     setElementText("lost-etf-vs-deposit", formatSIWholeEuro(etfFinal - finalAmount));
+
+    drawLostInterestChart(
+        buildLostInterestSeries({
+            amount,
+            years,
+            unit,
+            time,
+            rateAnnual,
+            etfReturnAnnual,
+            etfFeeAnnual,
+        })
+    );
+}
+
+let lostCompareChart = null;
+
+function buildLostInterestSeries({ amount, years, unit, time, rateAnnual, etfReturnAnnual, etfFeeAnnual }) {
+    const P = Number(amount);
+    const y = Number(years);
+    const t = Number(time);
+    if (!Number.isFinite(P) || P <= 0 || !Number.isFinite(y) || y <= 0 || !Number.isFinite(t) || t <= 0) return null;
+
+    const monthsTotal = unit === "years" ? Math.round(t * 12) : Math.round(t);
+    if (!Number.isFinite(monthsTotal) || monthsTotal <= 0) return null;
+
+    // TRR assumed 0%
+    const labels = [];
+    const trr = [];
+    const deposit = [];
+    const etf = [];
+
+    const rEtfNet = (Number.isFinite(etfReturnAnnual) ? etfReturnAnnual : 0) - (Number.isFinite(etfFeeAnnual) ? etfFeeAnnual : 0);
+    const rDepA = Number.isFinite(rateAnnual) ? rateAnnual : 0;
+
+    for (let m = 0; m <= monthsTotal; m++) {
+        const yM = m / 12;
+        labels.push(m);
+
+        trr.push(P);
+
+        // Deposit: simple interest (consistent with calculator result)
+        deposit.push(P + (P * rDepA * yM));
+
+        // ETF: compound (consistent with calculator result)
+        etf.push(P * Math.pow(1 + rEtfNet, yM));
+    }
+
+    return { labels, trr, deposit, etf };
+}
+
+function drawLostInterestChart(series) {
+    const canvas = document.getElementById("lost-compare-chart");
+    if (!canvas) return;
+
+    const rateAnnualPct = getElementValue("lost-rate");
+    const etfReturnPct = getElementValue("lost-etf-return");
+    const etfFeePct = getElementValue("lost-etf-fee");
+    const etfNetPct = (Number.isFinite(etfReturnPct) ? etfReturnPct : 0) - (Number.isFinite(etfFeePct) ? etfFeePct : 0);
+
+    const formatNumberNoDecimals = (val) => {
+        const n = Number(val);
+        if (!Number.isFinite(n)) return "–";
+        return n.toLocaleString("sl-SI", { maximumFractionDigits: 0, minimumFractionDigits: 0, useGrouping: true });
+    };
+
+    const formatEuro = (val) => `${formatNumberNoDecimals(val)} €`;
+
+    if (!series) {
+        if (lostCompareChart) {
+            lostCompareChart.destroy();
+            lostCompareChart = null;
+        }
+        return;
+    }
+
+    if (typeof Chart === "undefined") return;
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    if (lostCompareChart) {
+        lostCompareChart.destroy();
+        lostCompareChart = null;
+    }
+
+    const depositLabel = Number.isFinite(rateAnnualPct) ? `Depozit (${rateAnnualPct.toFixed(2)}% p.a.)` : "Depozit";
+    const etfLabel = (Number.isFinite(etfReturnPct) || Number.isFinite(etfFeePct))
+        ? `ETF (${(Number.isFinite(etfReturnPct) ? etfReturnPct : 0).toFixed(2)}% - ${(Number.isFinite(etfFeePct) ? etfFeePct : 0).toFixed(2)}% = ${etfNetPct.toFixed(2)}% p.a.)`
+        : "ETF";
+
+    lostCompareChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: series.labels,
+            datasets: [
+                {
+                    label: "TRR (0%)",
+                    data: series.trr,
+                    borderColor: "#9ca3af",
+                    tension: 0.25,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                },
+                {
+                    label: depositLabel,
+                    data: series.deposit,
+                    borderColor: "#0B6B3A",
+                    backgroundColor: "rgba(11, 107, 58, 0.10)",
+                    tension: 0.25,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                },
+                {
+                    label: etfLabel,
+                    data: series.etf,
+                    borderColor: "#f97316",
+                    backgroundColor: "rgba(249, 115, 22, 0.10)",
+                    tension: 0.25,
+                    pointRadius: 0,
+                    borderWidth: 2,
+                },
+            ],
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: "index", intersect: false },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 10,
+                    },
+                },
+                tooltip: {
+                    callbacks: {
+                        title: (items) => {
+                            const first = Array.isArray(items) && items.length ? items[0] : null;
+                            const m = first ? Number(first.label) : NaN;
+                            if (!Number.isFinite(m)) return "";
+                            if (m === 12) return "1 leto";
+                            if (m % 12 === 0 && m > 0) return `${m / 12} leta`;
+                            return `${m} mesecev`;
+                        },
+                        label: (ctx) => {
+                            const v = ctx.parsed.y;
+                            return `${ctx.dataset.label}: ${formatEuro(v)}`;
+                        },
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    title: { display: true, text: "Čas (meseci)" },
+                    ticks: {
+                        maxTicksLimit: 8,
+                        callback: (value) => {
+                            const m = Number(value);
+                            if (!Number.isFinite(m)) return value;
+                            if (m === 0) return "0";
+                            if (m === 12) return "1L";
+                            if (m % 12 === 0) return `${m / 12}L`;
+                            return `${m}`;
+                        },
+                    },
+                    grid: { color: "rgba(0,0,0,0.06)" },
+                },
+                y: {
+                    title: { display: true, text: "Znesek (€)" },
+                    grid: { color: "rgba(0,0,0,0.06)" },
+                    ticks: { callback: (value) => formatNumberNoDecimals(value) },
+                },
+            },
+        },
+    });
 }
 
 function initLostInterestBindings() {
@@ -807,6 +1055,8 @@ function initLostInterestBindings() {
             }
         });
     });
+
+    initLostInterestBenchmarkBindings();
 }
 
 let euriborCache = {
@@ -851,6 +1101,11 @@ async function loadEuriborRates() {
     }
 
     updateLoanRateUi();
+    // Also refresh lost-interest benchmark if EURIBOR is selected.
+    const benchmarkEl = document.getElementById("lost-benchmark");
+    if (benchmarkEl) {
+        applyLostInterestBenchmark(String(benchmarkEl.value ?? "manual"));
+    }
 }
 
 function updateLoanRateUi() {

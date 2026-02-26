@@ -58,7 +58,7 @@ ul.container {
 
 ul.container li {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 ul.container li label {
@@ -77,6 +77,8 @@ ul.container li::before {
     border-radius: 9999px;
     background: #000;
     margin-right: 5px;
+    flex: 0 0 auto;
+    margin-top: 0.55em;
 }
 
 /* =============================================
