@@ -164,6 +164,27 @@ button[id$="-calc-btn"]:hover,
     display: block;
 }
 
+/* Kako deluje? – minimalistično (brez hover, manjše ikone) */
+#kako-deluje .step-card {
+    padding: 1.25rem 1rem;
+    transition: none;
+}
+
+#kako-deluje .step-card:hover {
+    border-color: var(--border-medium);
+    transform: none;
+    box-shadow: none;
+}
+
+#kako-deluje .step-icon {
+    height: 140px;
+    margin-bottom: 0.75rem;
+}
+
+#kako-deluje .step-number {
+    display: inline-block;
+    margin-top: 0.25rem;
+}
 
 /* Result card */
 .calc-result-card {
