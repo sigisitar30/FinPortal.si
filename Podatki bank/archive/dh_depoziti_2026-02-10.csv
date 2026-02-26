@@ -1,5 +1,0 @@
-id;bank;product_name;amount_min;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
-7;Delavska hranilnica d.d.;Depozit 6M;1000;EUR;6;6;months;1.0;0.0;1.0;https://www.dh.si/varcevanja-in-nalozbe/depoziti/;2026-02-10;scraped from DH depoziti
-7;Delavska hranilnica d.d.;Depozit 12M;1000;EUR;12;12;months;1.2;0.0;1.2;https://www.dh.si/varcevanja-in-nalozbe/depoziti/;2026-02-10;scraped from DH depoziti
-7;Delavska hranilnica d.d.;Depozit 24M;1000;EUR;24;24;months;1.4;0.0;1.4;https://www.dh.si/varcevanja-in-nalozbe/depoziti/;2026-02-10;scraped from DH depoziti
-7;Delavska hranilnica d.d.;Depozit 36M;1000;EUR;36;36;months;1.4;0.0;1.4;https://www.dh.si/varcevanja-in-nalozbe/depoziti/;2026-02-10;scraped from DH depoziti
