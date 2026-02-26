@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si – pravna dokumentacija in informacije.">
+    <meta name="keywords" content="pravno obvestilo, pogoji uporabe, politika zasebnosti, piškotki">
+    <title>FinPortal.si – Politika zasebnosti</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts – Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home" class="hover:text-[#0B6B3A]">Domov</a>
+                <details class="relative">
+                    <summary class="list-none cursor-pointer hover:text-[#0B6B3A]">
+                        <a href="index.html#kalkulatorji" class="inline-block"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Izgubljene
+                            obresti</a>
+                        <a href="primerjava-depozitov.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Investicijski
+                            kalkulator</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Menjalniški
+                            kalkulator</a>
+                    </div>
+                </details>
+                <a href="index.html#onas" class="hover:text-[#0B6B3A]">O nas</a>
+                <a href="index.html#kontakt" class="hover:text-[#0B6B3A]">Kontakt</a>
+
+                <a href="index.html#primerjava-depozitov"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-6 py-16">
+        <h1 class="text-3xl font-bold mb-6">POLITIKA ZASEBNOSTI</h1>
+
+        <p class="mb-6"><strong>1. Uvod</strong></p>
+        <p class="mb-6">
+            Ta politika zasebnosti opisuje, kako spletno mesto FinPortal.si (v nadaljevanju: »spletno mesto« ali
+            »upravljavec«) obdeluje osebne podatke uporabnikov v skladu z veljavno zakonodajo, vključno z Uredbo (EU)
+            2016/679 (GDPR) in Zakonom o varstvu osebnih podatkov (ZVOP‑2).
+        </p>
+        <p class="mb-6">Z uporabo spletnega mesta potrjujete, da ste seznanjeni s to politiko zasebnosti in jo
+            sprejemate.</p>
+
+        <p class="mb-6"><strong>2. Upravljavec osebnih podatkov</strong></p>
+        <p class="mb-6">Upravljavec osebnih podatkov je:</p>
+        <p class="mb-6">FinPortal.si</p>
+        <p class="mb-6">e‑pošta: info@finportal.si</p>
+        <p class="mb-6">Kontaktna oseba za kontakt in pritožbe: Žiga Sitar</p>
+
+        <p class="mb-6"><strong>3. Katere podatke zbiramo</strong></p>
+        <p class="mb-6">Upravljavec lahko zbira naslednje vrste podatkov:</p>
+
+        <p class="mb-6"><strong>3.1. Podatki, ki jih posredujete sami</strong></p>
+        <ul class="container">
+            <li>ime in priimek (če pošljete povpraševanje)</li>
+            <li>e‑poštni naslov</li>
+            <li>vsebina sporočila ali povpraševanja</li>
+            <li>drugi podatki, ki jih prostovoljno posredujete</li>
+        </ul>
+        <p class="mb-6"><strong>3.2. Samodejno zbrani podatki</strong></p>
+        <p class="mb-6">Ob obisku spletnega mesta se samodejno zbirajo:</p>
+        <ul class="container">
+            <li>IP naslov</li>
+            <li>podatki o napravi in brskalniku</li>
+            <li>čas in trajanje obiska</li>
+            <li>ogledane strani</li>
+            <li>tehnični podatki o delovanju (npr. napake, odzivni časi)</li>
+        </ul>
+        <p class="mb-6"><strong>3.3. Piškotki in analitična orodja</strong></p>
+        <p class="mb-6">Spletno mesto uporablja piškotke za:</p>
+        <ul class="container">
+            <li>osnovno delovanje strani</li>
+            <li>analitiko obiska (npr. Google Analytics)</li>
+            <li>izboljšanje uporabniške izkušnje</li>
+        </ul>
+        <p class="mb-6">Podrobnosti so opisane v Politiki piškotkov.</p>
+
+        <p class="mb-6"><strong>4. Namen in pravna podlaga obdelave</strong></p>
+        <p class="mb-6">Osebne podatke obdelujemo za naslednje namene:</p>
+
+        <p class="mb-6"><strong>4.1. Odgovarjanje na povpraševanja</strong></p>
+        <p class="mb-6">namen: komunikacija z uporabniki<br>pravna podlaga: vaš izrecni interes (čl. 6(1)(b) GDPR)</p>
+
+        <p class="mb-6"><strong>4.2. Izboljšanje delovanja spletnega mesta</strong></p>
+        <p class="mb-6">namen: analiza uporabe, optimizacija vsebin in tehnična stabilnost<br>pravna podlaga: zakoniti
+            interes upravljavca (čl. 6(1)(f) GDPR)</p>
+
+        <p class="mb-6"><strong>4.3. Zagotavljanje varnosti</strong></p>
+        <p class="mb-6">namen: preprečevanje zlorab, tehnična zaščita sistema<br>pravna podlaga: zakoniti interes
+            upravljavca</p>
+
+        <p class="mb-6"><strong>4.4. Izvajanje zakonskih obveznosti</strong></p>
+        <p class="mb-6">namen: izpolnjevanje obveznosti iz zakonodaje<br>pravna podlaga: čl. 6(1)(c) GDPR</p>
+
+        <p class="mb-6"><strong>5. Hramba osebnih podatkov</strong></p>
+        <p class="mb-6">Osebne podatke hranimo:</p>
+        <ul class="container">
+            <li>komunikacija s strankami: do 12 mesecev po zaključku komunikacije</li>
+            <li>analitični podatki: v skladu s politiko ponudnika (npr. Google Analytics)</li>
+            <li>tehnični logi: do 6 mesecev</li>
+            <li>podatki, ki jih določa zakon: v zakonsko določenem roku</li>
+        </ul>
+        <p class="mb-6">Po izteku roka se podatki trajno izbrišejo ali anonimizirajo.</p>
+
+        <p class="mb-6"><strong>6. Posredovanje podatkov tretjim osebam</strong></p>
+        <p class="mb-6">Osebnih podatkov ne prodajamo in jih ne posredujemo nepooblaščenim osebam.</p>
+        <p class="mb-6">Podatki se lahko posredujejo:</p>
+        <ul class="container">
+            <li>ponudnikom gostovanja (hosting)</li>
+            <li>ponudnikom analitičnih orodij (npr. Google Analytics)</li>
+            <li>IT vzdrževalcem</li>
+            <li>državnim organom, kadar to zahteva zakon</li>
+        </ul>
+        <p class="mb-6">
+            Upravljavec lahko na podlagi uporabnikovega povpraševanja ali interesa posreduje kontaktne podatke in
+            osnovne
+            informacije o povpraševanju izbranim bankam ali ponudnikom, z namenom, da uporabnik lažje pridobi ponudbo.
+        </p>
+        <p class="mb-6">Vsi pogodbeni obdelovalci zagotavljajo ustrezno raven varstva podatkov.</p>
+
+        <p class="mb-6"><strong>7. Pravice uporabnikov</strong></p>
+        <p class="mb-6">V skladu z GDPR imate naslednje pravice:</p>
+        <ul class="container">
+            <li>pravica do dostopa do svojih podatkov</li>
+            <li>pravica do popravka netočnih podatkov</li>
+            <li>pravica do izbrisa (»pravica do pozabe«)</li>
+            <li>pravica do omejitve obdelave</li>
+            <li>pravica do ugovora obdelavi</li>
+            <li>pravica do prenosljivosti podatkov</li>
+            <li>pravica do preklica privolitve (kadar je pravna podlaga privolitev)</li>
+        </ul>
+        <p class="mb-6">Zahtevo lahko pošljete na: info@finportal.si</p>
+        <p class="mb-6">Upravljavec bo odgovoril v roku 30 dni.</p>
+
+        <p class="mb-6"><strong>8. Varnost podatkov</strong></p>
+        <p class="mb-6">Upravljavec uporablja tehnične in organizacijske ukrepe za zaščito osebnih podatkov, vključno z:
+        </p>
+        <ul class="container">
+            <li>šifriranjem komunikacije (HTTPS)</li>
+            <li>nadzorom dostopa</li>
+            <li>varnostnimi kopijami</li>
+            <li>zaščito strežnikov in aplikacij</li>
+        </ul>
+        <p class="mb-6">
+            Kljub temu noben sistem ni popolnoma varen, zato upravljavec ne more zagotoviti popolne zaščite pred vsemi
+            tveganji.
+        </p>
+
+        <p class="mb-6"><strong>9. Zunanje povezave</strong></p>
+        <p class="mb-6">
+            Spletno mesto lahko vsebuje povezave na druge spletne strani.
+            Za vsebine, varnost ali politiko zasebnosti teh strani ne odgovarjamo.
+        </p>
+
+        <p class="mb-6"><strong>10. Spremembe politike zasebnosti</strong></p>
+        <p class="mb-6">
+            Upravljavec si pridržuje pravico do spremembe te politike zasebnosti kadarkoli. Posodobljena verzija bo
+            objavljena na tej strani z datumom zadnje spremembe.
+        </p>
+
+        <p class="mb-6"><strong>11. Veljavno pravo in pristojno sodišče</strong></p>
+        <p class="mb-6">
+            Za to politiko zasebnosti se uporablja pravo Republike Slovenije. Za reševanje morebitnih sporov je
+            pristojno
+            stvarno pristojno sodišče v Ljubljani.
+        </p>
+
+        <!-- Dodaj svojo vsebino tukaj -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne odločitve.
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="hidden fixed bottom-0 inset-x-0 z-[60]">
+        <div class="max-w-7xl mx-auto px-6 pb-6">
+            <div
+                class="bg-amber-50 border border-amber-200 rounded-2xl shadow-lg p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="text-sm text-amber-900">
+                    <div class="font-semibold text-amber-900">Piškotki</div>
+                    <div>
+                        Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
+                        <a href="piskotki.html" class="underline">Več o piškotkih</a>.
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="cookie-reject" type="button"
+                        class="px-4 py-2 rounded-xl border border-amber-300 font-semibold text-amber-900 hover:bg-amber-100 transition">Zavrni</button>
+                    <button id="cookie-accept" type="button"
+                        class="px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold hover:bg-amber-700 transition">Sprejmi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            var banner = document.getElementById("cookie-banner");
+            var acceptBtn = document.getElementById("cookie-accept");
+            var rejectBtn = document.getElementById("cookie-reject");
+            if (!banner || !acceptBtn || !rejectBtn) return;
+
+            var key = "finportal_cookie_consent";
+            var existing = null;
+            try { existing = localStorage.getItem(key); } catch (e) { }
+
+            function hide() { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); }
+            function show() { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); }
+            function setConsent(value) {
+                try { localStorage.setItem(key, value); } catch (e) { }
+                document.documentElement.dataset.cookieConsent = value;
+                hide();
+            }
+
+            if (existing === "accepted" || existing === "rejected") {
+                document.documentElement.dataset.cookieConsent = existing;
+                hide();
+            } else {
+                show();
+            }
+
+            acceptBtn.addEventListener("click", function () { setConsent("accepted"); });
+            rejectBtn.addEventListener("click", function () { setConsent("rejected"); });
+        })();
+    </script>
+
+</body>
+
+</html>

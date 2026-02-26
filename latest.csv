@@ -1,0 +1,21 @@
+id;bank;product_name;rate_nominal;term_months;min_amount;max_amount;currency;url;last_updated;notes
+1;NLB d.d.;kratkoročni depozit;3;12;500;1.000.000;EUR;;2026-02-08;ročni vnos
+1;NLB d.d.;dolgoročni depozit;4;60;500;2.000.000;EUR;;2026-02-08;ročni vnos
+2;OTP banka d.d.;kratkoročni depozit;3,2;12;1000;1.000.000;EUR;;2026-02-08;ročni vnos
+2;OTP banka d.d.;dolgoročni depozit;4,2;60;1000;2.000.000;EUR;;2026-02-08;ročni vnos
+3;Banka Intesa Sanpaolo d.d.;kratkoročni depozit;3,1;12;500;1.000.000;EUR;;2026-02-08;ročni vnos
+3;Banka Intesa Sanpaolo d.d.;dolgoročni depozit;4,1;60;500;2.000.000;EUR;;2026-02-08;ročni vnos
+4;Addiko Bank d.d.;kratkoročni depozit;3,3;12;1000;1.000.000;EUR;;2026-02-08;ročni vnos
+4;Addiko Bank d.d.;dolgoročni depozit;4,3;60;1000;2.000.000;EUR;;2026-02-08;ročni vnos
+5;Banka Sparkasse d.d.;kratkoročni depozit;3;12;500;1.000.000;EUR;;2026-02-08;ročni vnos
+5;Banka Sparkasse d.d.;dolgoročni depozit;4;60;500;2.000.000;EUR;;2026-02-08;ročni vnos
+6;UniCredit Banka Slovenija d.d.;kratkoročni depozit;3,2;12;1000;1.000.000;EUR;;2026-02-08;ročni vnos
+6;UniCredit Banka Slovenija d.d.;dolgoročni depozit;4,2;60;1000;2.000.000;EUR;;2026-02-08;ročni vnos
+7;Delavska hranilnica d.d. Ljubljana;kratkoročni depozit;3,1;12;500;1.000.000;EUR;;2026-02-08;ročni vnos
+7;Delavska hranilnica d.d. Ljubljana;dolgoročni depozit;4,1;60;500;2.000.000;EUR;;2026-02-08;ročni vnos
+8;BKS Bank AG;kratkoročni depozit;3,3;12;1000;1.000.000;EUR;;2026-02-08;ročni vnos
+8;BKS Bank AG;dolgoročni depozit;4,3;60;1000;2.000.000;EUR;;2026-02-08;ročni vnos
+9;Gorenjska banka d.d.;kratkoročni depozit;3;12;500;1.000.000;EUR;;2026-02-08;ročni vnos
+9;Gorenjska banka d.d.;dolgoročni depozit;4;60;500;2.000.000;EUR;;2026-02-08;ročni vnos
+10;Hranilnica LON d.d.;kratkoročni depozit;3,2;12;1000;1.000.000;EUR;;2026-02-08;ročni vnos
+10;Hranilnica LON d.d.;dolgoročni depozit;4,2;60;1000;2.000.000;EUR;;2026-02-08;ročni vnos

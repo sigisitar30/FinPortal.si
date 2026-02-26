@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si – pravna dokumentacija in informacije.">
+    <meta name="keywords" content="pravno obvestilo, pogoji uporabe, politika zasebnosti, piškotki">
+    <title>FinPortal.si – Piškotki</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts – Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home" class="hover:text-[#0B6B3A]">Domov</a>
+                <details class="relative">
+                    <summary class="list-none cursor-pointer hover:text-[#0B6B3A]">
+                        <a href="index.html#kalkulatorji" class="inline-block"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Izgubljene
+                            obresti</a>
+                        <a href="primerjava-depozitov.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Investicijski
+                            kalkulator</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Menjalniški
+                            kalkulator</a>
+                    </div>
+                </details>
+                <a href="index.html#onas" class="hover:text-[#0B6B3A]">O nas</a>
+                <a href="index.html#kontakt" class="hover:text-[#0B6B3A]">Kontakt</a>
+
+                <a href="index.html#primerjava-depozitov"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-6 py-16">
+        <h1 class="text-3xl font-bold mb-6">Piškotki</h1>
+
+        <p class="mb-6"><strong>1. Uvod</strong></p>
+        <p class="mb-6">
+            Ta politika piškotkov opisuje, kako spletno mesto FinPortal.si uporablja piškotke in podobne tehnologije za
+            zagotavljanje boljše uporabniške izkušnje, analitiko in pravilno delovanje strani.
+            Z nadaljnjo uporabo spletnega mesta se strinjate z uporabo piškotkov, kot je opisano v tej politiki.
+        </p>
+
+        <p class="mb-6"><strong>2. Kaj so piškotki</strong></p>
+        <p class="mb-6">
+            Piškotki so majhne tekstovne datoteke, ki se ob obisku spletnega mesta shranijo na vašo napravo. Omogočajo
+            prepoznavanje naprave, shranjevanje uporabniških nastavitev in zbiranje podatkov o uporabi spletnega mesta.
+            Piškotki niso škodljivi in ne omogočajo dostopa do vaših osebnih datotek ali podatkov.
+        </p>
+
+        <p class="mb-6"><strong>3. Vrste piškotkov, ki jih uporabljamo</strong></p>
+
+        <p class="mb-6"><strong>3.1. Nujno potrebni piškotki</strong></p>
+        <p class="mb-6">Ti piškotki omogočajo osnovno delovanje spletnega mesta, kot so:</p>
+        <ul class="container">
+            <li>prikaz vsebine</li>
+            <li>navigacija</li>
+            <li>varnostne funkcije</li>
+        </ul>
+        <p class="mb-6">Brez teh piškotkov spletno mesto ne more delovati pravilno.</p>
+
+        <p class="mb-6"><strong>3.2. Analitični piškotki</strong></p>
+        <p class="mb-6">Uporabljamo jih za zbiranje anonimnih podatkov o uporabi spletnega mesta, npr.:</p>
+        <ul class="container">
+            <li>število obiskovalcev</li>
+            <li>katere strani so najbolj obiskane</li>
+            <li>čas obiska</li>
+            <li>vrsta naprave in brskalnika</li>
+        </ul>
+        <p class="mb-6">Ti podatki nam pomagajo izboljšati delovanje in uporabniško izkušnjo. Primer: Google Analytics
+            (anonimiziran IP).</p>
+
+        <p class="mb-6"><strong>3.3. Funkcionalni piškotki</strong></p>
+        <p class="mb-6">Omogočajo shranjevanje vaših izbranih nastavitev, kot so:</p>
+        <ul class="container">
+            <li>jezik</li>
+            <li>prikaz določenih elementov</li>
+            <li>uporabniške preference</li>
+        </ul>
+        <p class="mb-6"><strong>3.4. Marketinški in oglaševalski piškotki</strong></p>
+        <p class="mb-6">Ti piškotki sledijo uporabnikovim navadam brskanja in omogočajo prikaz relevantnih oglasov.</p>
+
+        <p class="mb-6"><strong>4. Piškotki tretjih oseb</strong></p>
+        <p class="mb-6">Spletno mesto lahko uporablja storitve zunanjih ponudnikov, kot so:</p>
+        <ul class="container">
+            <li>Google Analytics</li>
+            <li>YouTube (vdelane vsebine)</li>
+            <li>družbena omrežja (npr. Facebook Pixel – če ga uporabljaš)</li>
+        </ul>
+        <p class="mb-6">
+            Ti ponudniki lahko namestijo svoje piškotke, ki jih upravljajo sami. Za njihove politike zasebnosti in
+            piškotkov ne odgovarjamo.
+        </p>
+
+        <p class="mb-6"><strong>5. Kako lahko upravljate piškotke</strong></p>
+        <p class="mb-6">Uporabniki lahko piškotke nadzorujejo ali izbrišejo v nastavitvah svojega brskalnika. Možnosti
+            vključujejo:</p>
+        <ul class="container">
+            <li>brisanje vseh piškotkov</li>
+            <li>blokiranje piškotkov</li>
+            <li>dovoljevanje piškotkov samo za določena spletna mesta</li>
+            <li>blokiranje piškotkov tretjih oseb</li>
+        </ul>
+        <p class="mb-6">Če piškotke onemogočite, lahko nekatere funkcije spletnega mesta prenehajo delovati pravilno.
+        </p>
+
+        <p class="mb-6"><strong>6. Hramba podatkov</strong></p>
+        <p class="mb-6">Piškotki se hranijo različno dolgo:</p>
+        <ul class="container">
+            <li>sejni piškotki: izbrišejo se ob zaprtju brskalnika</li>
+            <li>trajni piškotki: ostanejo shranjeni, dokler ne potečejo ali jih uporabnik ne izbriše</li>
+        </ul>
+        <p class="mb-6">Analitični in funkcionalni piškotki se običajno hranijo od 1 dneva do 24 mesecev, odvisno od
+            ponudnika.</p>
+
+        <p class="mb-6"><strong>7. Spremembe politike piškotkov</strong></p>
+        <p class="mb-6">
+            Upravljavec si pridržuje pravico do spremembe te politike piškotkov kadarkoli. Posodobljena verzija bo
+            objavljena na tej strani z datumom zadnje spremembe.
+        </p>
+
+        <!-- Dodaj svojo vsebino tukaj -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne odločitve.
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="hidden fixed bottom-0 inset-x-0 z-[60]">
+        <div class="max-w-7xl mx-auto px-6 pb-6">
+            <div
+                class="bg-amber-50 border border-amber-200 rounded-2xl shadow-lg p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="text-sm text-amber-900">
+                    <div class="font-semibold text-amber-900">Piškotki</div>
+                    <div>
+                        Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
+                        <a href="piskotki.html" class="underline">Več o piškotkih</a>.
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="cookie-reject" type="button"
+                        class="px-4 py-2 rounded-xl border border-amber-300 font-semibold text-amber-900 hover:bg-amber-100 transition">Zavrni</button>
+                    <button id="cookie-accept" type="button"
+                        class="px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold hover:bg-amber-700 transition">Sprejmi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            var banner = document.getElementById("cookie-banner");
+            var acceptBtn = document.getElementById("cookie-accept");
+            var rejectBtn = document.getElementById("cookie-reject");
+            if (!banner || !acceptBtn || !rejectBtn) return;
+
+            var key = "finportal_cookie_consent";
+            var existing = null;
+            try { existing = localStorage.getItem(key); } catch (e) { }
+
+            function hide() { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); }
+            function show() { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); }
+            function setConsent(value) {
+                try { localStorage.setItem(key, value); } catch (e) { }
+                document.documentElement.dataset.cookieConsent = value;
+                hide();
+            }
+
+            if (existing === "accepted" || existing === "rejected") {
+                document.documentElement.dataset.cookieConsent = existing;
+                hide();
+            } else {
+                show();
+            }
+
+            acceptBtn.addEventListener("click", function () { setConsent("accepted"); });
+            rejectBtn.addEventListener("click", function () { setConsent("rejected"); });
+        })();
+    </script>
+
+</body>
+
+</html>

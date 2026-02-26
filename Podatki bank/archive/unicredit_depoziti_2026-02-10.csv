@@ -1,0 +1,7 @@
+id;bank;product_name;amount_min;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
+3;UniCredit Banka Slovenija d.d.;Depozit 1M;1000;EUR;1;1;months;0.7;0.0;0.7;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium
+3;UniCredit Banka Slovenija d.d.;Depozit 3M;1000;EUR;3;3;months;0.9;0.0;0.9;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium
+3;UniCredit Banka Slovenija d.d.;Depozit 6M;1000;EUR;6;6;months;0.9;0.0;0.9;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium
+3;UniCredit Banka Slovenija d.d.;Depozit 12M;1000;EUR;12;12;months;1.1;0.0;1.1;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium
+3;UniCredit Banka Slovenija d.d.;Depozit 24M;1000;EUR;24;24;months;1.1;0.0;1.1;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium
+3;UniCredit Banka Slovenija d.d.;Depozit 36M;1000;EUR;36;36;months;0.01;0.0;0.01;https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html;2026-02-10;scraped via Selenium

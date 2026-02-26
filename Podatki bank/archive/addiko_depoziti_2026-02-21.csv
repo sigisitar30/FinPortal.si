@@ -1,0 +1,43 @@
+id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
+4;Addiko Bank d.d.;Depozit 3M;400;1000;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;400;1000;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;400;1000;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;400;1000;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;400;1000;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;400;1000;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;400;1000;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 3M;1001;1501;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;1001;1501;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;1001;1501;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;1001;1501;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;1001;1501;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;1001;1501;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;1001;1501;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 3M;1502;99999;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;1502;99999;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;1502;99999;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;1502;99999;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;1502;99999;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;1502;99999;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;1502;99999;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 3M;100000;149999;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;100000;149999;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;100000;149999;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;100000;149999;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;100000;149999;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;100000;149999;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;100000;149999;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 3M;150000;249999;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;150000;249999;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;150000;249999;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;150000;249999;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;150000;249999;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;150000;249999;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;150000;249999;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 3M;250000;500000;EUR;3;3;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba (3M map->6M)
+4;Addiko Bank d.d.;Depozit 6M;250000;500000;EUR;6;6;months;1.0;0.0;1.0;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 9M;250000;500000;EUR;9;9;months;1.35;0.0;1.35;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 12M;250000;500000;EUR;12;12;months;1.4;0.0;1.4;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 24M;250000;500000;EUR;24;24;months;1.6;0.0;1.6;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 36M;250000;500000;EUR;36;36;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba
+4;Addiko Bank d.d.;Depozit 60M;250000;500000;EUR;60;60;months;1.45;0.0;1.45;https://www.addiko.si/static/uploads/tabela-evrski-depozit-retail-6.2.2026.csv;2026-02-21;redna ponudba

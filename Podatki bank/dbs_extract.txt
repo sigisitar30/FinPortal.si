@@ -1,0 +1,130 @@
+--- page 1 ---
+Obrestne mere za fizične osebe
+veljavnost od 12. 1. 2026
+Varčevanje
+Depoziti v DOMAČI valuti (EUR): Fiksne obrestne mere
+Nominalna obrestna mera v %
+Zlata knjižica 0,05
+Depoziti vezani od 31 do 60 dni 0,70
+Depoziti vezani od 61 do 90 dni 0,90
+Depoziti vezani od 91 do 180 dni 1,00
+Depoziti vezani od 181 do 270 dni 1,10
+Depoziti vezani od 271 do 365 dni 1,20
+Depoziti vezani nad 1 letom 1,40
+Depoziti vezani nad 2 leti 1,70
+Depoziti vezani nad 3 leta 1,70
+Depoziti vezani nad 5 let 1,70
+Depoziti za zavarovanje terjatev na karticah Mastercard se ne obrestujejo.
+Obročno varčevanje
+nad 6 mesecev 1,20
+nad 1 letom 1,50
+nad 2 leti 1,70
+nad 3 leta 1,70
+nad 4 leta do 10 let 1,70
+
+--- page 2 ---
+Depoziti v TUJIH valutah:
+od 91 do 180 od 181 do 365 nad 1 letom
+Valuta Oznaka od 31 do 90 dni dni dni
+Avstralski dolar AUD 0,00 0,00 0,30 1,00
+Kanadski dolar CAD 0,00 0,00 0,20 1,00
+Švicarski frank CHF 0,00 0,00 0,00 0,00
+Britanski funt GBP 0,00 0,00 0,00 0,00
+Ameriški dolar USD 0,00 0,30 0,50 1,50
+Krediti*
+Spremenljive
+Fiksne obrestne mere obrestne mere
+6m Euribor +
+Gotovinski potrošniški krediti Nominalna obrestna mera v % pribitek v %
+do 3 mesecev 5,00
+nad 3 do 6 mesecev 5,10
+nad 6 do 12 mesecev 5,20
+nad 12 do 36 mesecev 5,80 3,00
+nad 36 do 60 mesecev 6,00 3,10
+nad 60 do 84 mesecev 6,50 3,20
+nad 84 do 120 mesecev 6,90 3,30
+Hitri krediti na transakcijskem računu
+do 3 mesecev 5,80
+nad 3 do 6 mesecev 6,20
+nad 6 do 12 mesecev 6,50
+nad 12 do 36 mesecev 6,90 4,30
+nad 36 do 60 mesecev (le z zavarovanjem pri
+zavarovalnici) 7,00 4,30
+*Navedene obrestne mere veljajo za kreditojemalce z bonitetno oceno A.
+
+--- page 3 ---
+Namenski potrošniški krediti
+do 3 mesecev 4,50
+nad 3 do 6 mesecev 4,60
+nad 6 do 12 mesecev 4,70
+nad 12 do 36 mesecev 5,10 2,60
+nad 36 do 60 mesecev 5,60 2,80
+nad 60 do 84 mesecev 6,10 3,20
+nad 84 do 120 mesecev 6,40 3,40
+Stanovanjski krediti
+do 12 mesecev 4,20
+nad 12 do 120 mesecev 3,50 1,35
+nad 120 do 240 mesecev 1,45
+nad 240 do 360 mesecev 1,50
+Stanovanjski krediti za nekomitente
+do 12 mesecev 5,20
+nad 12 do 120 mesecev 4,50 2,35
+nad 120 do 240 mesecev 2,45
+nad 240 do 360 mesecev 2,50
+Gotovinski stanovanjski krediti
+do 12 mesecev 4,80
+nad 12 do 120 mesecev 4,50 2,20
+nad 120 do 240 mesecev 2,25
+nad 240 do 360 mesecev 2,30
+Gotovinski stanovanjski krediti za nekomitente
+do 12 mesecev 5,80
+nad 12 do 120 mesecev 5,50 3,20
+nad 120 do 240 mesecev 3,25
+nad 240 do 360 mesecev 3,30
+Gotovinski hipotekarni krediti
+nad 120 do 180 mesecev 2,50
+
+--- page 4 ---
+Krediti za kmetijsko dejavnost
+do 3 mesecev 3,90
+nad 3 do 6 mesecev 3,90
+nad 6 do 9 mesecev 3,90 1,60
+nad 9 do 12 mesecev 4,00 1,60
+nad 12 do 36 mesecev 4,10 1,70
+nad 36 do 60 mesecev 4,20 1,75
+nad 60 do 84 mesecev 4,30 1,80
+nad 84 do 120 mesecev 4,40 1,85
+nad 120 do 240 mesecev 1,90
+nad 240 do 360 mesecev 1,95
+Krediti za kmetijsko dejavnost – zavarovani z
+nepremičnino
+nad 12 do 36 mesecev 3,60 1,40
+nad 36 do 60 mesecev 3,70 1,45
+nad 60 do 84 mesecev 3,80 1,50
+nad 84 do 120 mesecev 3,90 1,55
+nad 120 do 240 mesecev 1,60
+nad 240 do 360 mesecev 1,65
+Setveni/trgatveni/žetveni krediti kmetom
+do 6 mesecev 3,70
+nad 6 do 12 mesecev 3,80
+Krediti za rejo govedi, drobnice
+do 18 mesecev 3,90
+Krediti za vzrejo živali
+do 12 mesecev 3,90
+do 24 mesecev 4,00
+
+--- page 5 ---
+Transakcijski računi
+Nominalna obrestna mera v %
+Transakcijski račun (DBS gotovinski račun, DBS gotovinski račun za
+nerezidenta, DBS klasični račun, DBS osebni račun, DBS osebni račun
+za nerezidenta, DBS upokojenski račun, DBS upokojenski račun za
+nerezidenta, DBS zlati račun)
+0,00
+Vpogledne vloge v tujih valutah 0,00
+Mladinski računi (DBS otroški račun, DBS dijaški račun, DBS
+študentski račun) 0,00
+Dovoljeno negativno stanje (vse vrste TRR) 9,90
+Nedovoljeno negativno stanje (vse vrste TRR) 10,15
+Zlata knjižica 0,05
+Hranilni račun – evrska sredstva 0,05

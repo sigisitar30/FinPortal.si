@@ -1,0 +1,168 @@
+
+
+
+
+
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="Erste Group - Page not found">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Erste Group - 404 Not Found</title>
+    <style type="text/css">
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-Latin.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 300;
+            font-display: swap;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-LatinExt.woff2") format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            font-display: fallback;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-Latin.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 400;
+            font-display: fallback;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-LatinExt.woff2") format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 600;
+            font-display: fallback;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-Latin.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 600;
+            font-display: fallback;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-LatinExt.woff2") format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-Latin.woff2") format("woff2");
+            unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD
+        }
+
+        @font-face {
+            font-family: Inter;
+            font-style: normal;
+            font-weight: 700;
+            font-display: swap;
+            src: url("https://cdn0.erstegroup.com/content/dam/common/brand/fonts/inter/Inter-LatinExt.woff2") format("woff2");
+            unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF
+        }
+
+        html {
+            height: 100%;
+            font-size: 1rem;
+            font-family: "Inter", sans-serif;
+        }
+        body {
+            margin: 0;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+        }
+
+        main {
+            display: flex;
+            align-items: center;
+        }
+
+        .header {
+            padding: 32px 32px 0 32px;
+        }
+        .header__inside {
+            background-color: #2870ed;
+            max-width: 75rem;
+            margin: 0 auto;
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: rgba(11, 31, 66, 0.14) 0px 4px 14px 2px;
+        }
+        .header__logo {
+            height: 60px;
+        }
+        .hero {
+            max-width: 75rem;
+            text-align: center;
+            margin: 0 auto;
+            padding: 4.375rem 1.25rem;
+            color: #303030;
+            font-weight: 300;
+        }
+        .hero__title {
+            font-size: 2.25rem;
+        }
+        .hero__content {
+            font-size: 1rem;
+            line-height: 1.5rem;
+        }
+        .hero__link {
+            color: #2870ED;
+            border-bottom: 0.125rem solid transparent;
+            transition: color 0.25s ease 0s, border-color 0.25s ease 0s;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .hero__link:hover {
+            outline: 0;
+            border-bottom-color: #2870ED;
+        }
+        .footer {
+            width: 100%;
+            min-height: 8.125rem;
+            background-color: rgb(11, 31, 66);
+        }
+    </style>
+</head>
+<body>
+<header class="header">
+    <div class="header__inside">
+            <a href="https://www.erstegroup.com" accesskey="h">
+                <img class="header__logo" alt="Erste Group Bank AG Logo" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyBpZD0iYiIgZGF0YS1uYW1lPSJFYmVuZSAyIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1MTIuNTYiIGhlaWdodD0iMjQzLjYiIHZpZXdCb3g9IjAgMCA1MTIuNTYgMjQzLjYiPgogIDxkZWZzPgogICAgPHN0eWxlPgogICAgICAuZCB7CiAgICAgICAgZmlsbDogI2ZmZjsKICAgICAgfQogICAgPC9zdHlsZT4KICA8L2RlZnM+CiAgPGcgaWQ9ImMiIGRhdGEtbmFtZT0iRWJlbmUgMSI+CiAgICA8Zz4KICAgICAgPGc+CiAgICAgICAgPHBhdGggY2xhc3M9ImQiIGQ9Ik0uMDMsNTkuMzdjMC01LjU3LDIuNDgtOC41MSw4LjIxLTguNTFoNTYuMzV2MTAuODRjMCw1LjU3LTIuOTQsOC4yMS04LjgyLDguMjFIMjIuNDh2MjAuNTlINTguODZ2MTcuOEgyMi40OHYyMi43Nmg0Mi44OHYxMC44NGMwLDUuNTctMi45NCw4LjA1LTguNjcsOC4wNUg4LjIzQzIuNSwxNDkuOTMsLjAzLDE0Ni45OSwuMDMsMTQxLjQyVjU5LjM3WiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJkIiBkPSJNNzQuNDksNTkuMjFjMC01LjQyLDIuMzItOC4zNiw4LjA1LTguMzZoMzIuNjdjMjMuMjIsMCwzNi4yMywxMi44NSwzNi4yMywzMS44OSwwLDEzLjc4LTYuODEsMjMuODQtMTkuODIsMjguNDlsMjIuOTEsMzQuNTJjLjc3LDEuMzksMS4zOSwyLjc5LDEuMzksNC4xOGgtMjAuMTNjLTQuMTgsMC01LjczLS4zMS04LjM2LTQuNDlsLTE5LjA0LTMwLjY1aC0xMS40NnYzNS4xNGgtMjIuNDVWNTkuMjFabTIyLjQ1LDEwLjY4djI2LjAxaDE2LjcyYzkuNDQsMCwxNS45NS0zLjQxLDE1Ljk1LTEzLjE2cy02LjUtMTIuODUtMTUuOTUtMTIuODVoLTE2LjcyWiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJkIiBkPSJNMTkxLjg0LDUwLjA4YzE5Ljk3LDAsMzEuNDMsMi4xNywzMS40MywxMC45OXY4LjUyaC0yOS4yNmMtOC42NywwLTEyLjA4LDIuNjMtMTIuMDgsNy41OSwwLDEzLjQ3LDQ2LjYsMTEuMTUsNDYuNiw0NC4yOCwwLDE1Ljc5LTkuNzUsMjkuMjYtMzguMDgsMjkuMjYtMTcuOCwwLTMyLjUxLTIuNDgtMzIuNTEtMTAuOTl2LTguNTJoMzMuNmM4LjgyLDAsMTMuMTYtMi43OSwxMy4xNi04LjUxLDAtMTQuNTUtNDYuNDQtMTIuMzktNDYuNDQtNDYuMTQsMC0xNC44NiwxMC41My0yNi40NywzMy42LTI2LjQ3WiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJkIiBkPSJNMjk2LjQ5LDUwLjg1djExLjE1YzAsNS40Mi0zLjEsNy45LTguODIsNy45aC0xNC4wOXY4MC4wNGgtMjIuNDVWNjkuODloLTIyLjkxdi0xMS4xNWMwLTUuNDIsMi45NC03LjksOC42Ny03LjloNTkuNloiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iZCIgZD0iTTMwMy42MSw1OS4zN2MwLTUuNTcsMi40OC04LjUxLDguMjEtOC41MWg1Ni4zNXYxMC44NGMwLDUuNTctMi45NCw4LjIxLTguODIsOC4yMWgtMzMuMjl2MjAuNTloMzYuMzh2MTcuOGgtMzYuMzh2MjIuNzZoNDIuODh2MTAuODRjMCw1LjU3LTIuOTQsOC4wNS04LjY3LDguMDVoLTQ4LjQ2Yy01LjczLDAtOC4yMS0yLjk0LTguMjEtOC41MVY1OS4zN1oiLz4KICAgICAgPC9nPgogICAgICA8Zz4KICAgICAgICA8cGF0aCBjbGFzcz0iZCIgZD0iTTM5Ny4xMSwxMjMuMzloODguNDN2LTExLjg3aC04OC4yNmMtLjA3LTEuMzctLjAzLTI4LjE0LS4yMS00MC41MS0uMTUtMTAuNTUsNy4wNS0yMC44MiwyMC42Ni0yMC41OSwyNC44LC40MSw0OS42MywuNDEsNzQuNDMtLjAyLDEwLjY5LS4xOSwyMC40Miw3LjY2LDIwLjQxLDIwLjQzLDAsMS43OC0uMDEsMy45Ni0uMDEsNi4yN2gtODguNTF2MTEuNTlsODguNTEtLjAyYzAsMS41OSwuMDMsMjguNCwwLDQwLjg3LS4wNCwxMi41NS04LjA4LDIwLjQ0LTIwLjc4LDIwLjQ1LTI0LjYsMC00OS4yLDAtNzMuOCwwLTEyLjgsMC0yMC44MS03Ljk4LTIwLjg2LTIwLjc3LDAtMS43OCwwLTMuNTYsMC01LjgzIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImQiIGQ9Ik00NTQuOTQsMzguMDNjLTEwLjQ2LDAtMTguOTItOC42Mi0xOC44Ni0xOS4yQzQzNi4xMyw4LjQzLDQ0NC42My0uMDIsNDU1LjAxLDBjMTAuMzcsLjAyLDE4Ljg1LDguNTEsMTguODcsMTguOSwuMDIsMTAuNTYtOC40NywxOS4xNC0xOC45NCwxOS4xMyIvPgogICAgICA8L2c+CiAgICAgIDxnPgogICAgICAgIDxwYXRoIGNsYXNzPSJkIiBkPSJNNDEuMjUsMjI0LjkzYzAsNC4xOS01LjI4LDUuNDYtMTYuODUsNS40Ni0xNi40OCwwLTI0LjQxLTkuMTEtMjQuNDEtMjkuNnM3LjkyLTI5LjYsMjQuNDEtMjkuNmMxMS41NywwLDE2LjEyLDEuMjgsMTYuMTIsNS41NnYzLjM3aC0xNS45NGMtMTAuMjksMC0xNC4zLDQuNzQtMTQuMywyMC42N3M0LjAxLDIwLjc2LDE0LjMsMjAuNzZoNi42NXYtMTYuMjFjMC0yLjkxLDEuMTgtNC41NSw0LjI4LTQuNTVoNS43NHYyNC4xM1oiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iZCIgZD0iTTUwLjQ1LDIyOS45NHYtNDUuNTNoNS4wMWMzLjEsMCw0LjM3LDIuMjgsNC41NSw1Ljc0LDMuNzMtNC44Myw4LjQ3LTYuMTksMTIuMTEtNi4xOSwxLjY0LDAsMy4yOCwuNDYsMy4yOCwyLjI4djcuMWgtMi4yOGMtNy4wMSwwLTEwLjM4LDEuNDYtMTMuMTEsMy4zN3YzMy4yNGgtOS41NloiLz4KICAgICAgICA8cGF0aCBjbGFzcz0iZCIgZD0iTTc2LjIyLDIwNy4xOGMwLTEyLjc1LDQuNjQtMjMuMjIsMjAuMDMtMjMuMjJzMjAuMDMsMTAuNDcsMjAuMDMsMjMuMjItNC42NCwyMy4yMi0yMC4wMywyMy4yMi0yMC4wMy0xMC40Ny0yMC4wMy0yMy4yMlptMzAuMjMsMGMwLTEwLjU2LTIuMzctMTYuMzktMTAuMi0xNi4zOXMtMTAuMTEsNS44My0xMC4xMSwxNi4zOSwyLjI4LDE2LjM5LDEwLjExLDE2LjM5LDEwLjItNS43NCwxMC4yLTE2LjM5WiIvPgogICAgICAgIDxwYXRoIGNsYXNzPSJkIiBkPSJNMTYwLjgyLDE4NC40MXY0NS41M2gtNS4wMWMtMy4yOCwwLTQuNTUtMS42NC00LjU1LTMuODJ2LTEuMzdjLTMuODMsNC4xLTguNTYsNS42NS0xMy4yLDUuNjUtOS40NywwLTE0LjIxLTUuNjUtMTQuMjEtMTQuMTJ2LTMxLjg3aDkuNTZ2MzEuNDJjMCw1LjEsMy4yOCw3LjEsOC4zOCw3LjEsMy40NiwwLDYuOTItMS40Niw5LjQ3LTMuNDZ2LTM1LjA2aDkuNTZaIi8+CiAgICAgICAgPHBhdGggY2xhc3M9ImQiIGQ9Ik0xODAuNDgsMjQzLjZoLTkuNTZ2LTU5LjE5aDUuMDFjMy4zNywwLDQuNTUsMS44Miw0LjU1LDQuMDF2MS4yN2MyLjczLTMsNy4wMS01Ljc0LDEyLjM4LTUuNzQsMTEuNDcsMCwxNi42Nyw4LjkyLDE2LjY3LDIzLjIycy01LjE5LDIzLjIyLTE2LjY3LDIzLjIyYy01LjM3LDAtOS42NS0yLjczLTEyLjM4LTUuNjV2MTguODVabTkuMDItNTIuMDljLTMuNTUsMC02LjU2LDEuNDYtOS4wMiwzLjM3djI0LjVjMi40NiwxLjkxLDUuNDYsMy4zNyw5LjAyLDMuMzcsNy4zOCwwLDEwLjExLTUuMzcsMTAuMTEtMTUuNTdzLTIuNzMtMTUuNjYtMTAuMTEtMTUuNjZaIi8+CiAgICAgIDwvZz4KICAgIDwvZz4KICA8L2c+Cjwvc3ZnPg==">
+            </a>
+    </div>
+</header>
+<main>
+    <section class="hero">
+        <h2 class="hero__title">Not Found</h2>
+        <p class="hero__content">
+            The content you were looking for was not found.
+            <br/>Please try again later, <a class="hero__link" href="javascript:window.history.back()">return to the previous page</a>, or visit <a class="hero__link" href="https://www.erstegroup.com">www.erstegroup.com</a>.</p>
+        <p class="hero__content">We apologize for any inconvenience caused.</p>
+    </section>
+</main>
+<footer class="footer"></footer>
+</body>
+</html>

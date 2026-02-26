@@ -1,0 +1,6 @@
+id;bank;product_name;amount_min;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
+3;Intesa Sanpaolo Bank;Vezana vloga 5M;1000;EUR;5;5;months;0.01;0.0;0.01;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;2026-02-11;scraped from Intesa PDF
+3;Intesa Sanpaolo Bank;Vezana vloga 12M;1000;EUR;12;12;months;2.1;0.0;2.1;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;2026-02-11;scraped from Intesa PDF
+3;Intesa Sanpaolo Bank;Vezana vloga 6M;1000;EUR;6;6;months;0.02;0.0;0.02;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;2026-02-11;scraped from Intesa PDF
+3;Intesa Sanpaolo Bank;Vezana vloga 12M;1000;EUR;12;12;months;0.1;0.0;0.1;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;2026-02-11;scraped from Intesa PDF
+3;Intesa Sanpaolo Bank;Vezana vloga 24M;1000;EUR;24;24;months;0.01;0.0;0.01;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;2026-02-11;scraped from Intesa PDF

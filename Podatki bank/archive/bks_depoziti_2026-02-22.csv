@@ -1,0 +1,5 @@
+id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
+8;BKS Bank AG;Depozit 6M;1000;;EUR;6;6;months;1.2;0.0;1.2;https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge;2026-02-22;redna ponudba
+8;BKS Bank AG;Depozit 12M;1000;;EUR;12;12;months;1.3;0.0;1.3;https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge;2026-02-22;redna ponudba
+8;BKS Bank AG;Depozit 24M;1000;;EUR;24;24;months;1.7;0.0;1.7;https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge;2026-02-22;redna ponudba
+8;BKS Bank AG;Depozit 36M;1000;;EUR;36;36;months;1.75;0.0;1.75;https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge;2026-02-22;redna ponudba

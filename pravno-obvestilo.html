@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si – pravna dokumentacija in informacije.">
+    <meta name="keywords" content="pravno obvestilo, pogoji uporabe, politika zasebnosti, piškotki">
+    <title>FinPortal.si – Pravno obvestilo</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts – Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home" class="hover:text-[#0B6B3A]">Domov</a>
+                <details class="relative">
+                    <summary class="list-none cursor-pointer hover:text-[#0B6B3A]">
+                        <a href="index.html#kalkulatorji" class="inline-block"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Izgubljene
+                            obresti</a>
+                        <a href="primerjava-depozitov.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Investicijski
+                            kalkulator</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 hover:text-[#0B6B3A]">Menjalniški
+                            kalkulator</a>
+                    </div>
+                </details>
+                <a href="index.html#onas" class="hover:text-[#0B6B3A]">O nas</a>
+                <a href="index.html#kontakt" class="hover:text-[#0B6B3A]">Kontakt</a>
+
+                <a href="index.html#primerjava-depozitov"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-4xl mx-auto px-6 py-16">
+        <h1 class="text-3xl font-bold mb-6">PRAVNO OBVESTILO ZA UPORABO SPLETNEGA MESTA</h1>
+
+        <p class="mb-6"><strong>1. Splošno</strong></p>
+        <p class="mb-6">
+            Spletno mesto FinPortal.si (v nadaljevanju: »spletno mesto«) je informativna platforma, namenjena
+            predstavitvi finančnih informacij, orodij in izračunov. Uporaba spletnega mesta je dovoljena pod pogoji,
+            določenimi v tem pravnem obvestilu.
+        </p>
+        <p class="mb-6">
+            Z dostopom do spletnega mesta uporabnik potrjuje, da je seznanjen s tem pravnim obvestilom in se z njim
+            strinja.
+        </p>
+
+        <p class="mb-6"><strong>2. Lastnik spletnega mesta</strong></p>
+        <p class="mb-6">
+            Lastnik in upravljavec spletnega mesta je:
+            FinPortal.si E pošta: info@finportal.si (V primeru dejanskega podjetja lahko dodaš naziv, naslov, matično in
+            davčno številko.)
+        </p>
+
+        <p class="mb-6"><strong>3. Informativna narava vsebin</strong></p>
+        <p class="mb-6">
+            Vse vsebine, izračuni, primerjave in informacije na spletni strani so informativne narave. Ne
+            predstavljajo:
+        </p>
+        <ul class="container">
+            <li>finančnega svetovanja,</li>
+            <li>investicijskih priporočil,</li>
+            <li>pravnega ali davčnega nasveta,</li>
+            <li>ponudbe ali poziva k sklenitvi pogodbe.</li>
+        </ul>
+        <p class="mb-6">
+            Uporabnik sprejema, da se mora pred sprejemom kakršnekoli finančne odločitve posvetovati s pristojnim
+            strokovnjakom ali ponudnikom storitve.
+        </p>
+
+        <p class="mb-6">
+            Upravljavec lahko na podlagi uporabnikovega povpraševanja ali interesa posreduje kontaktne podatke in
+            osnovne informacije o povpraševanju izbranim bankam ali ponudnikom ("lead"), z namenom, da uporabnik lažje
+            pridobi ponudbo. Posredovanje se izvede le v obsegu, ki je potreben za obravnavo povpraševanja.
+        </p>
+
+        <p class="mb-6"><strong>4. Omejitev odgovornosti</strong></p>
+        <p class="mb-6">Upravljavec spletnega mesta ne odgovarja za:</p>
+        <ul class="container">
+            <li>morebitne napake, netočnosti ali zastarelost podatkov,</li>
+            <li>napačne izračune zaradi napačnih vnosov uporabnika,</li>
+            <li>nedelovanje ali nedostopnost spletnega mesta,</li>
+            <li>kakršnokoli škodo, ki bi nastala zaradi uporabe ali nezmožnosti uporabe spletnega mesta,</li>
+            <li>vsebine ali pravilnost podatkov na zunanjih povezavah.</li>
+        </ul>
+        <p class="mb-6">Uporabnik spletno mesto uporablja na lastno odgovornost.</p>
+
+        <p class="mb-6"><strong>5. Avtorske pravice</strong></p>
+        <p class="mb-6">
+            Vsebine, grafični elementi, logotipi, besedila, izračuni in programska koda na spletni strani so
+            zaščiteni z avtorskimi pravicami, razen kjer je izrecno navedeno drugače.
+        </p>
+        <p class="mb-6">Prepovedano je:</p>
+        <ul class="container">
+            <li>kopiranje,</li>
+            <li>razmnoževanje,</li>
+            <li>spreminjanje,</li>
+            <li>distribucija ali objava vsebin brez predhodnega pisnega dovoljenja upravljavca.</li>
+        </ul>
+        <p class="mb-6"><strong>6. Zunanje povezave</strong></p>
+        <p class="mb-6">Spletno mesto lahko vsebuje povezave na druge spletne strani. Upravljavec:</p>
+        <ul class="container">
+            <li>ne nadzira teh strani,</li>
+            <li>ne odgovarja za njihovo vsebino,</li>
+            <li>ne jamči za pravilnost ali varnost podatkov na teh straneh.</li>
+        </ul>
+        <p class="mb-6"><strong>7. Tehnične napake</strong></p>
+        <p class="mb-6">
+            Upravljavec si prizadeva za nemoteno delovanje spletnega mesta, vendar ne jamči, da bo delovalo brez
+            napak, prekinitev ali tehničnih težav.
+        </p>
+        <p class="mb-6">V primeru tehničnih napak si upravljavec pridržuje pravico do:</p>
+        <ul class="container">
+            <li>začasne ustavitve delovanja,</li>
+            <li>spremembe ali posodobitve funkcionalnosti,</li>
+            <li>omejitve dostopa.</li>
+        </ul>
+        <p class="mb-6"><strong>8. Spremembe pravnega obvestila</strong></p>
+        <p class="mb-6">
+            Upravljavec si pridržuje pravico, da to pravno obvestilo kadarkoli spremeni. Spremembe začnejo veljati z
+            dnem objave na spletni strani. Uporabnikom priporočamo, da občasno preverijo posodobitve.
+        </p>
+        <p class="mb-6"><strong>9. Kontakt</strong></p>
+        <p>Za vprašanja v zvezi s tem pravnim obvestilom nas lahko kontaktirate na:
+            FinPortal.si e-pošta: info@finportal.si
+        </p>
+
+        <p class="mb-6 mt-6"><strong>10. Kontakt za pritožbe</strong></p>
+        <p class="mb-6">
+            Kontaktna oseba za pritožbe: Žiga Sitar, e‑pošta: info@finportal.si
+        </p>
+
+        <p class="mb-6"><strong>11. Veljavno pravo in pristojno sodišče</strong></p>
+        <p class="mb-6">
+            Za uporabo spletnega mesta in to pravno obvestilo se uporablja pravo Republike Slovenije. Za reševanje
+            morebitnih sporov je pristojno stvarno pristojno sodišče v Ljubljani.
+        </p>
+
+        <!-- Dodaj svojo vsebino tukaj -->
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne odločitve.
+        </div>
+    </footer>
+
+    <div id="cookie-banner" class="hidden fixed bottom-0 inset-x-0 z-[60]">
+        <div class="max-w-7xl mx-auto px-6 pb-6">
+            <div
+                class="bg-amber-50 border border-amber-200 rounded-2xl shadow-lg p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="text-sm text-amber-900">
+                    <div class="font-semibold text-amber-900">Piškotki</div>
+                    <div>
+                        Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
+                        <a href="piskotki.html" class="underline">Več o piškotkih</a>.
+                    </div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button id="cookie-reject" type="button"
+                        class="px-4 py-2 rounded-xl border border-amber-300 font-semibold text-amber-900 hover:bg-amber-100 transition">Zavrni</button>
+                    <button id="cookie-accept" type="button"
+                        class="px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold hover:bg-amber-700 transition">Sprejmi</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (function () {
+            var banner = document.getElementById("cookie-banner");
+            var acceptBtn = document.getElementById("cookie-accept");
+            var rejectBtn = document.getElementById("cookie-reject");
+            if (!banner || !acceptBtn || !rejectBtn) return;
+
+            var key = "finportal_cookie_consent";
+            var existing = null;
+            try { existing = localStorage.getItem(key); } catch (e) { }
+
+            function hide() { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); }
+            function show() { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); }
+            function setConsent(value) {
+                try { localStorage.setItem(key, value); } catch (e) { }
+                document.documentElement.dataset.cookieConsent = value;
+                hide();
+            }
+
+            if (existing === "accepted" || existing === "rejected") {
+                document.documentElement.dataset.cookieConsent = existing;
+                hide();
+            } else {
+                show();
+            }
+
+            acceptBtn.addEventListener("click", function () { setConsent("accepted"); });
+            rejectBtn.addEventListener("click", function () { setConsent("rejected"); });
+        })();
+    </script>
+
+</body>
+
+</html>

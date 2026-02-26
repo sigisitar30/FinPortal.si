@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si - Koliko sem izgubil, ker nisem vezal depozita? (TRR vs depozit).">
+    <title>Izgubljene obresti (TRR vs depozit) | FinPortal.si</title>
+
+    <link rel="canonical" href="https://finportal.si/izgubljene-obresti.html">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Domov</a>
+
+                <details class="relative">
+                    <summary
+                        class="list-none cursor-pointer hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded px-1 py-1">
+                        <a href="index.html#kalkulatorji" class="inline-block"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Izgubljene
+                            obresti</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Menjalniški
+                            kalkulator</a>
+                        <a href="primerjava-depozitov.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Investicijski kalkulator</a>
+                    </div>
+                </details>
+
+                <a href="index.html#onas"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">O
+                    nas</a>
+                <a href="index.html#kontakt"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Kontakt</a>
+
+                <a href="primerjava-depozitov.html"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] focus:bg-[#095a32] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="text-sm font-semibold text-gray-900 mb-3">Kalkulatorji</div>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a href="kreditna-sposobnost.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditna
+                    sposobnost</a>
+                <a href="kreditni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditni</a>
+                <a href="eom-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">EOM</a>
+                <a href="depozitni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Depozitni</a>
+                <a href="izgubljene-obresti.html"
+                    class="px-3 py-1 rounded-full border border-[#0B6B3A] bg-green-50 text-[#0B6B3A] hover:bg-green-100">Izgubljene
+                    obresti</a>
+                <a href="menjalniski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Menjalniški</a>
+                <a href="primerjava-depozitov.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Primerjava
+                    depozitov</a>
+                <a href="investicijski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Investicijski</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="lg:flex lg:gap-10">
+
+                <aside class="hidden lg:block lg:w-64">
+                    <div class="sticky top-28">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
+                            <img src="images/mightymouse.webp" alt="MIGHTYMOUSE - BANNER"
+                                class="w-full h-auto rounded-xl" loading="lazy">
+                            <div class="mt-3 text-sm font-semibold text-gray-900">MIGHTYMOUSE - BANNER</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="flex-1">
+                    <h1 class="text-3xl font-bold text-center mb-8">Koliko sem izgubil, ker nisem vezal depozita?</h1>
+
+                    <div class="calc-panel grid md:grid-cols-2 gap-8 items-start">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Znesek na TRR (€) <span
+                                            class="text-red-600">*</span></label>
+                                    <input type="text" id="lost-amount" value="10.000"
+                                        class="input w-full format-number" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Čas <span
+                                            class="text-red-600">*</span></label>
+                                    <input type="number" id="lost-time" value="12" min="1" max="600" step="1"
+                                        class="input w-full" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Enota <span
+                                            class="text-red-600">*</span></label>
+                                    <select id="lost-unit" class="input w-full">
+                                        <option value="months" selected>meseci</option>
+                                        <option value="years">leta</option>
+                                    </select>
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Tipična obrestna mera
+                                        depozita (% letno) <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lost-rate" value="3,00" class="input w-full no-format"
+                                        inputmode="decimal" />
+                                </div>
+
+                                <div class="md:col-span-2">
+                                    <div class="text-sm font-semibold text-gray-900">ETF alternativa (ocena)</div>
+                                    <div class="mt-1 text-xs text-gray-600">
+                                        ETF je naložba z nihanji in nezagotovljenimi donosi.
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Pričakovani donos ETF
+                                        (% letno)
+                                        <span class="fp-help">
+                                            <span class="fp-help__icon" tabindex="0">?</span>
+                                            <span class="fp-help__tooltip">
+                                                Pričakovani povprečni letni donos ETF. Donosi niso zagotovljeni in se
+                                                lahko razlikujejo od predpostavke.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input type="text" id="lost-etf-return" value="6,00" class="input w-full no-format"
+                                        inputmode="decimal" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Letni stroški ETF (TER)
+                                        (% letno)
+                                        <span class="fp-help">
+                                            <span class="fp-help__icon" tabindex="0">?</span>
+                                            <span class="fp-help__tooltip">
+                                                TER je letni strošek sklada (Total Expense Ratio), ki znižuje donos.
+                                                Običajno je že vključen v gibanje vrednosti ETF.
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <input type="text" id="lost-etf-fee" value="0,20" class="input w-full no-format"
+                                        inputmode="decimal" />
+                                </div>
+
+                                <button id="lost-calc-btn"
+                                    class="md:col-span-2 w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">Izračunaj
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                            <h3 class="text-xl font-semibold mb-6">Rezultat (ocena)</h3>
+
+                            <div class="flex justify-between items-center py-4 border-b border-gray-200">
+                                <span class="fp-result-label">Zamujene obresti (TRR vs depozit)</span>
+                                <span id="lost-interest" class="fp-result-value fp-result-value--primary">–</span>
+                            </div>
+
+                            <div class="flex justify-between items-center py-4">
+                                <span class="fp-result-label">Znesek, če bi vezal depozit</span>
+                                <span id="lost-final" class="fp-result-value">–</span>
+                            </div>
+
+                            <div class="flex justify-between items-center py-4 border-t border-gray-200">
+                                <span class="fp-result-label">Znesek, če bi investiral v ETF</span>
+                                <span id="lost-etf-final" class="fp-result-value">–</span>
+                            </div>
+
+                            <div class="flex justify-between items-center py-4">
+                                <span class="fp-result-label">Razlika (ETF − depozit)</span>
+                                <span id="lost-etf-vs-deposit" class="fp-result-value">–</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="max-w-4xl mx-auto mt-10 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
+                        Obresti so v Republiki Sloveniji praviloma obdavčene, če skupni znesek obresti iz denarnih
+                        depozitov v koledarskem letu preseže 1.000 EUR. Ta kalkulator je informativen. Za natančno oceno
+                        preverite aktualna davčna pravila in ostale vaše okoliščine / situacijo.
+                        <br><br>
+                        ETF donosi niso zagotovljeni; vrednost naložbe lahko tudi pade. Izračun ETF je poenostavljena
+                        ocena na podlagi pričakovanega donosa in letnih stroškov (TER) ter ne upošteva vseh stroškov,
+                        davkov, valutnih tveganj, dividend ali sprememb tržnih razmer.
+                        Obdavčitev donosov iz ETF (npr. kapitalski dobički, dividende) je odvisna od produkta in vaših
+                        okoliščin; preverite aktualna pravila v RS.
+                        <br><br>
+                        Bančne vloge (depoziti, sredstva na transakcijskih računih, hranilne knjižice) posameznega
+                        vlagatelja v bankah in hranilnicah s sedežem v Sloveniji so praviloma zajamčene do skupne višine
+                        100.000 EUR. V primeru nedostopnosti vlog oziroma stečaja banke sistem jamstva vlog, ki ga
+                        upravlja Banka Slovenije, zagotavlja izplačilo praviloma v roku približno 7 do 20 delovnih dni.
+                        ETF naložbe takšnega jamstva nimajo in so zato praviloma bistveno bolj tvegane od bančnih vlog.
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="text-sm font-semibold text-gray-900 mb-3">Kalkulatorji</div>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a href="kreditna-sposobnost.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditna
+                    sposobnost</a>
+                <a href="kreditni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditni</a>
+                <a href="eom-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">EOM</a>
+                <a href="depozitni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Depozitni</a>
+                <a href="izgubljene-obresti.html"
+                    class="px-3 py-1 rounded-full border border-[#0B6B3A] bg-green-50 text-[#0B6B3A] hover:bg-green-100">Izgubljene
+                    obresti</a>
+                <a href="menjalniski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Menjalniški</a>
+                <a href="primerjava-depozitov.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Primerjava
+                    depozitov</a>
+                <a href="investicijski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Investicijski</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne ter druge odločitve.
+        </div>
+    </footer>
+
+    <script src="script.js?v=2026-02-20" type="text/javascript"></script>
+</body>
+
+</html>

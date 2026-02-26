@@ -1,0 +1,448 @@
+/* ============================
+   FINPORTL.SI – CUSTOM STYLES 2026 – glow fix + optimizacija
+============================ */
+
+:root {
+    --primary: #0B6B3A;
+    --primary-dark: #095a32;
+    --highlight: #F2C94C;
+    --highlight-glow: rgba(242, 201, 76, 0.65);
+    --highlight-glow-soft: rgba(242, 201, 76, 0.35);
+    --border-light: #d1d5db;
+    --border-medium: #e5e7eb;
+    --bg-light: #f9fafb;
+    --bg-hover: #f3f4f6;
+    --text-muted: #6b7280;
+}
+
+/* Reset & global */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: white;
+    color: #111111;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Inputs */
+.input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border-light);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    text-align: left;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(11, 107, 58, 0.18);
+    outline: none;
+}
+
+/* =============================================
+   container - za pravno obvestilo
+============================================= */
+
+ul.container {
+    text-align: left;
+    margin: 0 0 1.5rem 0 !important;
+    padding-left: 1rem;
+    list-style: none;
+}
+
+ul.container li {
+    display: flex;
+    align-items: center;
+}
+
+ul.container li label {
+    margin-right: 10px;
+}
+
+ul.container li input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+ul.container li::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 9999px;
+    background: #000;
+    margin-right: 5px;
+}
+
+/* =============================================
+   ZLATI GLOW – optimiziran za performance
+============================================= */
+
+.glow-hover:hover,
+.glow-hover:focus-visible,
+.glow-hover:active {
+    border-color: var(--highlight);
+    box-shadow:
+        0 0 6px var(--highlight-glow-soft),
+        0 0 14px var(--highlight-glow),
+        0 0 24px var(--highlight-glow-soft);
+    transform: translateY(-2px) scale(1.015);
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glow-hover:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: 0 0 12px var(--highlight-glow);
+}
+
+/* Active tab - zeleno ozadje, brez glow */
+.calc-tab.active,
+.calc-tab.active:hover,
+.calc-tab.active:focus,
+.calc-tab.active:active {
+    background: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+/* Krepkejši hover za GUMBE z zelenim ozadjem */
+button[class*="bg-[#0B6B3A]"]:hover,
+a[class*="bg-[#0B6B3A]"]:hover,
+.glow-hover:hover,
+.calc-tab:hover,
+.category-btn:hover,
+button[id$="-calc-btn"]:hover,
+.pridobi-btn:hover {
+    border-color: var(--highlight);
+    box-shadow:
+        0 0 8px rgba(242, 201, 76, 0.45),
+        0 0 18px rgba(242, 201, 76, 0.7);
+    transform: translateY(-2px) scale(1.02);
+}
+
+/* Category buttons */
+.category-btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    background: white;
+    color: #111111;
+    cursor: pointer;
+    border: 2px solid var(--border-light);
+    border-radius: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+/* Step cards – bolj dramatičen hover */
+.step-card {
+    background: white;
+    padding: 2rem 1.25rem;
+    border-radius: 1rem;
+    border: 2px solid var(--border-medium);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.step-card:hover {
+    border-color: var(--primary);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Step cards – velikost slik */
+.step-icon {
+    height: 250px;
+    width: auto;
+    max-width: 100%;
+    object-fit: contain;
+    margin: 0 auto 1rem auto;
+    display: block;
+}
+
+
+/* Result card */
+.calc-result-card {
+    background: white;
+    border: 2px solid var(--border-medium);
+    border-radius: 1.25rem;
+    padding: 1.75rem;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+}
+
+.fp-result-label {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.fp-result-value {
+    color: #111827;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.fp-result-value--primary {
+    color: var(--primary);
+    font-size: 1.5rem;
+    font-weight: 800;
+}
+
+.fp-result-value--sm {
+    color: #111827;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.calc-result-card:hover {
+    border-color: var(--border-medium);
+    box-shadow: none;
+    transform: none;
+}
+
+/* Help tooltip ("?") – unified across calculators */
+.fp-help {
+    position: relative;
+    display: inline-flex;
+    vertical-align: middle;
+    margin-left: 0.25rem;
+}
+
+.fp-help__icon {
+    width: 1rem;
+    height: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid #9ca3af;
+    background: #ffffff;
+    color: #374151;
+    font-size: 11px;
+    line-height: 1;
+    cursor: help;
+}
+
+.fp-help__tooltip {
+    pointer-events: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100%;
+    margin-top: 0.5rem;
+    width: 16rem;
+    display: none;
+    z-index: 40;
+    background: #111827;
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 1.35;
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.18);
+}
+
+.fp-help--edge-left .fp-help__tooltip {
+    left: 0;
+    transform: none;
+}
+
+.fp-help:hover .fp-help__tooltip,
+.fp-help:focus-within .fp-help__tooltip {
+    display: block;
+}
+
+.cs-input-grid label {
+    min-height: 3.5rem;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table th {
+    padding: 0.875rem 1rem;
+    background: var(--bg-light);
+    font-weight: 600;
+    text-align: left;
+    border-bottom: 2px solid var(--border-medium);
+}
+
+.table td {
+    padding: 0.875rem 1rem;
+    border-bottom: 1px solid var(--border-medium);
+}
+
+.table-row:hover {
+    background: var(--bg-hover);
+}
+
+/* Spacing */
+#onas p {
+    margin-bottom: 1.5rem;
+}
+
+#onas h2,
+#onas h3 {
+    margin: 2.5rem 0 1rem;
+}
+
+/* Tabs */
+.calc-tab {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: 2px solid var(--border-light);
+    background: white;
+    color: #374151;
+}
+
+.calc-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .calc-result-card {
+        margin-top: 1.5rem;
+    }
+}
+
+/* Performance optimizations */
+.glow-hover,
+[class*="bg-[#0B6B3A]"],
+.calc-tab,
+.category-btn,
+button[id$="-calc-btn"] {
+    will-change: transform, box-shadow, border-color;
+}
+
+/* Footer - brez glow efekta */
+footer {
+    pointer-events: none;
+}
+
+/* Footer - prisilno zeleno barvo in brez glow */
+footer {
+    background-color: #0B6B3A !important;
+    pointer-events: none;
+}
+
+footer * {
+    pointer-events: auto;
+}
+
+.partners-marquee {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-medium);
+    border-radius: 1rem;
+    background: #fff;
+}
+
+.partners-marquee__fade {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 12%, rgba(255, 255, 255, 0) 88%, #ffffff 100%);
+    z-index: 2;
+}
+
+.partners-marquee__track {
+    display: flex;
+    gap: 2.5rem;
+    width: max-content;
+    animation: partners-marquee-scroll 28s linear infinite;
+    padding: 0.75rem 1rem;
+}
+
+.partners-marquee__group {
+    display: inline-flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.partners-marquee__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 2.25rem;
+    padding: 0 0.9rem;
+    border: 1px solid var(--border-medium);
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: #111111;
+    background: #ffffff;
+    white-space: nowrap;
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+.partners-marquee__logo {
+    height: 1.25rem;
+    width: auto;
+    max-width: 4.5rem;
+    object-fit: contain;
+    display: inline-block;
+    margin-right: 0.5rem;
+}
+
+.partners-marquee__name {
+    display: inline-block;
+}
+
+.partners-marquee:hover .partners-marquee__track {
+    animation-play-state: paused;
+}
+
+@keyframes partners-marquee-scroll {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .partners-marquee__track {
+        animation: none;
+    }
+}
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.footer-buttons a {
+    color: #fff;
+    text-decoration: none;
+}
+
+.footer-buttons a:hover {
+    text-decoration: underline;
+}
+
+.no-format {
+    text-align: right;
+}
+
+#loan-rate,
+#interest-rate,
+#inv-return {
+    text-align: left;
+}
