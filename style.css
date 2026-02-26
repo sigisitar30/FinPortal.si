@@ -207,18 +207,24 @@ button[id$="-calc-btn"]:hover,
     color: #111827;
     font-size: 1.125rem;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 
 .fp-result-value--primary {
     color: var(--primary);
-    font-size: 1.5rem;
+    font-size: 1.125rem;
     font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 
 .fp-result-value--sm {
     color: #111827;
-    font-size: 0.95rem;
+    font-size: 1.125rem;
     font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
 }
 
 .calc-result-card:hover {

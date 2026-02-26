@@ -1157,6 +1157,7 @@ function getLoanEffectiveAnnualRate() {
 }
 
 let loanAmortizationChart = null;
+let investmentChart = null;
 
 function buildLoanAmortizationSchedule(principal, months, annualRate, moratoriumMonths) {
     const P0 = Number(principal);
@@ -1262,7 +1263,14 @@ function drawLoanAmortizationChart(schedule) {
             maintainAspectRatio: false,
             interaction: { mode: "index", intersect: false },
             plugins: {
-                legend: { display: true, position: "bottom" },
+                legend: {
+                    display: true,
+                    position: "bottom",
+                    labels: {
+                        usePointStyle: true,
+                        boxWidth: 10,
+                    },
+                },
                 tooltip: {
                     callbacks: {
                         title: (items) => {
@@ -1807,8 +1815,8 @@ function buildInvestmentSeries(initial, monthly, months, monthlyRate) {
 
 function formatAxisCurrency(val) {
     const n = Number(val);
-    if (!Number.isFinite(n)) return "0 €";
-    return n.toLocaleString("sl-SI", { maximumFractionDigits: 0, useGrouping: true }) + " €";
+    if (!Number.isFinite(n)) return "0";
+    return n.toLocaleString("sl-SI", { maximumFractionDigits: 0, useGrouping: true });
 }
 
 function niceStep(rawStep) {
@@ -1831,6 +1839,123 @@ function niceStep(rawStep) {
 function drawInvestmentChart(series, savedSeries) {
     const canvas = document.getElementById("inv-chart");
     if (!canvas) return;
+
+    if (typeof Chart !== "undefined") {
+        const formatNumberNoDecimals = (val) => {
+            const n = Number(val);
+            if (!Number.isFinite(n)) return "–";
+            return n.toLocaleString("sl-SI", { maximumFractionDigits: 0, minimumFractionDigits: 0, useGrouping: true });
+        };
+
+        const hasCurrent = Array.isArray(series) && series.length >= 2;
+        const hasSaved = Array.isArray(savedSeries) && savedSeries.length >= 2;
+
+        if (!hasCurrent && !hasSaved) {
+            if (investmentChart) {
+                investmentChart.destroy();
+                investmentChart = null;
+            }
+            return;
+        }
+
+        const seriesForX = hasCurrent ? series : savedSeries;
+        const labels = seriesForX.map((p) => p.month);
+
+        const datasets = [];
+        if (hasSaved) {
+            datasets.push({
+                label: "1. izračun (shranjeno)",
+                data: savedSeries.map((p) => p.value),
+                borderColor: "#9ca3af",
+                backgroundColor: "rgba(156, 163, 175, 0.10)",
+                tension: 0.25,
+                pointRadius: 0,
+                borderWidth: 2,
+            });
+        }
+        if (hasCurrent) {
+            datasets.push({
+                label: "2. izračun (trenutno)",
+                data: series.map((p) => p.value),
+                borderColor: "#0B6B3A",
+                backgroundColor: "rgba(11, 107, 58, 0.12)",
+                tension: 0.25,
+                pointRadius: 0,
+                borderWidth: 2,
+            });
+        }
+
+        const ctx = canvas.getContext("2d");
+        if (!ctx) return;
+
+        if (investmentChart) {
+            investmentChart.destroy();
+            investmentChart = null;
+        }
+
+        investmentChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels,
+                datasets,
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: "index", intersect: false },
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: {
+                            usePointStyle: true,
+                            boxWidth: 10,
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => {
+                                const first = Array.isArray(items) && items.length ? items[0] : null;
+                                const m = first ? Number(first.label) : NaN;
+                                if (!Number.isFinite(m)) return "";
+                                if (m === 12) return "1 leto";
+                                if (m % 12 === 0 && m > 0) return `${m / 12} leta`;
+                                return `${m} mesecev`;
+                            },
+                            label: (ctx) => {
+                                const v = ctx.parsed.y;
+                                return `${ctx.dataset.label}: ${formatNumberNoDecimals(v)} €`;
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        title: { display: true, text: "Čas (meseci)" },
+                        ticks: {
+                            maxTicksLimit: 8,
+                            callback: (value) => {
+                                const m = Number(value);
+                                if (!Number.isFinite(m)) return value;
+                                if (m === 0) return "0";
+                                if (m === 12) return "1L";
+                                if (m % 12 === 0) return `${m / 12}L`;
+                                return `${m}`;
+                            },
+                        },
+                        grid: { color: "rgba(0,0,0,0.06)" },
+                    },
+                    y: {
+                        title: { display: true, text: "Vrednost (€)" },
+                        grid: { color: "rgba(0,0,0,0.06)" },
+                        ticks: { callback: (value) => formatNumberNoDecimals(value) },
+                    },
+                },
+            },
+        });
+
+        return;
+    }
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -1889,6 +2014,130 @@ function drawInvestmentChart(series, savedSeries) {
 
     const xToPx = (month) => padding.left + (maxX === 0 ? 0 : (month / maxX) * plotW);
     const yToPx = (val) => padding.top + (1 - (val - minY) / (maxY - minY || 1)) * plotH;
+
+    // Tooltip + legend (consistent UX with other calculators)
+    // Attach hover handlers once.
+    if (!canvas.__invHoverBound) {
+        canvas.__invHoverBound = true;
+
+        const ensureTooltip = () => {
+            const parent = canvas.parentElement;
+            if (!parent) return null;
+            if (getComputedStyle(parent).position === "static") parent.style.position = "relative";
+
+            let tip = parent.querySelector("#inv-chart-tooltip");
+            if (!tip) {
+                tip = document.createElement("div");
+                tip.id = "inv-chart-tooltip";
+                tip.style.position = "absolute";
+                tip.style.pointerEvents = "none";
+                tip.style.display = "none";
+                tip.style.zIndex = "20";
+                tip.style.background = "rgba(17, 17, 17, 0.92)";
+                tip.style.color = "#fff";
+                tip.style.padding = "8px 10px";
+                tip.style.borderRadius = "10px";
+                tip.style.fontSize = "12px";
+                tip.style.lineHeight = "1.2";
+                tip.style.maxWidth = "240px";
+                parent.appendChild(tip);
+            }
+            return tip;
+        };
+
+        const formatNumberNoDecimals = (val) => {
+            const n = Number(val);
+            if (!Number.isFinite(n)) return "–";
+            return n.toLocaleString("sl-SI", { maximumFractionDigits: 0, minimumFractionDigits: 0, useGrouping: true });
+        };
+
+        const formatEuro = (val) => `${formatNumberNoDecimals(val)} €`;
+
+        canvas.addEventListener("mouseleave", () => {
+            const parent = canvas.parentElement;
+            const tip = parent ? parent.querySelector("#inv-chart-tooltip") : null;
+            if (tip) tip.style.display = "none";
+        });
+
+        canvas.addEventListener("mousemove", (ev) => {
+            const state = canvas.__invChartState;
+            if (!state) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = ev.clientX - rect.left;
+            const y = ev.clientY - rect.top;
+
+            // Ignore hover outside plot area.
+            if (x < state.padding.left || x > state.padding.left + state.plotW || y < state.padding.top || y > state.padding.top + state.plotH) {
+                const tip = ensureTooltip();
+                if (tip) tip.style.display = "none";
+                return;
+            }
+
+            const rel = (x - state.padding.left) / (state.plotW || 1);
+            const month = Math.max(0, Math.min(state.maxX, Math.round(rel * state.maxX)));
+
+            const currentPoint = state.hasCurrent && Array.isArray(state.series) ? state.series[month] : null;
+            const savedPoint = state.hasSaved && Array.isArray(state.savedSeries) ? state.savedSeries[month] : null;
+
+            if (!currentPoint && !savedPoint) return;
+
+            const tip = ensureTooltip();
+            if (!tip) return;
+
+            const title = month === 12 ? "1 leto" : (month > 0 && month % 12 === 0 ? `${month / 12} leta` : `${month} mesecev`);
+            const lines = [];
+            lines.push(`<div style="font-weight:600; margin-bottom:6px;">${title}</div>`);
+            if (savedPoint) lines.push(`<div><span style="display:inline-block; width:10px; height:10px; border-radius:999px; background:#9ca3af; margin-right:8px;"></span>1. izračun: ${formatEuro(savedPoint.value)}</div>`);
+            if (currentPoint) lines.push(`<div style="margin-top:4px;"><span style="display:inline-block; width:10px; height:10px; border-radius:999px; background:#0B6B3A; margin-right:8px;"></span>2. izračun: ${formatEuro(currentPoint.value)}</div>`);
+            tip.innerHTML = lines.join("");
+
+            const left = Math.min(Math.max(0, x + 14), rect.width - 10);
+            const top = Math.min(Math.max(0, y + 14), rect.height - 10);
+            tip.style.left = `${left}px`;
+            tip.style.top = `${top}px`;
+            tip.style.display = "block";
+        });
+    }
+
+    // Ensure a consistent legend with circular markers.
+    const legendParent = canvas.parentElement ? canvas.parentElement.parentElement : null;
+    if (legendParent) {
+        let legend = legendParent.querySelector("#inv-chart-legend");
+        if (!legend) {
+            legend = document.createElement("div");
+            legend.id = "inv-chart-legend";
+            legend.style.display = "flex";
+            legend.style.flexWrap = "wrap";
+            legend.style.gap = "12px";
+            legend.style.marginTop = "10px";
+            legend.style.justifyContent = "flex-start";
+            legend.style.fontSize = "12px";
+            legend.style.color = "#374151";
+            legendParent.appendChild(legend);
+        }
+
+        const mkItem = (color, text) => {
+            const item = document.createElement("div");
+            item.style.display = "flex";
+            item.style.alignItems = "center";
+            item.style.gap = "8px";
+            const dot = document.createElement("span");
+            dot.style.width = "10px";
+            dot.style.height = "10px";
+            dot.style.borderRadius = "999px";
+            dot.style.background = color;
+            const label = document.createElement("span");
+            label.textContent = text;
+            item.appendChild(dot);
+            item.appendChild(label);
+            return item;
+        };
+
+        legend.innerHTML = "";
+        if (hasSaved) legend.appendChild(mkItem("#9ca3af", "1. izračun (shranjeno)"));
+        if (hasCurrent) legend.appendChild(mkItem("#0B6B3A", "2. izračun (trenutno)"));
+    }
 
     ctx.fillStyle = "#111111";
     ctx.font = "12px Inter, system-ui, sans-serif";
@@ -2031,6 +2280,18 @@ function drawInvestmentChart(series, savedSeries) {
         ctx.fillStyle = "#6b7280";
         ctx.fillText(formatSI(savedSeries[savedSeries.length - 1].value), padding.left + plotW, padding.top + 2);
     }
+
+    // Store render state for hover tooltip.
+    canvas.__invChartState = {
+        hasCurrent,
+        hasSaved,
+        series,
+        savedSeries,
+        maxX,
+        padding,
+        plotW,
+        plotH,
+    };
 }
 
 /* ============================
