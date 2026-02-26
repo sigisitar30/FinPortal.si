@@ -2250,8 +2250,11 @@ function pickDepositOffer(offers, opts) {
                 .filter(n => Number.isFinite(n))
                 .reduce((m, n) => (m === null || n < m ? n : m), null);
 
+            // Convert months->days for matching day ranges.
+            // Use floor() so boundaries match common bank tables where 3M starts at 91 days.
+            // Keep 1M as 31 days minimum (so banks starting at 31D match 1M).
             const targetDaysFromMonths = Number.isFinite(targetTermMonths)
-                ? Math.ceil(Number(targetTermMonths) * 30.4167)
+                ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
                 : NaN;
 
             // Allow months->days fallback only for banks whose day offers cover typical short terms
@@ -2277,10 +2280,24 @@ function pickDepositOffer(offers, opts) {
                     return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
                 });
                 if (byRange) return byRange;
-                valid = daysOffers;
+                // Strict: if the computed day count for selected months is not covered by ANY day-range,
+                // do not pick an approximate offer (e.g. 31-90 days must NOT match 3M ~ 91+ days).
+                return null;
             } else {
                 valid = monthsOffers;
             }
+        } else if (daysOffers.length > 0) {
+            // Only day offers exist, but the user selected months.
+            // Match strictly by converting selected months to target days and checking the day interval.
+            const targetDays = Number.isFinite(targetTermMonths)
+                ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
+                : NaN;
+            const byRange = daysOffers.find(o => {
+                const r = toDaysRange(o);
+                return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
+            });
+            if (byRange) return byRange;
+            return null;
         }
     } else if (targetTermUnit === "days") {
         if (daysOffers.length > 0) {
