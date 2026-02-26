@@ -216,6 +216,37 @@ def _validate_invariants(df, source_file):
                 warns.append(
                     "GBKR: mesečne ročnosti vsebujejo vrednosti < 13M")
 
+    days_mask = df["term_unit"] == "days"
+    if days_mask.any():
+        try:
+            day_rows = df.loc[days_mask].copy()
+            day_rows["min_term"] = pd.to_numeric(
+                day_rows["min_term"], errors="coerce")
+            day_rows["max_term"] = pd.to_numeric(
+                day_rows["max_term"], errors="coerce")
+
+            # If offers exist around 1M/2M (>=31 days) but there is no coverage for day 91,
+            # then 3M=91d mapping cannot be satisfied and should be reviewed.
+            covers_31 = ((day_rows["min_term"] <= 31) & (
+                day_rows["max_term"].fillna(day_rows["min_term"]) >= 31)).any()
+            covers_91 = ((day_rows["min_term"] <= 91) & (
+                day_rows["max_term"].fillna(day_rows["min_term"]) >= 91)).any()
+            if covers_31 and not covers_91:
+                warns.append(
+                    "day ročnosti pokrivajo ~1M (31d), ne pa 3M meje (91d); preveri, ali banka res nima 3M ali je scraper izpustil interval"
+                )
+
+            # If there is a band ending at 90 days but the next band does not start at 91 (or earlier), warn.
+            ends_90 = (day_rows["max_term"].fillna(
+                day_rows["min_term"]) == 90).any()
+            starts_le_91 = (day_rows["min_term"] <= 91).any()
+            if ends_90 and not starts_le_91:
+                warns.append(
+                    "zaznan interval do 90 dni, vendar ni intervala, ki bi se začel pri 91 dni ali prej; preveri prehod 2M->3M"
+                )
+        except Exception:
+            pass
+
     return errs, warns
 
 
@@ -258,6 +289,60 @@ def _diff_metrics(df_now, df_prev, source_file=None):
         warns.append(f"odstranjeni produkti: {min(len(removed), 5)} primerov")
     if added:
         warns.append(f"novi produkti: {min(len(added), 5)} primerov")
+
+    try:
+        now = df_now.copy()
+        prev = df_prev.copy()
+
+        for c in ["rate_branch", "rate_klik_total", "amount_min", "amount_max", "min_term", "max_term"]:
+            if c in now.columns:
+                now[c] = pd.to_numeric(now[c], errors="coerce")
+            if c in prev.columns:
+                prev[c] = pd.to_numeric(prev[c], errors="coerce")
+
+        key_cols_rate = [
+            "product_name",
+            "min_term",
+            "max_term",
+            "term_unit",
+            "amount_min",
+            "amount_max",
+        ]
+        if all(c in now.columns for c in key_cols_rate) and all(c in prev.columns for c in key_cols_rate):
+            now_merge = now[key_cols_rate +
+                            ["rate_branch", "rate_klik_total"]].fillna(-1)
+            prev_merge = prev[key_cols_rate +
+                              ["rate_branch", "rate_klik_total"]].fillna(-1)
+
+            merged = now_merge.merge(
+                prev_merge,
+                on=key_cols_rate,
+                how="inner",
+                suffixes=("_now", "_prev"),
+            )
+
+            if not merged.empty:
+                merged["d_branch"] = (
+                    merged["rate_branch_now"] - merged["rate_branch_prev"]).abs()
+                merged["d_klik"] = (
+                    merged["rate_klik_total_now"] - merged["rate_klik_total_prev"]).abs()
+
+                threshold = 0.05
+                changed = merged[(merged["d_branch"] > threshold)
+                                 | (merged["d_klik"] > threshold)]
+                if len(changed) > 0:
+                    top = changed.sort_values(
+                        ["d_branch", "d_klik"], ascending=False).head(3)
+                    examples = []
+                    for _, r in top.iterrows():
+                        examples.append(
+                            f"{r['product_name']} {r['min_term']}-{r['max_term']}{r['term_unit']} {r['amount_min']}-{r['amount_max']}"
+                        )
+                    warns.append(
+                        f"spremenjene obrestne mere na obstoječih produktih (> {threshold}): {len(changed)} primerov; npr. {', '.join(examples)}"
+                    )
+    except Exception:
+        pass
 
     return warns
 
