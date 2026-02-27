@@ -1119,6 +1119,202 @@ function formatPercentSI(num) {
     return `${n.toFixed(2).replace(".", ",")}%`;
 }
 
+function initMobileMenu() {
+    const header = document.querySelector("header");
+    if (!header) return;
+
+    const bar = header.querySelector("div.max-w-7xl");
+    if (!bar) return;
+
+    const existingBtn = header.querySelector("#fp-mobile-menu-btn");
+    const existingOverlay = header.querySelector("#fp-mobile-menu-overlay");
+    if (existingBtn || existingOverlay) return;
+
+    const currentFile = String(window.location.pathname ?? "").split("/").pop() || "";
+    const isIndex = currentFile === "" || currentFile === "index.html";
+    const home = isIndex ? "#home" : "index.html#home";
+    const kalkulatorji = isIndex ? "#kalkulatorji" : "index.html#kalkulatorji";
+    const onas = isIndex ? "#onas" : "index.html#onas";
+    const kontakt = isIndex ? "#kontakt" : "index.html#kontakt";
+
+    const links = [
+        { href: home, text: "Domov" },
+        { href: kalkulatorji, text: "Kalkulatorji" },
+        { href: "primerjava-depozitov.html", text: "Primerjava depozitov" },
+        { href: onas, text: "O nas" },
+        { href: kontakt, text: "Kontakt" },
+    ];
+
+    const btn = document.createElement("button");
+    btn.id = "fp-mobile-menu-btn";
+    btn.type = "button";
+    btn.setAttribute("aria-label", "Odpri meni");
+    btn.setAttribute("aria-expanded", "false");
+    btn.style.display = "inline-flex";
+    btn.style.alignItems = "center";
+    btn.style.justifyContent = "center";
+    btn.style.width = "44px";
+    btn.style.height = "44px";
+    btn.style.border = "1px solid rgba(229,231,235,1)";
+    btn.style.borderRadius = "12px";
+    btn.style.background = "rgba(255,255,255,0.85)";
+    btn.style.backdropFilter = "blur(6px)";
+    btn.style.cursor = "pointer";
+    btn.style.marginLeft = "12px";
+    btn.style.boxShadow = "0 1px 2px rgba(0,0,0,0.05)";
+    btn.innerHTML = `
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M4 7h16" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 12h16" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 17h16" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    `;
+
+    const overlay = document.createElement("div");
+    overlay.id = "fp-mobile-menu-overlay";
+    overlay.setAttribute("aria-hidden", "true");
+    overlay.style.position = "fixed";
+    overlay.style.inset = "0";
+    overlay.style.zIndex = "9999";
+    overlay.style.background = "rgba(17,24,39,0.45)";
+    overlay.style.display = "none";
+    overlay.style.padding = "18px";
+
+    const panel = document.createElement("div");
+    panel.style.maxWidth = "520px";
+    panel.style.width = "100%";
+    panel.style.margin = "64px auto 0";
+    panel.style.background = "#ffffff";
+    panel.style.borderRadius = "18px";
+    panel.style.border = "1px solid rgba(229,231,235,1)";
+    panel.style.boxShadow = "0 12px 40px rgba(0,0,0,0.18)";
+    panel.style.overflow = "hidden";
+
+    const panelHeader = document.createElement("div");
+    panelHeader.style.display = "flex";
+    panelHeader.style.alignItems = "center";
+    panelHeader.style.justifyContent = "space-between";
+    panelHeader.style.padding = "14px 16px";
+    panelHeader.style.borderBottom = "1px solid rgba(229,231,235,1)";
+
+    const panelTitle = document.createElement("div");
+    panelTitle.textContent = "Meni";
+    panelTitle.style.fontWeight = "800";
+    panelTitle.style.fontSize = "16px";
+    panelTitle.style.color = "#111827";
+
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.setAttribute("aria-label", "Zapri meni");
+    closeBtn.style.width = "40px";
+    closeBtn.style.height = "40px";
+    closeBtn.style.borderRadius = "12px";
+    closeBtn.style.border = "1px solid rgba(229,231,235,1)";
+    closeBtn.style.background = "#ffffff";
+    closeBtn.style.cursor = "pointer";
+    closeBtn.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M6 6l12 12" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 6L6 18" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+    `;
+
+    panelHeader.appendChild(panelTitle);
+    panelHeader.appendChild(closeBtn);
+
+    const list = document.createElement("div");
+    list.style.display = "flex";
+    list.style.flexDirection = "column";
+    list.style.padding = "10px";
+    list.style.gap = "8px";
+
+    links.forEach((l) => {
+        const a = document.createElement("a");
+        a.href = l.href;
+        a.textContent = l.text;
+        a.style.display = "block";
+        a.style.padding = "12px 12px";
+        a.style.borderRadius = "14px";
+        a.style.border = "1px solid rgba(229,231,235,1)";
+        a.style.color = "#111827";
+        a.style.textDecoration = "none";
+        a.style.fontWeight = "700";
+        a.style.fontSize = "14px";
+        a.addEventListener("click", () => {
+            close();
+        });
+        list.appendChild(a);
+    });
+
+    const ctaWrap = document.createElement("div");
+    ctaWrap.style.padding = "0 10px 12px";
+
+    const cta = document.createElement("a");
+    cta.href = "primerjava-depozitov.html";
+    cta.textContent = "Začni primerjavo";
+    cta.style.display = "block";
+    cta.style.textAlign = "center";
+    cta.style.padding = "12px 14px";
+    cta.style.borderRadius = "14px";
+    cta.style.background = "#0B6B3A";
+    cta.style.color = "#ffffff";
+    cta.style.fontWeight = "800";
+    cta.style.textDecoration = "none";
+    cta.addEventListener("click", () => close());
+
+    ctaWrap.appendChild(cta);
+
+    panel.appendChild(panelHeader);
+    panel.appendChild(list);
+    panel.appendChild(ctaWrap);
+    overlay.appendChild(panel);
+
+    const mq = window.matchMedia("(min-width: 768px)");
+    const applyVisibility = () => {
+        btn.style.display = mq.matches ? "none" : "inline-flex";
+        if (mq.matches) close();
+    };
+
+    const open = () => {
+        overlay.style.display = "block";
+        overlay.setAttribute("aria-hidden", "false");
+        btn.setAttribute("aria-expanded", "true");
+        document.body.style.overflow = "hidden";
+    };
+
+    const close = () => {
+        overlay.style.display = "none";
+        overlay.setAttribute("aria-hidden", "true");
+        btn.setAttribute("aria-expanded", "false");
+        document.body.style.overflow = "";
+    };
+
+    btn.addEventListener("click", () => {
+        if (overlay.style.display === "block") close();
+        else open();
+    });
+
+    closeBtn.addEventListener("click", close);
+
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) close();
+    });
+
+    document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") close();
+    });
+
+    if (typeof mq.addEventListener === "function") {
+        mq.addEventListener("change", applyVisibility);
+    } else {
+        mq.addListener(applyVisibility);
+    }
+
+    bar.appendChild(btn);
+    header.appendChild(overlay);
+    applyVisibility();
+}
+
 /* ============================
    TAB SWITCHING
 ============================ */
@@ -2311,6 +2507,8 @@ function initNumberFormatting() {
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
+
+    initMobileMenu();
 
     // Initialize tabs
     initTabs();
