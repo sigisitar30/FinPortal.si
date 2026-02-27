@@ -157,6 +157,8 @@
                         aria-label="Prikaži prvo HERO sliko"></button>
                     <button type="button" id="hero-dot-1" class="h-2.5 w-2.5 rounded-full transition-colors"
                         aria-label="Prikaži drugo HERO sliko"></button>
+                    <button type="button" id="hero-dot-2" class="h-2.5 w-2.5 rounded-full transition-colors"
+                        aria-label="Prikaži tretjo HERO sliko"></button>
                 </div>
             </div>
 
@@ -557,7 +559,7 @@
     </section>
 
     <!-- PRIMERJAVA DEPOZITOV -->
-    <section id="primerjava-depozitov" class="py-20 bg-gray-100">
+    <section id="primerjava-depozitov" class="scroll-mt-32 py-20 bg-gray-100">
         <div class="max-w-7xl mx-auto px-6">
 
             <div class="lg:flex lg:gap-10">
@@ -572,7 +574,7 @@
                 </aside>
 
                 <div class="flex-1 relative z-10">
-                    <h2 id="primerjava-depozitov" class="scroll-mt-32 text-3xl font-bold text-center mb-12">Primerjava
+                    <h2 class="text-3xl font-bold text-center mb-12">Primerjava
                         vezanih depozitov</h2>
 
                     <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
@@ -910,9 +912,12 @@
         (function () {
             var linkEl = document.getElementById("hero-image-link");
             var imgEl = document.getElementById("hero-image");
-            var dot0 = document.getElementById("hero-dot-0");
-            var dot1 = document.getElementById("hero-dot-1");
-            if (!linkEl || !imgEl || !dot0 || !dot1) return;
+            var dots = [
+                document.getElementById("hero-dot-0"),
+                document.getElementById("hero-dot-1"),
+                document.getElementById("hero-dot-2")
+            ];
+            if (!linkEl || !imgEl || dots.some(function (d) { return !d; })) return;
 
             var states = [
                 {
@@ -924,6 +929,11 @@
                     src: "images/HERO/jeshoots-com-fzOITuS1DIQ-unsplash.jpg",
                     alt: "FinPortal.si – kalkulatorji",
                     href: "#kalkulatorji"
+                },
+                {
+                    src: "images/HERO/sasun-bughdaryan-gUpMwDt4ymM-unsplash.jpg",
+                    alt: "FinPortal.si – depozitna ponudba bank",
+                    href: "#primerjava-depozitov"
                 }
             ];
 
@@ -934,8 +944,9 @@
             function setActiveDot(idx) {
                 var activeColor = "#0B6B3A";
                 var inactiveColor = "#D1D5DB";
-                dot0.style.backgroundColor = idx === 0 ? activeColor : inactiveColor;
-                dot1.style.backgroundColor = idx === 1 ? activeColor : inactiveColor;
+                for (var i = 0; i < dots.length; i++) {
+                    dots[i].style.backgroundColor = i === idx ? activeColor : inactiveColor;
+                }
             }
 
             function startInterval() {
@@ -973,13 +984,11 @@
 
             setActiveDot(current);
             applyState(states[current]);
-            dot0.addEventListener("click", function () {
-                applyStateByIndex(0);
-                startInterval();
-            });
-            dot1.addEventListener("click", function () {
-                applyStateByIndex(1);
-                startInterval();
+            dots.forEach(function (dotEl, idx) {
+                dotEl.addEventListener("click", function () {
+                    applyStateByIndex(idx);
+                    startInterval();
+                });
             });
 
             startInterval();
