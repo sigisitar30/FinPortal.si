@@ -17,6 +17,483 @@ function formatSI(num) {
     return parts.join(',') + " €";
 }
 
+function getShareConfig() {
+    const file = String(window.location.pathname ?? "").split("/").pop() || "";
+
+    const cfgs = {
+        "investicijski-kalkulator.html": {
+            fields: ["inv-initial", "inv-monthly", "inv-years", "inv-return"],
+            calcButtonId: "inv-calc-btn",
+            primaryMetricId: "inv-earn",
+            primaryMetricLabel: "Dobiček",
+            chartCanvasId: "inv-chart",
+            title: "Investicijski izračun"
+        },
+        "kreditni-kalkulator.html": {
+            fields: [
+                "loan-amount",
+                "loan-years",
+                "loan-rate-type",
+                "loan-rate",
+                "loan-euribor-tenor",
+                "loan-margin",
+                "loan-moratorium",
+                "loan-intercalary-days",
+                "loan-purpose",
+                "loan-bank"
+            ],
+            calcButtonId: "loan-calc-btn",
+            primaryMetricId: "loan-monthly",
+            primaryMetricLabel: "Mesečni obrok",
+            chartCanvasId: "loan-amortization-chart",
+            title: "Kreditni izračun"
+        },
+        "depozitni-kalkulator.html": {
+            fields: ["interest-amount", "bank-select", "interest-months"],
+            calcButtonId: "interest-calc-btn",
+            primaryMetricId: "interest-total",
+            primaryMetricLabel: "Končni znesek (neto)",
+            title: "Depozitni izračun"
+        },
+        "izgubljene-obresti.html": {
+            fields: [
+                "lost-amount",
+                "lost-time",
+                "lost-unit",
+                "lost-benchmark",
+                "lost-rate",
+                "lost-etf-return",
+                "lost-etf-fee"
+            ],
+            calcButtonId: "lost-calc-btn",
+            primaryMetricId: "lost-interest",
+            primaryMetricLabel: "Zamujene obresti",
+            chartCanvasId: "lost-compare-chart",
+            title: "Izgubljene obresti"
+        },
+        "kreditna-sposobnost.html": {
+            fields: [
+                "cs-income",
+                "cs-adults",
+                "cs-children",
+                "cs-expenses",
+                "cs-loans",
+                "cs-rate",
+                "cs-dsti",
+                "cs-min-adult",
+                "cs-min-child",
+                "cs-safety"
+            ],
+            calcButtonId: "cs-calc-btn",
+            primaryMetricId: "cs-max-loan",
+            primaryMetricLabel: "Ocena zneska kredita",
+            title: "Kreditna sposobnost"
+        },
+        "eom-kalkulator.html": {
+            fields: [
+                "eom-amount",
+                "eom-months",
+                "eom-nominal-rate",
+                "eom-upfront-percent",
+                "eom-upfront-eur",
+                "eom-monthly-fee"
+            ],
+            calcButtonId: "eom-calc-btn",
+            primaryMetricId: "eom-apr",
+            primaryMetricLabel: "EOM (letno)",
+            title: "EOM izračun"
+        },
+        "menjalniski-kalkulator.html": {
+            fields: [
+                "fx-amount",
+                "fx-from",
+                "fx-to",
+                "fx-spread",
+                "fx-fee",
+                "fx-manual-toggle",
+                "fx-manual-rate"
+            ],
+            calcButtonId: "fx-calc-btn",
+            primaryMetricId: "fx-result",
+            primaryMetricLabel: "Prejmeš",
+            title: "Menjalniški izračun"
+        },
+        "primerjava-depozitov.html": {
+            fields: ["deposit-compare-amount", "deposit-compare-term", "deposit-compare-unit", "deposit-compare-special"],
+            onApply: () => {
+                if (typeof renderDepositTable === "function") renderDepositTable();
+            },
+            primaryMetricId: null,
+            title: "Primerjava depozitov"
+        }
+    };
+
+    return cfgs[file] ?? null;
+}
+
+function buildShareUrl(cfg) {
+    const url = new URL(window.location.href);
+    url.searchParams.set("fp_share", "1");
+
+    (cfg.fields || []).forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        if (el.type === "checkbox") {
+            url.searchParams.set(id, el.checked ? "1" : "0");
+            return;
+        }
+
+        const v = String(el.value ?? "").trim();
+        if (v === "") {
+            url.searchParams.delete(id);
+            return;
+        }
+        url.searchParams.set(id, v);
+    });
+
+    return url.toString();
+}
+
+function applyShareParams(cfg) {
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has("fp_share")) return false;
+
+    let changed = false;
+    (cfg.fields || []).forEach((id) => {
+        if (!url.searchParams.has(id)) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        const raw = url.searchParams.get(id);
+        if (el.type === "checkbox") {
+            const next = raw === "1" || raw === "true";
+            if (el.checked !== next) {
+                el.checked = next;
+                changed = true;
+            }
+            return;
+        }
+
+        if (String(el.value ?? "") !== raw) {
+            el.value = raw;
+            changed = true;
+        }
+    });
+
+    return changed;
+}
+
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function pressAnimate(el) {
+    if (!el) return;
+    try {
+        if (typeof el.animate === "function") {
+            el.animate(
+                [
+                    { transform: "scale(1)" },
+                    { transform: "scale(0.98)" },
+                    { transform: "scale(1)" },
+                ],
+                { duration: 140, easing: "ease-out" }
+            );
+            return;
+        }
+    } catch {
+        // ignore
+    }
+
+    const prevTransition = el.style.transition;
+    const prevTransform = el.style.transform;
+    el.style.transition = "transform 140ms ease-out";
+    el.style.transform = "scale(0.98)";
+    setTimeout(() => {
+        el.style.transform = "scale(1)";
+        setTimeout(() => {
+            el.style.transition = prevTransition;
+            el.style.transform = prevTransform;
+        }, 160);
+    }, 60);
+}
+
+async function withTempButtonText(btn, nextText, fn, opts = {}) {
+    if (!btn) return fn();
+
+    const {
+        successText = null,
+        errorText = null,
+        revertAfterMs = 1400,
+        setBusy = false,
+    } = opts;
+
+    const prevText = btn.textContent;
+    const prevDisabled = btn.disabled;
+    const prevOpacity = btn.style.opacity;
+    const prevCursor = btn.style.cursor;
+
+    const setBusyUi = (busy) => {
+        if (!setBusy) return;
+        btn.disabled = busy ? true : prevDisabled;
+        btn.style.opacity = busy ? "0.75" : prevOpacity;
+        btn.style.cursor = busy ? "progress" : prevCursor;
+    };
+
+    try {
+        pressAnimate(btn);
+        if (nextText != null) btn.textContent = nextText;
+        setBusyUi(true);
+
+        const res = await fn();
+
+        if (successText != null) btn.textContent = successText;
+        if (successText != null) {
+            setTimeout(() => {
+                btn.textContent = prevText;
+            }, revertAfterMs);
+        }
+        return res;
+    } catch (e) {
+        if (errorText != null) btn.textContent = errorText;
+        if (errorText != null) {
+            setTimeout(() => {
+                btn.textContent = prevText;
+            }, revertAfterMs);
+        }
+        throw e;
+    } finally {
+        setBusyUi(false);
+        if (successText == null && errorText == null && nextText != null) {
+            setTimeout(() => {
+                btn.textContent = prevText;
+            }, revertAfterMs);
+        }
+    }
+}
+
+function getPrimaryMetricText(cfg) {
+    if (!cfg.primaryMetricId) return null;
+    const el = document.getElementById(cfg.primaryMetricId);
+    if (!el) return null;
+    const t = String(el.textContent ?? "").trim();
+    if (!t || t === "–" || t === "-") return null;
+    return t;
+}
+
+function drawRoundedRect(ctx, x, y, w, h, r) {
+    const radius = Math.max(0, Math.min(r, w / 2, h / 2));
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.arcTo(x + w, y, x + w, y + h, radius);
+    ctx.arcTo(x + w, y + h, x, y + h, radius);
+    ctx.arcTo(x, y + h, x, y, radius);
+    ctx.arcTo(x, y, x + w, y, radius);
+    ctx.closePath();
+}
+
+async function buildShareImageDataUrl(cfg) {
+    const W = 1200;
+    const H = 630;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+
+    const pad = 64;
+
+    const logo = new Image();
+    logo.decoding = "async";
+    logo.src = "images/scit8.png";
+
+    const title = cfg.title || "Izračun";
+    const metricLabel = cfg.primaryMetricLabel || "Rezultat";
+    const metricValue = getPrimaryMetricText(cfg) || "";
+
+    ctx.fillStyle = "#0B6B3A";
+    ctx.font = "700 44px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText(title, pad, 120);
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "600 30px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText(metricLabel, pad, 190);
+
+    ctx.fillStyle = "#0B6B3A";
+    ctx.font = "800 64px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText(metricValue || "–", pad, 270);
+
+    const chartId = cfg.chartCanvasId;
+    if (chartId) {
+        const chartCanvas = document.getElementById(chartId);
+        if (chartCanvas && typeof chartCanvas.toDataURL === "function") {
+            const chartImg = new Image();
+            chartImg.decoding = "async";
+            chartImg.src = chartCanvas.toDataURL("image/png");
+            await new Promise((resolve) => {
+                chartImg.onload = () => resolve(true);
+                chartImg.onerror = () => resolve(false);
+            });
+
+            const chartW = 520;
+            const chartH = 300;
+            const chartX = W - pad - chartW;
+            const chartY = 150;
+
+            ctx.fillStyle = "#f9fafb";
+            ctx.strokeStyle = "#e5e7eb";
+            ctx.lineWidth = 2;
+            drawRoundedRect(ctx, chartX, chartY, chartW, chartH, 24);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.drawImage(chartImg, chartX + 16, chartY + 16, chartW - 32, chartH - 32);
+        }
+    }
+
+    await new Promise((resolve) => {
+        logo.onload = () => resolve(true);
+        logo.onerror = () => resolve(false);
+    });
+
+    ctx.drawImage(logo, pad, H - 120, 72, 72);
+    ctx.fillStyle = "#111827";
+    ctx.font = "700 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad + 90, H - 72);
+
+    ctx.fillStyle = "#374151";
+    ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("Izračunaj tudi ti na finportal.si", pad, H - 28);
+
+    return canvas.toDataURL("image/png");
+}
+
+async function downloadDataUrl(filename, dataUrl) {
+    const a = document.createElement("a");
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+}
+
+function initShareUi() {
+    const cfg = getShareConfig();
+    if (!cfg) return;
+
+    const applied = applyShareParams(cfg);
+
+    const applyAndCalc = () => {
+        if (typeof cfg.onApply === "function") {
+            cfg.onApply();
+            return;
+        }
+
+        const btn = cfg.calcButtonId ? document.getElementById(cfg.calcButtonId) : null;
+        if (btn) {
+            btn.click();
+            return;
+        }
+    };
+
+    if (applied) {
+        setTimeout(applyAndCalc, 0);
+    }
+
+    const shareX = document.getElementById("fp-share-x");
+    const shareFb = document.getElementById("fp-share-fb");
+    const shareCopy = document.getElementById("fp-share-copy");
+    const shareImg = document.getElementById("fp-share-img");
+
+    const getShareText = () => {
+        const metric = getPrimaryMetricText(cfg);
+        if (metric) return `Moj izračun na FinPortal.si: ${cfg.primaryMetricLabel || "Rezultat"} ${metric}`;
+        return `Moj izračun na FinPortal.si`;
+    };
+
+    const openPopup = (url) => {
+        window.open(url, "_blank", "noopener,noreferrer");
+    };
+
+    if (shareX) {
+        shareX.addEventListener("click", () => {
+            pressAnimate(shareX);
+            const shareUrl = buildShareUrl(cfg);
+            const intent = new URL("https://twitter.com/intent/tweet");
+            intent.searchParams.set("text", getShareText());
+            intent.searchParams.set("url", shareUrl);
+            openPopup(intent.toString());
+        });
+    }
+
+    if (shareFb) {
+        shareFb.addEventListener("click", () => {
+            pressAnimate(shareFb);
+            const shareUrl = buildShareUrl(cfg);
+            const intent = new URL("https://www.facebook.com/sharer/sharer.php");
+            intent.searchParams.set("u", shareUrl);
+            openPopup(intent.toString());
+        });
+    }
+
+    if (shareCopy) {
+        shareCopy.addEventListener("click", async () => {
+            const shareUrl = buildShareUrl(cfg);
+            await withTempButtonText(
+                shareCopy,
+                null,
+                async () => {
+                    const ok = await copyToClipboard(shareUrl);
+                    if (!ok) {
+                        await withTempButtonText(shareCopy, null, async () => { }, {
+                            errorText: "Ni uspelo",
+                            revertAfterMs: 1600,
+                        });
+                    }
+                    return ok;
+                },
+                {
+                    successText: "Kopirano!",
+                    revertAfterMs: 1400,
+                }
+            );
+        });
+    }
+
+    if (shareImg) {
+        shareImg.addEventListener("click", async () => {
+            const shareUrl = buildShareUrl(cfg);
+            await withTempButtonText(
+                shareImg,
+                "Pripravljam...",
+                async () => {
+                    const dataUrl = await buildShareImageDataUrl(cfg);
+                    if (!dataUrl) return false;
+                    const file = (cfg.title || "izracun").toLowerCase().replace(/\s+/g, "-");
+                    await downloadDataUrl(`${file}.png`, dataUrl);
+                    await copyToClipboard(shareUrl);
+                    return true;
+                },
+                {
+                    successText: "Preneseno!",
+                    revertAfterMs: 1400,
+                    setBusy: true,
+                }
+            );
+        });
+    }
+}
+
 function syncDepositCompareTermBounds() {
     const termInput = document.getElementById("deposit-compare-term");
     const unitSelect = document.getElementById("deposit-compare-unit");
@@ -1494,6 +1971,8 @@ document.addEventListener('DOMContentLoaded', function () {
     normalizeRateInput("lost-etf-return");
     normalizeRateInput("lost-etf-fee");
     normalizeRateInput("fx-spread");
+
+    initShareUi();
 
     const csRateEl = document.getElementById("cs-rate");
     if (csRateEl) {
