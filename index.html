@@ -120,7 +120,7 @@
 
     <!-- HERO -->
     <section id="home" class="scroll-mt-32 pt-24 pb-16 bg-gradient-to-b from-white to-gray-50">
-        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+        <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-[1fr_1.15fr] gap-12 items-center">
 
             <div>
                 <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">
@@ -147,10 +147,17 @@
             </div>
 
             <div class="hidden md:block">
-                <a href="kreditni-kalkulator.html" class="category-link">
-                    <img src="images/Website.webp" alt="icon-loan" class="w-3/4 mx-auto opacity-90"
-                        style="width: 500px; height: auto;" loading="lazy">
+                <a id="hero-image-link" href="#kontakt" class="category-link block relative">
+                    <img id="hero-image" src="images/HERO1.webp" alt="FinPortal.si – spletna stran v izdelavi"
+                        loading="lazy"
+                        class="w-full max-w-none mx-auto opacity-95 rounded-3xl shadow-2xl border border-gray-200/70 transition-opacity duration-500" />
                 </a>
+                <div class="mt-4 flex items-center justify-center gap-2" aria-label="Hero navigacija">
+                    <button type="button" id="hero-dot-0" class="h-2.5 w-2.5 rounded-full transition-colors"
+                        aria-label="Prikaži prvo HERO sliko"></button>
+                    <button type="button" id="hero-dot-1" class="h-2.5 w-2.5 rounded-full transition-colors"
+                        aria-label="Prikaži drugo HERO sliko"></button>
+                </div>
             </div>
 
         </div>
@@ -898,6 +905,86 @@
 
     <!-- JavaScript -->
     <script src="script.js?v=2026-02-20" type="text/javascript"></script>
+
+    <script type="text/javascript">
+        (function () {
+            var linkEl = document.getElementById("hero-image-link");
+            var imgEl = document.getElementById("hero-image");
+            var dot0 = document.getElementById("hero-dot-0");
+            var dot1 = document.getElementById("hero-dot-1");
+            if (!linkEl || !imgEl || !dot0 || !dot1) return;
+
+            var states = [
+                {
+                    src: "images/HERO1.webp",
+                    alt: "FinPortal.si – spletna stran v izdelavi",
+                    href: "#kontakt"
+                },
+                {
+                    src: "images/HERO/jeshoots-com-fzOITuS1DIQ-unsplash.jpg",
+                    alt: "FinPortal.si – kalkulatorji",
+                    href: "#kalkulatorji"
+                }
+            ];
+
+            var current = 0;
+            var intervalMs = 15000;
+            var intervalId = null;
+
+            function setActiveDot(idx) {
+                var activeColor = "#0B6B3A";
+                var inactiveColor = "#D1D5DB";
+                dot0.style.backgroundColor = idx === 0 ? activeColor : inactiveColor;
+                dot1.style.backgroundColor = idx === 1 ? activeColor : inactiveColor;
+            }
+
+            function startInterval() {
+                if (intervalId) clearInterval(intervalId);
+                intervalId = setInterval(function () {
+                    applyStateByIndex((current + 1) % states.length);
+                }, intervalMs);
+            }
+
+            function applyState(state) {
+                linkEl.setAttribute("href", state.href);
+
+                imgEl.style.opacity = "0";
+
+                var done = false;
+                function onLoad() {
+                    if (done) return;
+                    done = true;
+                    imgEl.removeEventListener("load", onLoad);
+                    requestAnimationFrame(function () { imgEl.style.opacity = "0.95"; });
+                }
+
+                imgEl.addEventListener("load", onLoad);
+                imgEl.setAttribute("alt", state.alt);
+                imgEl.setAttribute("src", state.src);
+
+                setTimeout(onLoad, 800);
+            }
+
+            function applyStateByIndex(idx) {
+                current = idx;
+                setActiveDot(current);
+                applyState(states[current]);
+            }
+
+            setActiveDot(current);
+            applyState(states[current]);
+            dot0.addEventListener("click", function () {
+                applyStateByIndex(0);
+                startInterval();
+            });
+            dot1.addEventListener("click", function () {
+                applyStateByIndex(1);
+                startInterval();
+            });
+
+            startInterval();
+        })();
+    </script>
 
 </body>
 
