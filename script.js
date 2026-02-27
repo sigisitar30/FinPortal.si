@@ -17,6 +17,19 @@ function formatSI(num) {
     return parts.join(',') + " €";
 }
 
+let fpLogoImgPromise = null;
+async function loadFpLogoImg() {
+    if (fpLogoImgPromise) return fpLogoImgPromise;
+    fpLogoImgPromise = new Promise((resolve) => {
+        const img = new Image();
+        img.decoding = "async";
+        img.src = "images/scit8.png";
+        img.onload = () => resolve(img);
+        img.onerror = () => resolve(null);
+    });
+    return fpLogoImgPromise;
+}
+
 function getShareConfig() {
     const file = String(window.location.pathname ?? "").split("/").pop() || "";
 
@@ -500,18 +513,12 @@ async function buildShareTableImageDataUrl(cfg) {
 
     ctx.restore();
 
-    const logo = new Image();
-    logo.decoding = "async";
-    logo.src = "images/scit8.png";
-    await new Promise((resolve) => {
-        logo.onload = () => resolve(true);
-        logo.onerror = () => resolve(false);
-    });
-
-    ctx.drawImage(logo, pad, H - 120, 72, 72);
+    const logo = await loadFpLogoImg();
+    const brandLogoY = H - 140;
+    if (logo) ctx.drawImage(logo, pad, brandLogoY, 72, 72);
     ctx.fillStyle = "#111827";
-    ctx.font = "700 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("FinPortal.si", pad + 90, H - 72);
+    ctx.font = "800 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad, brandLogoY + 104);
 
     ctx.fillStyle = "#374151";
     ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
@@ -540,9 +547,7 @@ async function buildShareImageDataUrl(cfg) {
 
     const pad = 64;
 
-    const logo = new Image();
-    logo.decoding = "async";
-    logo.src = "images/scit8.png";
+    const logo = await loadFpLogoImg();
 
     const title = cfg.title || "Izračun";
     const metricLabel = cfg.primaryMetricLabel || "Rezultat";
@@ -563,15 +568,7 @@ async function buildShareImageDataUrl(cfg) {
     const chartId = cfg.chartCanvasId;
     if (chartId) {
         const chartCanvas = document.getElementById(chartId);
-        if (chartCanvas && typeof chartCanvas.toDataURL === "function") {
-            const chartImg = new Image();
-            chartImg.decoding = "async";
-            chartImg.src = chartCanvas.toDataURL("image/png");
-            await new Promise((resolve) => {
-                chartImg.onload = () => resolve(true);
-                chartImg.onerror = () => resolve(false);
-            });
-
+        if (chartCanvas && typeof chartCanvas.getContext === "function") {
             const chartW = 520;
             const chartH = 300;
             const chartX = W - pad - chartW;
@@ -584,19 +581,19 @@ async function buildShareImageDataUrl(cfg) {
             ctx.fill();
             ctx.stroke();
 
-            ctx.drawImage(chartImg, chartX + 16, chartY + 16, chartW - 32, chartH - 32);
+            try {
+                ctx.drawImage(chartCanvas, chartX + 16, chartY + 16, chartW - 32, chartH - 32);
+            } catch {
+                // ignore
+            }
         }
     }
 
-    await new Promise((resolve) => {
-        logo.onload = () => resolve(true);
-        logo.onerror = () => resolve(false);
-    });
-
-    ctx.drawImage(logo, pad, H - 120, 72, 72);
+    const brandLogoY = H - 140;
+    if (logo) ctx.drawImage(logo, pad, brandLogoY, 72, 72);
     ctx.fillStyle = "#111827";
-    ctx.font = "700 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("FinPortal.si", pad + 90, H - 72);
+    ctx.font = "800 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad, brandLogoY + 104);
 
     ctx.fillStyle = "#374151";
     ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
