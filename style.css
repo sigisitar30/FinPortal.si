@@ -102,6 +102,27 @@ ul.container li::before {
     box-shadow: 0 0 12px var(--highlight-glow);
 }
 
+/* Share gumbi – zlati glow (univerzalno) */
+:is(#fp-share-x, #fp-share-fb, #fp-share-copy, #fp-share-img) {
+    will-change: transform;
+}
+
+:is(#fp-share-x, #fp-share-fb, #fp-share-copy, #fp-share-img):hover,
+:is(#fp-share-x, #fp-share-fb, #fp-share-copy, #fp-share-img):focus-visible {
+    box-shadow:
+        0 0 0 2px var(--highlight-glow-soft),
+        0 0 10px var(--highlight-glow-soft),
+        0 0 18px var(--highlight-glow);
+    transform: translateY(-1px) scale(1.01);
+    transition: box-shadow 0.22s ease, transform 0.22s ease;
+    outline: none;
+}
+
+:is(#fp-share-x, #fp-share-fb, #fp-share-copy, #fp-share-img):active {
+    box-shadow: 0 0 12px var(--highlight-glow);
+    transform: translateY(0) scale(0.99);
+}
+
 /* Active tab - zeleno ozadje, brez glow */
 .calc-tab.active,
 .calc-tab.active:hover,

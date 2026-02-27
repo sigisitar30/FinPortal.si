@@ -124,7 +124,8 @@ function getShareConfig() {
                 if (typeof renderDepositTable === "function") renderDepositTable();
             },
             primaryMetricId: null,
-            title: "Primerjava depozitov"
+            title: "Primerjava depozitov",
+            tableContainerId: "deposit-table-container"
         }
     };
 
@@ -298,7 +299,233 @@ function drawRoundedRect(ctx, x, y, w, h, r) {
     ctx.closePath();
 }
 
+function getDepositCompareCaption() {
+    const amountEl = document.getElementById("deposit-compare-amount");
+    const termEl = document.getElementById("deposit-compare-term");
+    const unitEl = document.getElementById("deposit-compare-unit");
+    const specialEl = document.getElementById("deposit-compare-special");
+
+    const amount = amountEl ? String(amountEl.value ?? "").trim() : "";
+    const term = termEl ? String(termEl.value ?? "").trim() : "";
+    const unit = unitEl ? String(unitEl.value ?? "months") : "months";
+    const special = !!specialEl?.checked;
+
+    const termLabel = term
+        ? (unit === "days" ? `${term} dni` : `${term} mesecev`)
+        : "";
+
+    const left = amount ? `Znesek: ${amount} €` : "";
+    const mid = termLabel ? `Doba: ${termLabel}` : "";
+    const right = special ? "Akcijske: DA" : "Akcijske: NE";
+
+    return [left, mid, right].filter(Boolean).join("  •  ");
+}
+
+async function buildShareTableImageDataUrl(cfg) {
+    const containerId = cfg.tableContainerId;
+    if (!containerId) return null;
+
+    const container = document.getElementById(containerId);
+    const table = container ? container.querySelector("table") : null;
+    if (!table) return null;
+
+    const getCleanCellText = (cell) => {
+        if (!cell) return "";
+        const clone = cell.cloneNode(true);
+        if (clone && typeof clone.querySelectorAll === "function") {
+            clone
+                .querySelectorAll(".fp-help, .fp-help__icon, .fp-help__tooltip")
+                .forEach((n) => n.remove());
+        }
+        return String(clone.textContent ?? "").replace(/\s+/g, " ").trim();
+    };
+
+    const rows = Array.from(table.querySelectorAll("tr")).map((tr) => {
+        const cells = Array.from(tr.querySelectorAll("th,td")).map((cell) => getCleanCellText(cell));
+        return cells;
+    }).filter((r) => r.length);
+
+    if (!rows.length) return null;
+
+    const header = rows[0];
+    const body = rows.slice(1);
+
+    const W = 1200;
+    const pad = 56;
+    const titleH = 70;
+    const captionH = 34;
+    const topPad = 44;
+    const headerRowH = 52;
+    const rowH = 46;
+    const footerH = 120;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+
+    const colCount = header.length;
+    const colPadX = 16;
+
+    const fitText = (text, maxW) => {
+        const t = String(text ?? "");
+        if (!t) return "";
+        if (ctx.measureText(t).width <= maxW) return t;
+        const ell = "…";
+        if (ctx.measureText(ell).width > maxW) return "";
+        let lo = 0;
+        let hi = t.length;
+        while (lo < hi) {
+            const mid = Math.ceil((lo + hi) / 2);
+            const cand = t.slice(0, mid) + ell;
+            if (ctx.measureText(cand).width <= maxW) lo = mid;
+            else hi = mid - 1;
+        }
+        return t.slice(0, lo) + ell;
+    };
+
+    const isNumericLike = (text) => {
+        const s = String(text ?? "").trim();
+        if (!s) return false;
+        if (/%|€/.test(s)) return true;
+        // digits with optional thousands/decimals (SI format)
+        return /^-?[0-9.]+(,[0-9]+)?$/.test(s);
+    };
+
+    ctx.font = "600 20px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    const colWidths = new Array(colCount).fill(0).map((_, i) => {
+        const maxW = Math.max(
+            ...[header[i], ...body.map((r) => r[i] ?? "")].map((t) => ctx.measureText(String(t ?? "")).width)
+        );
+        return Math.ceil(maxW + colPadX * 2);
+    });
+
+    const maxTableW = W - pad * 2;
+    const sumW = colWidths.reduce((a, b) => a + b, 0);
+    const scale = sumW > maxTableW ? (maxTableW / sumW) : 1;
+    const scaledColWidths = colWidths.map((w) => Math.floor(w * scale));
+    const tableW = scaledColWidths.reduce((a, b) => a + b, 0);
+
+    const tableH = headerRowH + body.length * rowH;
+    const H = Math.max(630, topPad + titleH + captionH + 26 + tableH + footerH);
+
+    canvas.width = W;
+    canvas.height = H;
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+
+    const title = cfg.title || "Primerjava";
+    const caption = getDepositCompareCaption();
+
+    ctx.fillStyle = "#0B6B3A";
+    ctx.font = "700 44px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText(title, pad, topPad + 44);
+
+    if (caption) {
+        ctx.fillStyle = "#374151";
+        ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.fillText(caption, pad, topPad + 44 + 44);
+    }
+
+    const tableX = pad;
+    const tableY = topPad + titleH + captionH;
+
+    ctx.fillStyle = "#f9fafb";
+    ctx.strokeStyle = "#e5e7eb";
+    ctx.lineWidth = 2;
+    drawRoundedRect(ctx, tableX, tableY, tableW, tableH, 18);
+    ctx.fill();
+    ctx.stroke();
+
+    let x = tableX;
+    let y = tableY;
+
+    ctx.save();
+    ctx.beginPath();
+    drawRoundedRect(ctx, tableX, tableY, tableW, tableH, 18);
+    ctx.clip();
+
+    ctx.fillStyle = "#111827";
+    ctx.font = "700 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.textBaseline = "alphabetic";
+    header.forEach((text, i) => {
+        const w = scaledColWidths[i];
+        const maxW = Math.max(0, w - colPadX * 2);
+        const t = fitText(text, maxW);
+        ctx.textAlign = "left";
+        ctx.fillText(t, x + colPadX, y + 34);
+        x += w;
+    });
+
+    ctx.strokeStyle = "#e5e7eb";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(tableX, y + headerRowH);
+    ctx.lineTo(tableX + tableW, y + headerRowH);
+    ctx.stroke();
+
+    y += headerRowH;
+    ctx.font = "600 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    body.forEach((row, ri) => {
+        if (ri % 2 === 0) {
+            ctx.fillStyle = "#ffffff";
+            ctx.fillRect(tableX, y, tableW, rowH);
+        }
+
+        ctx.fillStyle = "#111827";
+        let cx = tableX;
+        row.forEach((text, i) => {
+            const w = scaledColWidths[i];
+            const raw = String(text ?? "");
+            const maxW = Math.max(0, w - colPadX * 2);
+            const t = fitText(raw, maxW);
+            if (isNumericLike(raw)) {
+                ctx.textAlign = "right";
+                ctx.fillText(t, cx + w - colPadX, y + 30);
+            } else {
+                ctx.textAlign = "left";
+                ctx.fillText(t, cx + colPadX, y + 30);
+            }
+            cx += w;
+        });
+
+        ctx.strokeStyle = "#eef2f7";
+        ctx.beginPath();
+        ctx.moveTo(tableX, y + rowH);
+        ctx.lineTo(tableX + tableW, y + rowH);
+        ctx.stroke();
+
+        y += rowH;
+    });
+
+    ctx.restore();
+
+    const logo = new Image();
+    logo.decoding = "async";
+    logo.src = "images/scit8.png";
+    await new Promise((resolve) => {
+        logo.onload = () => resolve(true);
+        logo.onerror = () => resolve(false);
+    });
+
+    ctx.drawImage(logo, pad, H - 120, 72, 72);
+    ctx.fillStyle = "#111827";
+    ctx.font = "700 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad + 90, H - 72);
+
+    ctx.fillStyle = "#374151";
+    ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("Izračunaj tudi ti na finportal.si", pad, H - 28);
+
+    return canvas.toDataURL("image/png");
+}
+
 async function buildShareImageDataUrl(cfg) {
+    if (cfg && cfg.tableContainerId) {
+        const t = await buildShareTableImageDataUrl(cfg);
+        if (t) return t;
+    }
+
     const W = 1200;
     const H = 630;
 
