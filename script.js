@@ -58,6 +58,11 @@ function getShareConfig() {
             calcButtonId: "loan-calc-btn",
             primaryMetricId: "loan-monthly",
             primaryMetricLabel: "Mesečni obrok",
+            secondaryMetrics: [
+                { id: "loan-total", label: "Skupaj za plačilo" },
+                { id: "loan-interest", label: "Skupaj obresti" },
+                { id: "loan-intercalary", label: "Interkalarne obresti" }
+            ],
             chartCanvasId: "loan-amortization-chart",
             title: "Kreditni izračun"
         },
@@ -66,6 +71,11 @@ function getShareConfig() {
             calcButtonId: "interest-calc-btn",
             primaryMetricId: "interest-total",
             primaryMetricLabel: "Končni znesek (neto)",
+            secondaryMetrics: [
+                { id: "interest-interest-gross", label: "Obresti (bruto)" },
+                { id: "interest-tax", label: "Davek" },
+                { id: "interest-interest", label: "Obresti (neto)" }
+            ],
             title: "Depozitni izračun"
         },
         "izgubljene-obresti.html": {
@@ -89,8 +99,9 @@ function getShareConfig() {
                 "cs-income",
                 "cs-adults",
                 "cs-children",
-                "cs-expenses",
-                "cs-loans",
+                "cs-existing",
+                "cs-living-actual",
+                "cs-rent",
                 "cs-rate",
                 "cs-dsti",
                 "cs-min-adult",
@@ -100,6 +111,10 @@ function getShareConfig() {
             calcButtonId: "cs-calc-btn",
             primaryMetricId: "cs-max-loan",
             primaryMetricLabel: "Ocena zneska kredita",
+            secondaryMetrics: [
+                { id: "cs-max-payment", label: "Največji mesečni obrok" },
+                { id: "cs-limit-reason", label: "Omejitev" }
+            ],
             title: "Kreditna sposobnost"
         },
         "eom-kalkulator.html": {
@@ -514,15 +529,16 @@ async function buildShareTableImageDataUrl(cfg) {
     ctx.restore();
 
     const logo = await loadFpLogoImg();
-    const brandLogoY = H - 140;
-    if (logo) ctx.drawImage(logo, pad, brandLogoY, 72, 72);
+    const brandLogoY = H - 116;
+    const logoSize = 56;
+    if (logo) ctx.drawImage(logo, pad, brandLogoY, logoSize, logoSize);
     ctx.fillStyle = "#111827";
-    ctx.font = "800 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("FinPortal.si", pad, brandLogoY + 104);
+    ctx.font = "800 26px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad + logoSize + 14, brandLogoY + 4);
 
     ctx.fillStyle = "#374151";
-    ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("Izračunaj tudi ti na finportal.si", pad, H - 28);
+    ctx.font = "500 20px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("Izračunaj tudi ti na finportal.si", pad + logoSize + 14, brandLogoY + 34);
 
     return canvas.toDataURL("image/png");
 }
@@ -553,17 +569,103 @@ async function buildShareImageDataUrl(cfg) {
     const metricLabel = cfg.primaryMetricLabel || "Rezultat";
     const metricValue = getPrimaryMetricText(cfg) || "";
 
+    const cleanLabelText = (t) => {
+        return String(t ?? "")
+            .replace(/\?/g, "")
+            .replace(/\*/g, "")
+            .replace(/\s+/g, " ")
+            .trim();
+    };
+
+    const getTextValue = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const t = String(el.textContent ?? "").trim();
+        if (!t || t === "–" || t === "-") return null;
+        return t;
+    };
+
+    const getControlValue = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+
+        if (el.type === "checkbox") {
+            return el.checked ? "Da" : "Ne";
+        }
+
+        if (el.tagName === "SELECT") {
+            const opt = el.options && el.selectedIndex >= 0 ? el.options[el.selectedIndex] : null;
+            const t = String(opt ? opt.textContent : el.value ?? "").trim();
+            return t || null;
+        }
+
+        const v = String(el.value ?? "").trim();
+        return v || null;
+    };
+
+    const getControlLabel = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+
+        const forLabel = document.querySelector(`label[for="${CSS.escape(id)}"]`);
+        if (forLabel) {
+            const clone = forLabel.cloneNode(true);
+            if (clone && typeof clone.querySelectorAll === "function") {
+                clone
+                    .querySelectorAll(".fp-help, .fp-help__icon, .fp-help__tooltip")
+                    .forEach((n) => n.remove());
+            }
+            const t = cleanLabelText(clone.textContent ?? "");
+            return t || null;
+        }
+
+        const parent = el.parentElement;
+        if (parent) {
+            const label = parent.querySelector("label");
+            if (label) {
+                const clone = label.cloneNode(true);
+                if (clone && typeof clone.querySelectorAll === "function") {
+                    clone
+                        .querySelectorAll(".fp-help, .fp-help__icon, .fp-help__tooltip")
+                        .forEach((n) => n.remove());
+                }
+                const t = cleanLabelText(clone.textContent ?? "");
+                return t || null;
+            }
+        }
+
+        return cleanLabelText(id);
+    };
+
+    const fitText = (text, maxWidth) => {
+        const raw = String(text ?? "");
+        if (!raw) return "";
+        if (ctx.measureText(raw).width <= maxWidth) return raw;
+        const ell = "…";
+        let lo = 0;
+        let hi = raw.length;
+        while (lo < hi) {
+            const mid = Math.ceil((lo + hi) / 2);
+            const s = raw.slice(0, mid) + ell;
+            if (ctx.measureText(s).width <= maxWidth) lo = mid;
+            else hi = mid - 1;
+        }
+        return raw.slice(0, Math.max(0, lo)) + ell;
+    };
+
+    ctx.textBaseline = "top";
+
     ctx.fillStyle = "#0B6B3A";
     ctx.font = "700 44px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(title, pad, 120);
+    ctx.fillText(title, pad, 72);
 
     ctx.fillStyle = "#111827";
     ctx.font = "600 30px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(metricLabel, pad, 190);
+    ctx.fillText(metricLabel, pad, 140);
 
     ctx.fillStyle = "#0B6B3A";
     ctx.font = "800 64px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText(metricValue || "–", pad, 270);
+    ctx.fillText(metricValue || "–", pad, 190);
 
     const chartId = cfg.chartCanvasId;
     if (chartId) {
@@ -572,7 +674,7 @@ async function buildShareImageDataUrl(cfg) {
             const chartW = 520;
             const chartH = 300;
             const chartX = W - pad - chartW;
-            const chartY = 150;
+            const chartY = 120;
 
             ctx.fillStyle = "#f9fafb";
             ctx.strokeStyle = "#e5e7eb";
@@ -589,15 +691,104 @@ async function buildShareImageDataUrl(cfg) {
         }
     }
 
-    const brandLogoY = H - 140;
-    if (logo) ctx.drawImage(logo, pad, brandLogoY, 72, 72);
+    const footerTop = H - 140;
+    const leftX = pad;
+    const leftW = (chartId ? (W - pad - (520 + pad)) : (W - pad - pad));
+    const cardY = 290;
+    const cardH = footerTop - cardY - 16;
+
+    if (cardH > 80) {
+        ctx.fillStyle = "#f9fafb";
+        ctx.strokeStyle = "#e5e7eb";
+        ctx.lineWidth = 2;
+        drawRoundedRect(ctx, leftX, cardY, leftW, cardH, 24);
+        ctx.fill();
+        ctx.stroke();
+
+        const innerPad = 24;
+        const colX = leftX + innerPad;
+        const colW = leftW - innerPad * 2;
+        let cy = cardY + innerPad;
+
+        ctx.textAlign = "left";
+        ctx.fillStyle = "#111827";
+        ctx.font = "700 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+        ctx.fillText("Vnos", colX, cy);
+        cy += 34;
+
+        ctx.fillStyle = "#374151";
+        ctx.font = "500 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+
+        const inputLines = [];
+        (cfg.fields || []).forEach((id) => {
+            const val = getControlValue(id);
+            if (!val) return;
+            const label = getControlLabel(id);
+            if (!label) return;
+            inputLines.push({ label, value: val });
+        });
+
+        const maxInputLines = 6;
+        const shownInputs = inputLines.slice(0, maxInputLines);
+        const labelMaxW = Math.floor(colW * 0.62);
+        const valueMaxW = colW - labelMaxW;
+        shownInputs.forEach((it) => {
+            if (cy + 24 > footerTop - 16) return;
+            const l = fitText(String(it.label).replace(/\s*\(.*?\)\s*$/, "").replace(/\s*\*\s*$/, ""), labelMaxW);
+            const v = fitText(it.value, valueMaxW);
+            ctx.fillText(l, colX, cy);
+            ctx.textAlign = "right";
+            ctx.fillText(v, colX + colW, cy);
+            ctx.textAlign = "left";
+            cy += 24;
+        });
+
+        if (inputLines.length > shownInputs.length && cy + 24 <= footerTop - 16) {
+            ctx.fillStyle = "#6b7280";
+            ctx.fillText("…", colX, cy);
+            cy += 24;
+            ctx.fillStyle = "#374151";
+        }
+
+        const resultLines = [];
+        (cfg.secondaryMetrics || []).forEach((m) => {
+            if (!m || !m.id) return;
+            const val = getTextValue(m.id);
+            if (!val) return;
+            resultLines.push({ label: m.label || m.id, value: val });
+        });
+
+        if (resultLines.length) {
+            cy += 16;
+            ctx.fillStyle = "#374151";
+            ctx.font = "500 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+
+            const maxResultLines = 4;
+            resultLines.slice(0, maxResultLines).forEach((it) => {
+                if (cy + 24 > footerTop - 16) return;
+                const l = fitText(it.label, labelMaxW);
+                const v = fitText(it.value, valueMaxW);
+                ctx.fillText(l, colX, cy);
+                ctx.textAlign = "right";
+                ctx.fillText(v, colX + colW, cy);
+                ctx.textAlign = "left";
+                cy += 24;
+            });
+        }
+
+        ctx.textAlign = "left";
+    }
+
+    const brandLogoY = H - 116;
+    const logoSize = 56;
+    if (logo) ctx.drawImage(logo, pad, brandLogoY, logoSize, logoSize);
     ctx.fillStyle = "#111827";
-    ctx.font = "800 28px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("FinPortal.si", pad, brandLogoY + 104);
+    ctx.font = "800 26px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("FinPortal.si", pad + logoSize + 14, brandLogoY + 4);
 
     ctx.fillStyle = "#374151";
-    ctx.font = "500 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("Izračunaj tudi ti na finportal.si", pad, H - 28);
+    ctx.font = "500 20px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
+    ctx.fillText("Izračunaj tudi ti na finportal.si", pad + logoSize + 14, brandLogoY + 34);
 
     return canvas.toDataURL("image/png");
 }
