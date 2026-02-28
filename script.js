@@ -17,6 +17,16 @@ function formatSI(num) {
     return parts.join(',') + " €";
 }
 
+function escapeHtml(str) {
+    const s = String(str ?? "");
+    return s
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/\"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 let fpLogoImgPromise = null;
 async function loadFpLogoImg() {
     if (fpLogoImgPromise) return fpLogoImgPromise;
