@@ -148,7 +148,7 @@ REQUIRED_COLUMNS = [
     "amount_min", "amount_max", "amount_currency",
     "min_term", "max_term", "term_unit",
     "rate_branch", "rate_klik_bonus", "rate_klik_total",
-    "url", "last_updated", "notes"
+    "url", "last_updated", "notes", "offer_type"
 ]
 
 
@@ -212,6 +212,13 @@ def _validate_invariants(df, source_file):
         df["rate_branch"] < 0) | (df["rate_branch"] > 25)
     if bad_rate.any():
         warns.append("sumljive vrednosti rate_branch (NaN ali izven 0-25)")
+
+    if "offer_type" in df.columns:
+        bad_offer = ~df["offer_type"].astype(
+            str).str.lower().isin(["regular", "special"])
+        if bad_offer.any():
+            errs.append(
+                "offer_type ima neveljavne vrednosti (dovoljeno: regular/special)")
 
     if source_file == "otp_depoziti.csv":
         otp_months = df["term_unit"] == "months"

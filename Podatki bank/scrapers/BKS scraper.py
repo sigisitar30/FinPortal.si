@@ -245,6 +245,7 @@ def scrape_bks_from_pdf():
             "rate_branch": rate,
             "rate_klik_bonus": 0.0,
             "rate_klik_total": rate,
+            "offer_type": "regular",
             "url": pdf_url_used,
             "last_updated": datetime.today().strftime("%Y-%m-%d"),
             "notes": "scraped via PDF",
@@ -335,6 +336,7 @@ def scrape_bks():
             "rate_branch": rate,
             "rate_klik_bonus": 0.0,
             "rate_klik_total": rate,
+            "offer_type": "regular",
             "url": URL,
             "last_updated": datetime.today().strftime("%Y-%m-%d"),
             "notes": "redna ponudba"
@@ -348,6 +350,10 @@ def save_to_csv(rows, filename="bks_depoziti.csv"):
     if not rows:
         print("Ni podatkov za zapis v CSV.")
         return
+
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)
@@ -365,6 +371,7 @@ def save_to_csv(rows, filename="bks_depoziti.csv"):
         "rate_branch",
         "rate_klik_bonus",
         "rate_klik_total",
+        "offer_type",
         "url",
         "last_updated",
         "notes",

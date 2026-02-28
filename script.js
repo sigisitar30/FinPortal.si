@@ -3683,6 +3683,9 @@ async function loadDepositOffersFromCsv() {
         const iAmountMin = idx("amount_min");
         const iAmountMax = idx("amount_max");
         const iUrl = idx("url");
+        const iProductName = idx("product_name");
+        const iNotes = idx("notes");
+        const iOfferType = idx("offer_type");
 
         if (iBank === -1 || iUpdated === -1) {
             console.warn(`${sourceLabel} missing required headers`, { headers });
@@ -3711,6 +3714,15 @@ async function loadDepositOffersFromCsv() {
             const updated = iUpdated !== -1 ? String(row[iUpdated] ?? "").trim() : "";
 
             const url = iUrl !== -1 ? String(row[iUrl] ?? "").trim() : "";
+
+            const productName = iProductName !== -1 ? String(row[iProductName] ?? "").trim() : "";
+            const notes = iNotes !== -1 ? String(row[iNotes] ?? "").trim() : "";
+            const offerTypeRaw = iOfferType !== -1 ? String(row[iOfferType] ?? "").trim() : "";
+            const offerType = offerTypeRaw.toLowerCase();
+            const specialTxt = `${productName} ${notes}`.toLowerCase();
+            const isSpecialOffer = offerType === "special"
+                ? true
+                : (offerType === "regular" ? false : (specialTxt.includes("posebna ponudba") || specialTxt.includes("akcij") || specialTxt.includes("promo")));
 
             let rate = NaN;
             let rateSpecial = null;
@@ -3795,7 +3807,11 @@ async function loadDepositOffersFromCsv() {
                 termUnit,
                 termDaysMin,
                 termDaysMax,
-                url
+                url,
+                productName,
+                notes,
+                offerType: offerType || null,
+                isSpecialOffer
             });
         }
 
@@ -4054,15 +4070,21 @@ function pickDepositOffer(offers, opts) {
         };
     };
 
+    const typedOffers = Array.isArray(offers) ? offers : [];
+    const offerPoolByType = showSpecial
+        ? typedOffers.filter(o => o && o.isSpecialOffer)
+        : typedOffers.filter(o => o && !o.isSpecialOffer);
+    const offersByType = offerPoolByType.length > 0 ? offerPoolByType : typedOffers;
+
     const offersByAmount = Number.isFinite(amount)
-        ? offers.filter(o => {
+        ? offersByType.filter(o => {
             const minOk = !Number.isFinite(o.min) || amount >= Number(o.min);
             const maxOk = (o.max === null || o.max === undefined || !Number.isFinite(o.max)) ? true : amount <= Number(o.max);
             return minOk && maxOk;
         })
-        : offers;
+        : offersByType;
 
-    const poolOffers = offersByAmount.length > 0 ? offersByAmount : offers;
+    const poolOffers = offersByAmount.length > 0 ? offersByAmount : offersByType;
     const validAll = poolOffers.filter(o => Number.isFinite(effRate(o)) && Number.isFinite(o.termMonths));
     const monthsOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "months");
     const daysOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "days");

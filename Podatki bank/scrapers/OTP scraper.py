@@ -234,7 +234,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 181-365 dni",
+                    "product_name": "POSEBNA PONUDBA - Depozit 181-365 dni",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -246,7 +246,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         m = re.search(
@@ -257,7 +257,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 12M",
+                    "product_name": "POSEBNA PONUDBA - Depozit 12M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -269,7 +269,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         m = re.search(
@@ -280,7 +280,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 12-18M",
+                    "product_name": "POSEBNA PONUDBA - Depozit 12-18M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -292,7 +292,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         m = re.search(
@@ -303,7 +303,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 18-36M",
+                    "product_name": "POSEBNA PONUDBA - Depozit 18-36M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -315,7 +315,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         m = re.search(
@@ -326,7 +326,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 36-60M",
+                    "product_name": "POSEBNA PONUDBA - Depozit 36-60M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -338,7 +338,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         m = re.search(
@@ -349,7 +349,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "Depozit 60-120M",
+                    "product_name": "POSEBNA PONUDBA - Depozit 60-120M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -361,7 +361,7 @@ def scrape_otp_from_pdf():
                     "rate_klik_total": rate,
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF",
+                    "notes": "scraped via PDF; posebna ponudba",
                 })
 
         return out
@@ -793,15 +793,8 @@ def scrape_otp():
     # OTP PDF parsing is best-effort.
     # Only use the non-PDF Playwright fallback if the PDF is missing or very incomplete.
     MIN_PDF_ROWS = 7
-    if pdf_rows and len(pdf_rows) >= MIN_PDF_ROWS:
-        print(f"[OK] OTP: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
-        return pdf_rows
-    if not pdf_rows:
-        print("[WARN] OTP: PDF parse ni uspel → fallback na Playwright (ne-PDF)")
-    else:
-        print(
-            f"[WARN] OTP: PDF vir je vrnil premalo zapisov ({len(pdf_rows)} < {MIN_PDF_ROWS}) → poskusim Playwright fallback"
-        )
+
+    # Helper functions are defined below; keep all runtime calls after their definition.
 
     def _prepare_rates_page(page):
         # Some OTP pages lazy-load the actual deposit tables below the fold and behind a tab.
@@ -846,7 +839,7 @@ def scrape_otp():
         rb, rt = vals[0], vals[1]
         return rb, max(0.0, rt - rb), rt
 
-    def _scrape_visible_tables(page, min_floor, debug_label=""):
+    def _scrape_visible_tables(page, min_floor, debug_label="", source_url=None, offer_prefix=None, offer_notes=None):
         out = []
         html_debug = os.environ.get("OTP_HTML_DEBUG", "").strip() == "1"
         try:
@@ -953,6 +946,9 @@ def scrape_otp():
                 else:
                     product_name = f"Depozit {min_term}-{max_term} dni"
 
+                if offer_prefix:
+                    product_name = f"{offer_prefix} - {product_name}"
+
                 out.append({
                     "id": 2,
                     "bank": "OTP banka",
@@ -966,9 +962,9 @@ def scrape_otp():
                     "rate_branch": rate_branch,
                     "rate_klik_bonus": rate_klik_bonus,
                     "rate_klik_total": rate_klik_total,
-                    "url": URL,
+                    "url": source_url or URL,
                     "last_updated": datetime.today().strftime("%Y-%m-%d"),
-                    "notes": "scraped via Playwright",
+                    "notes": offer_notes or "scraped via Playwright",
                 })
 
         if debug_label and len(out) == 0 and len(tables) > 0:
@@ -980,6 +976,61 @@ def scrape_otp():
             except:
                 pass
         return out
+
+    # If PDF parsing succeeded, treat it as the source for REGULAR offers.
+    # Additionally, always scrape the official HTML table for the LONG special offer
+    # so the UI can toggle posebna ponudba on/off.
+    if pdf_rows and len(pdf_rows) >= MIN_PDF_ROWS:
+        print(f"[OK] OTP: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
+
+        long_special_rows = []
+        try:
+            with sync_playwright() as p:
+                browser = p.chromium.launch(headless=True)
+                context = browser.new_context(
+                    permissions=[],
+                    locale="sl-SI",
+                    ignore_https_errors=True,
+                )
+                page = context.new_page()
+
+                try:
+                    page.goto(URL_LONG_SPECIAL_RATES,
+                              wait_until="domcontentloaded")
+                    page.wait_for_timeout(800)
+                    print("OK OTP odprta stran: dolgoročni depoziti (posebna ponudba)")
+                    _prepare_rates_page(page)
+                    try:
+                        tab = page.locator("text=EUR - Fiksna obrestna mera")
+                        if tab.count() > 0:
+                            tab.first.click(timeout=4000, force=True)
+                            page.wait_for_timeout(500)
+                    except:
+                        pass
+
+                    long_special_rows = _scrape_visible_tables(
+                        page,
+                        500,
+                        debug_label="long",
+                        source_url=URL_LONG_SPECIAL_RATES,
+                        offer_prefix="POSEBNA PONUDBA",
+                        offer_notes="scraped via Playwright; posebna ponudba",
+                    )
+                except Exception as e:
+                    print(
+                        f"WRN OTP: ni uspelo prebrati posebne ponudbe ({URL_LONG_SPECIAL_RATES}): {e}"
+                    )
+
+                browser.close()
+        except Exception:
+            pass
+
+        # Keep both regular and special rows (UI decides which to show).
+        # Only drop exact duplicates (same dict content).
+        dedup = {}
+        for row in list(pdf_rows) + list(long_special_rows):
+            dedup[tuple(sorted(row.items()))] = row
+        return list(dedup.values())
 
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
@@ -1009,7 +1060,6 @@ def scrape_otp():
         except:
             pass
 
-        # Prefer dedicated interest-rate pages (stable HTML tables) over the /depozit accordion.
         try:
             page.goto(URL_LONG_SPECIAL_RATES, wait_until="domcontentloaded")
             page.wait_for_timeout(800)
@@ -1024,7 +1074,13 @@ def scrape_otp():
                 pass
             before = len(results)
             results.extend(_scrape_visible_tables(
-                page, min_floor, debug_label="long"))
+                page,
+                min_floor,
+                debug_label="long",
+                source_url=URL_LONG_SPECIAL_RATES,
+                offer_prefix="POSEBNA PONUDBA",
+                offer_notes="scraped via Playwright; posebna ponudba",
+            ))
             print(f"INFO OTP[long]: dodanih vrstic={len(results) - before}")
         except Exception as e:
             print(
@@ -1072,6 +1128,8 @@ def scrape_otp():
             f"[WARN] OTP: Playwright fallback ni vrnil zapisov (0) → vračam PDF rezultate ({len(pdf_rows)})"
         )
         return pdf_rows
+
+    # If we got here, we used the HTML fallback. If PDF exists but is incomplete, prefer HTML.
 
     print(f"OK Skupaj scrapano {len(results)} zapisov")
     return results
