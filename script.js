@@ -27,6 +27,9 @@ function escapeHtml(str) {
         .replace(/'/g, "&#39;");
 }
 
+let depositTableSortKey = "rate";
+let depositTableSortDir = "desc";
+
 let fpLogoImgPromise = null;
 async function loadFpLogoImg() {
     if (fpLogoImgPromise) return fpLogoImgPromise;
@@ -4369,7 +4372,7 @@ function renderDepositTable() {
         return maxs.length ? maxs.reduce((a, b) => (b > a ? b : a), maxs[0]) : null;
     };
 
-    const rows = banks
+    const rowsUnsorted = banks
         .map((bank) => {
             const offers = depositOffers.filter(o => String(o.bank ?? "").trim() === bank);
             const bankMin = bankMinAmount(offers);
@@ -4402,7 +4405,33 @@ function renderDepositTable() {
                 notes: ""
             };
         })
-        .sort((a, b) => (effRate(b) || 0) - (effRate(a) || 0));
+        ;
+
+    const dirMul = depositTableSortDir === "asc" ? 1 : -1;
+    const rows = rowsUnsorted
+        .slice()
+        .sort((a, b) => {
+            if (depositTableSortKey === "bank") {
+                const aa = String(a.bank ?? "").trim();
+                const bb = String(b.bank ?? "").trim();
+                return dirMul * aa.localeCompare(bb, "sl");
+            }
+            const ra = effRate(a);
+            const rb = effRate(b);
+            const va = Number.isFinite(ra) ? ra : -Infinity;
+            const vb = Number.isFinite(rb) ? rb : -Infinity;
+            if (va === vb) {
+                const aa = String(a.bank ?? "").trim();
+                const bb = String(b.bank ?? "").trim();
+                return aa.localeCompare(bb, "sl");
+            }
+            return dirMul * (va - vb);
+        });
+
+    const sortIndicator = (key) => {
+        if (depositTableSortKey !== key) return " ↕";
+        return depositTableSortDir === "asc" ? " ▲" : " ▼";
+    };
 
     let html = `
         <table class="table">
@@ -4410,16 +4439,16 @@ function renderDepositTable() {
                 <tr>
                     <th class="text-left w-56">
                         <span class="relative inline-block pr-4">
-                            Banka
+                            <button type="button" class="deposit-sort-btn font-semibold hover:underline cursor-pointer" data-sort="bank" title="Sortiraj po banki (A–Z / Z–A)">Banka${sortIndicator("bank")}</button>
                             <span class="fp-help fp-help--edge-left absolute -top-1 -right-1">
                                 <span class="fp-help__icon" tabindex="0">?</span>
                                 <span class="fp-help__tooltip">Namig: s klikom na ime banke odpreš ponudbo (če je na voljo).</span>
                             </span>
                         </span>
                     </th>
-                    <th class="w-40">Letna obrestna mera</th>
+                    <th class="w-40"><button type="button" class="deposit-sort-btn font-semibold hover:underline cursor-pointer" data-sort="rate" title="Sortiraj po obrestni meri (naraščajoče/padajoče)">Letna o.m.${sortIndicator("rate")}</button></th>
                     <th class="w-32">Doba vezave</th>
-                    <th class="w-40">Minimalni znesek</th>
+                    <th class="w-40">Min. znesek</th>
                     <th class="w-40 whitespace-nowrap">Obresti</th>
                     <th class="w-44 whitespace-nowrap">Končni znesek</th>
                 </tr>
@@ -4478,6 +4507,20 @@ function renderDepositTable() {
     `;
 
     container.innerHTML = html;
+
+    container.querySelectorAll(".deposit-sort-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const key = String(btn.dataset.sort ?? "").trim();
+            if (!key) return;
+            if (depositTableSortKey === key) {
+                depositTableSortDir = depositTableSortDir === "asc" ? "desc" : "asc";
+            } else {
+                depositTableSortKey = key;
+                depositTableSortDir = key === "bank" ? "asc" : "desc";
+            }
+            renderDepositTable();
+        });
+    });
 
     container.querySelectorAll(".bank-offer-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
