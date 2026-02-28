@@ -4652,6 +4652,8 @@ function updateInterestRate() {
     const months = monthsEl ? Number(monthsEl.value) : NaN;
     const targetTermMonths = Number.isFinite(months) ? months : null;
 
+    const amount = getElementValue("interest-amount");
+
     // Privzeto vedno uporabljamo osnovno (redna) OM.
     // Posebna/akcijska OM se lahko uporabi samo, če obstaja checkbox (in je obkljukan).
     const showSpecial = !!document.getElementById("interest-special")?.checked;
@@ -4684,7 +4686,7 @@ function updateInterestRate() {
     }
 
     const offerToUse = pickDepositOffer(bankOffers, {
-        amount: NaN,
+        amount: Number.isFinite(amount) ? amount : NaN,
         targetTermMonths,
         targetTermUnit: "months",
         selectedTerm: months,
@@ -4732,6 +4734,14 @@ function initDepositUiBindings() {
         bankSelect.addEventListener("input", updateInterestRate);
     }
 
+    const amountEl = document.getElementById("interest-amount");
+    if (amountEl) {
+        amountEl.addEventListener("change", updateInterestRate);
+        amountEl.addEventListener("input", updateInterestRate);
+        amountEl.addEventListener("keyup", updateInterestRate);
+        amountEl.addEventListener("blur", updateInterestRate);
+    }
+
     const monthsEl = document.getElementById("interest-months");
     if (monthsEl) {
         monthsEl.addEventListener("change", updateInterestRate);
@@ -4743,6 +4753,12 @@ function initDepositUiBindings() {
     const rateEl = document.getElementById("interest-rate");
     if (rateEl) {
         rateEl.addEventListener("blur", () => normalizeRateInput("interest-rate"));
+    }
+
+    const specialEl = document.getElementById("interest-special");
+    if (specialEl) {
+        specialEl.addEventListener("change", updateInterestRate);
+        specialEl.addEventListener("input", updateInterestRate);
     }
 
     const offerLink = document.getElementById("deposit-offer-link");
