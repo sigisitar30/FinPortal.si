@@ -3686,6 +3686,7 @@ async function loadDepositOffersFromCsv() {
         const iProductName = idx("product_name");
         const iNotes = idx("notes");
         const iOfferType = idx("offer_type");
+        const iSource = idx("source");
 
         if (iBank === -1 || iUpdated === -1) {
             console.warn(`${sourceLabel} missing required headers`, { headers });
@@ -3719,6 +3720,8 @@ async function loadDepositOffersFromCsv() {
             const notes = iNotes !== -1 ? String(row[iNotes] ?? "").trim() : "";
             const offerTypeRaw = iOfferType !== -1 ? String(row[iOfferType] ?? "").trim() : "";
             const offerType = offerTypeRaw.toLowerCase();
+            const sourceRaw = iSource !== -1 ? String(row[iSource] ?? "").trim() : "";
+            const source = sourceRaw.toLowerCase();
             const specialTxt = `${productName} ${notes}`.toLowerCase();
             const isSpecialOffer = offerType === "special"
                 ? true
@@ -3811,6 +3814,7 @@ async function loadDepositOffersFromCsv() {
                 productName,
                 notes,
                 offerType: offerType || null,
+                source: source || null,
                 isSpecialOffer
             });
         }
@@ -4381,7 +4385,11 @@ function renderDepositTable() {
                 bankMin,
                 bankMax,
                 termUnit: null,
-                url: ""
+                url: "",
+                offerType: null,
+                source: null,
+                productName: "",
+                notes: ""
             };
         })
         .sort((a, b) => (effRate(b) || 0) - (effRate(a) || 0));
@@ -4425,9 +4433,20 @@ function renderDepositTable() {
         const minText = Number.isFinite(minToShow) && minToShow > 0 ? formatSIWholeEuro(minToShow) : "—";
 
         const url = String(d.url ?? "").trim();
+        const offerTypeTxt = String(d.offerType ?? "").trim();
+        const sourceTxt = String(d.source ?? "").trim();
+        const productTxt = String(d.productName ?? "").trim();
+        const notesTxt = String(d.notes ?? "").trim();
+        const tipParts = [];
+        if (productTxt) tipParts.push(productTxt);
+        if (offerTypeTxt) tipParts.push(`offer_type=${offerTypeTxt}`);
+        if (sourceTxt) tipParts.push(`source=${sourceTxt}`);
+        if (selectedTermLabel) tipParts.push(selectedTermLabel);
+        if (notesTxt) tipParts.push(notesTxt);
+        const tooltip = tipParts.join(" | ");
         const bankCell = url
-            ? `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900 hover:underline" data-url="${url}">${d.bank}</button>`
-            : `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900" data-url="" aria-disabled="true">${d.bank}</button>`;
+            ? `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900 hover:underline" data-url="${url}" title="${escapeHtml(tooltip)}">${d.bank}</button>`
+            : `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900" data-url="" aria-disabled="true" title="${escapeHtml(tooltip)}">${d.bank}</button>`;
 
         const rateText = hasRate ? `${formatRateSI(rateVal)}%` : "—";
 
