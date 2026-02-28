@@ -6,8 +6,9 @@ import re
 import os
 
 URL = "https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge"
+DISCOVERY_URL = "https://www.bksbank.si/fizicne-osebe/varcevanje/vezane-vloge"
 PDF_URLS = [
-    "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf/9d199de1-8ce0-f5b8-32d1-ba058a29d698?t=1580721816353",
+    "https://www.bksbank.si/mbxs8qn54zwj/5KCS2xBUrYLfcAD08PEYkA/7795108aff18106ef4539f251bfa5d08/Obrestne_mere_VLOGE_1._1._2026_final.pdf",
     "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf",
 ]
 
@@ -64,7 +65,7 @@ def scrape_bks_from_pdf():
         # Auto-discover current PDF link(s) from the BKS page.
         discovered = []
         try:
-            page_r = requests.get(URL, headers={
+            page_r = requests.get(DISCOVERY_URL, headers={
                 "User-Agent": "Mozilla/5.0"}, timeout=30)
             page_r.raise_for_status()
             soup = BeautifulSoup(page_r.text or "", "html.parser")
@@ -139,6 +140,28 @@ def scrape_bks_from_pdf():
     # Very tolerant extraction: look for '<term> mesecev ... <rate>' anywhere.
     b = " ".join((text or "").replace("\r", " ").replace("\n", " ").split())
     scraped_terms = {term: None for term in EXPECTED_TERMS}
+
+    seg = b
+    try:
+        bl = b.lower()
+        start = bl.find("2.1.")
+        if start < 0:
+            start = bl.find("2.1")
+        if start >= 0:
+            end = bl.find("2.2", start)
+            if end > start:
+                seg = b[start:end]
+    except Exception:
+        seg = b
+
+    for m in re.finditer(r"\b(6|12|24|36)\b\s+(\d{1,2}(?:[\.,]\d{1,4})?)\s*%", seg, flags=re.IGNORECASE):
+        try:
+            t = int(m.group(1))
+        except Exception:
+            continue
+        if t in scraped_terms and scraped_terms[t] is None:
+            scraped_terms[t] = _to_float_rate(m.group(2))
+
     for term in scraped_terms.keys():
         term_word = r"(?:mesec(?:ev|e|i)?|monate?n?|months?)"
         patterns = [
