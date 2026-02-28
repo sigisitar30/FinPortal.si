@@ -6,6 +6,7 @@ import re
 import os
 
 URL = "https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge"
+PDF_URL = "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf"
 
 # PRIČAKOVANE VREDNOSTI
 EXPECTED_MIN_AMOUNT = 1000
@@ -20,9 +21,88 @@ EXPECTED_RATES = {
 }
 
 
+def _to_float_rate(s):
+    try:
+        return float(str(s).replace("%", "").replace(",", ".").strip())
+    except Exception:
+        return None
+
+
+def scrape_bks_from_pdf():
+    try:
+        import pdfplumber  # type: ignore
+        import io
+    except Exception:
+        return None
+
+    try:
+        r = requests.get(PDF_URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
+        r.raise_for_status()
+    except Exception:
+        return None
+
+    try:
+        with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+            text = "\n".join([(p.extract_text() or "") for p in pdf.pages])
+    except Exception:
+        return None
+
+    if not text:
+        return None
+
+    # Very tolerant extraction: look for '<term> mesecev ... <rate>' anywhere.
+    scraped_terms = {term: None for term in EXPECTED_TERMS}
+    for term in scraped_terms.keys():
+        patterns = [
+            rf"\b{term}\s*mesec(?:ev|e|i)?\b[^0-9%]{{0,40}}(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+            rf"\b{term}\s*M\b[^0-9%]{{0,40}}(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+        ]
+        for pat in patterns:
+            m = re.search(pat, text, flags=re.IGNORECASE)
+            if m:
+                scraped_terms[term] = _to_float_rate(m.group(1))
+                break
+
+    found_terms = [t for t, r in scraped_terms.items() if r is not None]
+    if not found_terms:
+        return None
+
+    bank_id = 8
+    bank_name = "BKS Bank AG"
+    results = []
+    for term, rate in scraped_terms.items():
+        if rate is None:
+            continue
+        results.append({
+            "id": bank_id,
+            "bank": bank_name,
+            "product_name": f"Depozit {term}M",
+            "amount_min": EXPECTED_MIN_AMOUNT,
+            "amount_max": None,
+            "amount_currency": "EUR",
+            "min_term": term,
+            "max_term": term,
+            "term_unit": "months",
+            "rate_branch": rate,
+            "rate_klik_bonus": 0.0,
+            "rate_klik_total": rate,
+            "url": PDF_URL,
+            "last_updated": datetime.today().strftime("%Y-%m-%d"),
+            "notes": "scraped via PDF",
+        })
+
+    return results if results else None
+
+
 def scrape_bks():
     bank_id = 8
     bank_name = "BKS Bank AG"
+
+    pdf_rows = scrape_bks_from_pdf()
+    if pdf_rows:
+        print(f"[OK] BKS: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
+        return pdf_rows
+    print("[WARN] BKS: PDF parse ni uspel, fallback na HTML")
 
     print("Prenos BKS strani...")
 

@@ -1139,6 +1139,70 @@ function formatPercentSI(num) {
     return `${n.toFixed(2).replace(".", ",")}%`;
 }
 
+function initCookieBanner() {
+    const key = "finportal_cookie_consent";
+    let existing = null;
+    try { existing = localStorage.getItem(key); } catch (e) { }
+
+    const ensureBanner = () => {
+        let banner = document.getElementById("cookie-banner");
+        if (banner) return banner;
+
+        banner = document.createElement("div");
+        banner.id = "cookie-banner";
+        banner.className = "hidden";
+        banner.style.position = "fixed";
+        banner.style.left = "0";
+        banner.style.right = "0";
+        banner.style.bottom = "0";
+        banner.style.zIndex = "9998";
+
+        banner.innerHTML = `
+            <div style="max-width: 80rem; margin: 0 auto; padding: 0 1.5rem 1.5rem;">
+                <div style="background: #FFFBEB; border: 1px solid #FDE68A; border-radius: 1rem; box-shadow: 0 10px 20px rgba(0,0,0,0.12); padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem;">
+                    <div style="font-size: 0.875rem; color: #78350F;">
+                        <div style="font-weight: 800; color: #78350F;">Piškotki</div>
+                        <div>
+                            Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
+                            <a href="piskotki.html" style="text-decoration: underline; font-weight: 700; color: #78350F;">Več o piškotkih</a>.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
+                        <button id="cookie-reject" type="button" style="padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid #FCD34D; background: transparent; font-weight: 800; color: #78350F; cursor: pointer;">Zavrni</button>
+                        <button id="cookie-accept" type="button" style="padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid #D97706; background: #D97706; color: #ffffff; font-weight: 800; cursor: pointer;">Sprejmi</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(banner);
+        return banner;
+    };
+
+    const banner = ensureBanner();
+    const acceptBtn = document.getElementById("cookie-accept");
+    const rejectBtn = document.getElementById("cookie-reject");
+    if (!banner || !acceptBtn || !rejectBtn) return;
+
+    const hide = () => { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); };
+    const show = () => { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); };
+    const setConsent = (value) => {
+        try { localStorage.setItem(key, value); } catch (e) { }
+        document.documentElement.dataset.cookieConsent = value;
+        hide();
+    };
+
+    if (existing === "accepted" || existing === "rejected") {
+        document.documentElement.dataset.cookieConsent = existing;
+        hide();
+    } else {
+        show();
+    }
+
+    acceptBtn.addEventListener("click", () => setConsent("accepted"));
+    rejectBtn.addEventListener("click", () => setConsent("rejected"));
+}
+
 function initMobileMenu() {
     const header = document.querySelector("header");
     if (!header) return;
@@ -2528,6 +2592,7 @@ function initNumberFormatting() {
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
 
+    initCookieBanner();
     initMobileMenu();
 
     // Initialize tabs

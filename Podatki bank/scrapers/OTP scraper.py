@@ -3,11 +3,198 @@ from datetime import datetime
 import csv
 import re
 import os
+import requests
+import io
 
 
 URL = "https://www.otpbanka.si/depozit"
 URL_SHORT_RATES = "https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit"
 URL_LONG_SPECIAL_RATES = "https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba"
+PDF_URL = "https://www.otpbanka.si/downloadfile.ashx?fileid=329074"
+
+
+def _to_float_rate(s):
+    try:
+        return float(str(s).replace("%", "").replace(",", ".").strip())
+    except Exception:
+        return None
+
+
+def _extract_min_amount_eur(text):
+    if not text:
+        return None
+
+    t = (
+        text.lower()
+        .replace("\xa0", " ")
+        .replace("\u202f", " ")
+        .replace(".", "")
+    )
+
+    patterns = [
+        r"(?:minimalni\s+znesek|minimalen\s+znesek|najmanj|min\.)\s*(\d[\d\s]*)\s*(?:eur|€)",
+        r"(\d[\d\s]*)\s*(?:eur|€)\s*(?:minimalni\s+znesek|minimalen\s+znesek|najmanj|min\.)",
+    ]
+
+    vals = []
+    for pat in patterns:
+        for m in re.finditer(pat, t):
+            raw = re.sub(r"\s+", "", m.group(1))
+            try:
+                val = int(raw)
+                if 0 < val < 1_000_000:
+                    vals.append(val)
+            except Exception:
+                pass
+
+    if not vals:
+        return None
+    return min(vals)
+
+
+def scrape_otp_from_pdf():
+    try:
+        import pdfplumber  # type: ignore
+    except Exception:
+        return None
+
+    try:
+        r = requests.get(PDF_URL, headers={
+                         "User-Agent": "Mozilla/5.0"}, timeout=45)
+        r.raise_for_status()
+    except Exception:
+        return None
+
+    try:
+        with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+            text = "\n".join([(p.extract_text() or "") for p in pdf.pages])
+    except Exception:
+        return None
+
+    if not text or len(text.strip()) < 100:
+        return None
+
+    bank_id = 2
+    bank_name = "OTP banka"
+    today = datetime.today().strftime("%Y-%m-%d")
+
+    min_floor = _extract_min_amount_eur(text)
+    if min_floor is None or min_floor < 100:
+        min_floor = 500
+
+    results = []
+
+    # Tolerant patterns for day/month ranges.
+    # Examples we try to match (varies per PDF):
+    # - "od 31 do 90 dni 0,50 %"
+    # - "od 6 do 12 mesecev 1,20 %"
+    day_range_re = re.compile(
+        r"\bod\s*(\d+)\s*(?:do|\-|–)\s*(\d+)\s*dni\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+    month_range_re = re.compile(
+        r"\bod\s*(\d+)\s*(?:do|\-|–)\s*(\d+)\s*mesecev\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+    month_single_re = re.compile(
+        r"\b(\d+)\s*mesecev\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+
+    for m in day_range_re.finditer(text):
+        a = int(m.group(1))
+        b = int(m.group(2))
+        rate = _to_float_rate(m.group(3))
+        if rate is None:
+            continue
+        results.append({
+            "id": bank_id,
+            "bank": bank_name,
+            "product_name": f"Depozit {a}-{b} dni",
+            "amount_min": int(min_floor),
+            "amount_max": None,
+            "amount_currency": "EUR",
+            "min_term": a,
+            "max_term": b,
+            "term_unit": "days",
+            "rate_branch": rate,
+            "rate_klik_bonus": 0.0,
+            "rate_klik_total": rate,
+            "url": PDF_URL,
+            "last_updated": today,
+            "notes": "scraped via PDF",
+        })
+
+    for m in month_range_re.finditer(text):
+        a = int(m.group(1))
+        b = int(m.group(2))
+        rate = _to_float_rate(m.group(3))
+        if rate is None:
+            continue
+        results.append({
+            "id": bank_id,
+            "bank": bank_name,
+            "product_name": f"Depozit {a}M",
+            "amount_min": int(min_floor),
+            "amount_max": None,
+            "amount_currency": "EUR",
+            "min_term": a,
+            "max_term": b,
+            "term_unit": "months",
+            "rate_branch": rate,
+            "rate_klik_bonus": 0.0,
+            "rate_klik_total": rate,
+            "url": PDF_URL,
+            "last_updated": today,
+            "notes": "scraped via PDF",
+        })
+
+    if not any(r.get("term_unit") == "months" for r in results):
+        seen = set()
+        for m in month_single_re.finditer(text):
+            mo = int(m.group(1))
+            if mo < 1 or mo > 360:
+                continue
+            if mo in seen:
+                continue
+            rate = _to_float_rate(m.group(2))
+            if rate is None:
+                continue
+            seen.add(mo)
+            results.append({
+                "id": bank_id,
+                "bank": bank_name,
+                "product_name": f"Depozit {mo}M",
+                "amount_min": int(min_floor),
+                "amount_max": None,
+                "amount_currency": "EUR",
+                "min_term": mo,
+                "max_term": mo,
+                "term_unit": "months",
+                "rate_branch": rate,
+                "rate_klik_bonus": 0.0,
+                "rate_klik_total": rate,
+                "url": PDF_URL,
+                "last_updated": today,
+                "notes": "scraped via PDF",
+            })
+
+    if not results:
+        return None
+
+    # Deduplicate
+    dedup = {}
+    for row in results:
+        k = (
+            row.get("term_unit"),
+            row.get("min_term"),
+            row.get("max_term"),
+            row.get("amount_min"),
+            row.get("amount_max"),
+            row.get("rate_branch"),
+        )
+        dedup[k] = row
+    return list(dedup.values())
 
 
 def _extract_min_floor_from_text(text):
@@ -104,6 +291,12 @@ def parse_amount(text):
 # -----------------------------
 def scrape_otp():
     results = []
+
+    pdf_rows = scrape_otp_from_pdf()
+    if pdf_rows:
+        print(f"[OK] OTP: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
+        return pdf_rows
+    print("[WARN] OTP: PDF parse ni uspel, fallback na Playwright")
 
     def _prepare_rates_page(page):
         # Some OTP pages lazy-load the actual deposit tables below the fold and behind a tab.

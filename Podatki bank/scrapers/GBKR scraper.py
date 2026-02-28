@@ -7,8 +7,11 @@ import csv
 from datetime import datetime
 import time
 import os
+import re
+import requests
 
 URL = "https://www.gbkr.si/klasicni-depozit/"
+PDF_URL = "https://www.gbkr.si/wp-content/uploads/2021/05/OM_PO_depoziti.pdf"
 
 # Gorenjska banka omogoča zneske 250–500000 EUR
 EXPECTED_MIN_AMOUNT = 250
@@ -16,6 +19,220 @@ EXPECTED_MAX_AMOUNT = 500000
 
 # Mesečni depozit je relevanten od 13M dalje; krajše ročnosti se prikazujejo v dneh.
 CHECK_TERMS = list(range(13, 61))
+
+
+def _to_float_rate(s):
+    try:
+        return float(str(s).replace("%", "").replace(",", ".").strip())
+    except Exception:
+        return None
+
+
+def _extract_min_amount_eur(text):
+    if not text:
+        return None
+
+    t = (
+        text.lower()
+        .replace("\xa0", " ")
+        .replace("\u202f", " ")
+        .replace(".", "")
+    )
+
+    patterns = [
+        r"(?:minimalni\s+znesek|minimalen\s+znesek|najmanj|min\.)\s*(\d[\d\s]*)\s*(?:eur|€)",
+        r"(\d[\d\s]*)\s*(?:eur|€)\s*(?:minimalni\s+znesek|minimalen\s+znesek|najmanj|min\.)",
+    ]
+
+    vals = []
+    for pat in patterns:
+        for m in re.finditer(pat, t):
+            raw = re.sub(r"\s+", "", m.group(1))
+            try:
+                val = int(raw)
+                if 0 < val < 1_000_000:
+                    vals.append(val)
+            except Exception:
+                pass
+
+    if not vals:
+        return None
+    return min(vals)
+
+
+def scrape_gbkr_from_pdf():
+    try:
+        import pdfplumber  # type: ignore
+        import io
+    except Exception:
+        return None
+
+    try:
+        r = requests.get(PDF_URL, headers={
+                         "User-Agent": "Mozilla/5.0"}, timeout=30)
+        r.raise_for_status()
+    except Exception:
+        return None
+
+    try:
+        with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+            text = "\n".join([(p.extract_text() or "") for p in pdf.pages])
+    except Exception:
+        return None
+
+    if not text or len(text.strip()) < 100:
+        return None
+
+    amount_min_floor = _extract_min_amount_eur(text)
+    if amount_min_floor is None or amount_min_floor < 100:
+        amount_min_floor = EXPECTED_MIN_AMOUNT
+
+    bank_id = 9
+    bank_name = "Gorenjska banka d.d."
+    today = datetime.today().strftime("%Y-%m-%d")
+
+    results = []
+
+    # Patterns for day/month ranges that commonly appear in PDFs.
+    day_range_re = re.compile(
+        r"\b(?:od|za)\s*(\d+)\s*(?:do|\-|–)\s*(\d+)\s*dni\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+    month_range_re = re.compile(
+        r"\b(?:od|za)\s*(\d+)\s*(?:do|\-|–)\s*(\d+)\s*mesecev\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+    month_single_re = re.compile(
+        r"\b(\d+)\s*mesecev\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+    over_years_re = re.compile(
+        r"\bnad\s*(\d+)\s*let[aio]?\b[^0-9%]{0,40}(\d+[\.,]\d+)\s*%",
+        re.IGNORECASE,
+    )
+
+    for m in day_range_re.finditer(text):
+        a = int(m.group(1))
+        b = int(m.group(2))
+        r_val = _to_float_rate(m.group(3))
+        if r_val is None:
+            continue
+        results.append({
+            "id": bank_id,
+            "bank": bank_name,
+            "product_name": f"Depozit {a}–{b} dni",
+            "amount_min": amount_min_floor,
+            "amount_max": EXPECTED_MAX_AMOUNT,
+            "amount_currency": "EUR",
+            "min_term": a,
+            "max_term": b,
+            "term_unit": "days",
+            "rate_branch": r_val,
+            "rate_klik_bonus": 0.0,
+            "rate_klik_total": r_val,
+            "url": PDF_URL,
+            "last_updated": today,
+            "notes": "scraped via PDF",
+        })
+
+    for m in month_range_re.finditer(text):
+        a = int(m.group(1))
+        b = int(m.group(2))
+        r_val = _to_float_rate(m.group(3))
+        if r_val is None:
+            continue
+        results.append({
+            "id": bank_id,
+            "bank": bank_name,
+            "product_name": f"Depozit {a}–{b}M",
+            "amount_min": amount_min_floor,
+            "amount_max": EXPECTED_MAX_AMOUNT,
+            "amount_currency": "EUR",
+            "min_term": a,
+            "max_term": b,
+            "term_unit": "months",
+            "rate_branch": r_val,
+            "rate_klik_bonus": 0.0,
+            "rate_klik_total": r_val,
+            "url": PDF_URL,
+            "last_updated": today,
+            "notes": "scraped via PDF",
+        })
+
+    # 'X mesecev' rows (fallback). Use only if we have no explicit ranges.
+    if not any(r.get("term_unit") == "months" for r in results):
+        seen = set()
+        for m in month_single_re.finditer(text):
+            mo = int(m.group(1))
+            if mo < 1 or mo > 360:
+                continue
+            if mo in seen:
+                continue
+            r_val = _to_float_rate(m.group(2))
+            if r_val is None:
+                continue
+            seen.add(mo)
+            results.append({
+                "id": bank_id,
+                "bank": bank_name,
+                "product_name": f"Depozit {mo}M",
+                "amount_min": amount_min_floor,
+                "amount_max": EXPECTED_MAX_AMOUNT,
+                "amount_currency": "EUR",
+                "min_term": mo,
+                "max_term": mo,
+                "term_unit": "months",
+                "rate_branch": r_val,
+                "rate_klik_bonus": 0.0,
+                "rate_klik_total": r_val,
+                "url": PDF_URL,
+                "last_updated": today,
+                "notes": "scraped via PDF",
+            })
+
+    # 'nad X let' thresholds: convert to month intervals (X*12 .. next-1)
+    thresholds = []
+    for m in over_years_re.finditer(text):
+        y = int(m.group(1))
+        r_val = _to_float_rate(m.group(2))
+        if r_val is None:
+            continue
+        thresholds.append((y * 12, r_val))
+
+    if thresholds:
+        thresholds = sorted({a: r for a, r in thresholds}.items())
+        thr_list = [(int(a), float(r)) for a, r in thresholds]
+        for i, (a, r_val) in enumerate(thr_list):
+            b = (thr_list[i + 1][0] - 1) if i + 1 < len(thr_list) else None
+            results.append({
+                "id": bank_id,
+                "bank": bank_name,
+                "product_name": f"Depozit {a}M" if b is None else f"Depozit {a}–{b}M",
+                "amount_min": amount_min_floor,
+                "amount_max": EXPECTED_MAX_AMOUNT,
+                "amount_currency": "EUR",
+                "min_term": a,
+                "max_term": b,
+                "term_unit": "months",
+                "rate_branch": r_val,
+                "rate_klik_bonus": 0.0,
+                "rate_klik_total": r_val,
+                "url": PDF_URL,
+                "last_updated": today,
+                "notes": "scraped via PDF",
+            })
+
+    # If we parsed nothing, signal failure.
+    if not results:
+        return None
+
+    # Deduplicate
+    dedup = {}
+    for row in results:
+        key = (row.get("term_unit"), row.get("min_term"), row.get("max_term"), row.get(
+            "amount_min"), row.get("amount_max"), row.get("rate_branch"))
+        dedup[key] = row
+    return list(dedup.values())
 
 
 def click_tab_by_text(driver, wait, text):
@@ -266,6 +483,12 @@ def detect_term_and_amount_inputs(driver, wait):
 def scrape_gbkr():
     bank_id = 9
     bank_name = "Gorenjska banka d.d."
+
+    pdf_rows = scrape_gbkr_from_pdf()
+    if pdf_rows:
+        print(f"[OK] GBKR: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
+        return pdf_rows
+    print("[WARN] GBKR: PDF parse ni uspel, fallback na Selenium")
 
     print("Zaganjam GBKR scraper...")
 

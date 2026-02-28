@@ -367,6 +367,35 @@ button[id$="-calc-btn"]:hover,
     .calc-result-card {
         margin-top: 1.5rem;
     }
+
+    .table {
+        font-size: 0.9rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.65rem 0.75rem;
+    }
+
+    .table th:first-child,
+    .table td:first-child {
+        position: sticky;
+        left: 0;
+        background: #ffffff;
+        z-index: 3;
+    }
+
+    .table thead th:first-child {
+        background: var(--bg-light);
+        z-index: 4;
+    }
+}
+
+@media (max-width: 640px) {
+    .px-6 {
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+    }
 }
 
 /* Performance optimizations */
