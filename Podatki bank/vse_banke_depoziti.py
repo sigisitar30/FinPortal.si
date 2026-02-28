@@ -104,6 +104,27 @@ for scraper, p in processes:
     out, err = p.communicate()
     scraper_statuses.append((scraper, p.returncode, out, err))
 
+    # Even on success, surface important source-selection messages (PDF vs fallback).
+    try:
+        otp_html_debug = os.environ.get("OTP_HTML_DEBUG", "").strip() == "1"
+        otp_pdf_debug = os.environ.get("OTP_PDF_DEBUG", "").strip() == "1"
+        bks_pdf_debug = os.environ.get("BKS_PDF_DEBUG", "").strip() == "1"
+        if out and out.strip():
+            for line in out.splitlines():
+                s = line.strip()
+                if not s:
+                    continue
+                if "[WARN]" in s or "[OK]" in s:
+                    print(s)
+                elif otp_html_debug and s.startswith("INFO OTP["):
+                    print(s)
+                elif otp_pdf_debug and s.startswith("[DBG]"):
+                    print(s)
+                elif bks_pdf_debug and s.startswith("[DBG] BKS"):
+                    print(s)
+    except Exception:
+        pass
+
 failed_scrapers = [s for s, code, _,
                    _ in scraper_statuses if code not in (0, None)]
 if failed_scrapers:
@@ -263,6 +284,9 @@ def _diff_metrics(df_now, df_prev, source_file=None):
     # DH je namerno prešel iz Selenium 1-60M (veliko vrstic) na PDF intervale,
     # zato row_count/added/removed niso več stabilne metrike.
     if source_file == "dh_depoziti.csv":
+        return warns
+
+    if source_file == "otp_depoziti.csv":
         return warns
 
     now_rows = len(df_now)

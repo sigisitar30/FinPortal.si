@@ -6,7 +6,10 @@ import re
 import os
 
 URL = "https://www.bksbank.si/fizicne-osebe/varcevanje/varcevanje-vezane-vloge"
-PDF_URL = "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf"
+PDF_URLS = [
+    "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf/9d199de1-8ce0-f5b8-32d1-ba058a29d698?t=1580721816353",
+    "https://www.bksbank.si/documents/33627/145951/OBRESTNE_MERE_ZA_VLOGE.pdf",
+]
 
 # PRIČAKOVANE VREDNOSTI
 EXPECTED_MIN_AMOUNT = 1000
@@ -35,33 +38,166 @@ def scrape_bks_from_pdf():
     except Exception:
         return None
 
-    try:
-        r = requests.get(PDF_URL, headers={"User-Agent": "Mozilla/5.0"}, timeout=30)
-        r.raise_for_status()
-    except Exception:
+    debug_pdf = os.environ.get("BKS_PDF_DEBUG", "").strip() == "1"
+
+    def _try_pdf_urls(candidates):
+        for pdf_url in candidates:
+            try:
+                rr = requests.get(pdf_url, headers={
+                    "User-Agent": "Mozilla/5.0"}, timeout=30)
+                rr.raise_for_status()
+                if rr.content and len(rr.content) > 1000:
+                    return rr, pdf_url
+            except Exception as e:
+                if debug_pdf:
+                    try:
+                        print("[DBG] BKS PDF download error",
+                              {"url": pdf_url, "err": str(e)})
+                    except Exception:
+                        pass
+                continue
+        return None, None
+
+    r, pdf_url_used = _try_pdf_urls(PDF_URLS)
+
+    if r is None or not pdf_url_used:
+        # Auto-discover current PDF link(s) from the BKS page.
+        discovered = []
+        try:
+            page_r = requests.get(URL, headers={
+                "User-Agent": "Mozilla/5.0"}, timeout=30)
+            page_r.raise_for_status()
+            soup = BeautifulSoup(page_r.text or "", "html.parser")
+            for a in soup.select("a[href]"):
+                href = (a.get("href") or "").strip()
+                if not href:
+                    continue
+                if ".pdf" not in href.lower():
+                    continue
+                if href.startswith("//"):
+                    href = "https:" + href
+                elif href.startswith("/"):
+                    href = "https://www.bksbank.si" + href
+                discovered.append(href)
+
+            # Prefer the obvious rate-sheet link(s) if present.
+            preferred = [
+                u for u in discovered if "obrest" in u.lower() and "vlog" in u.lower()]
+            ordered = preferred + [u for u in discovered if u not in preferred]
+
+            if debug_pdf:
+                try:
+                    print("[DBG] BKS discovered pdf links",
+                          {"count": len(ordered)})
+                    for u in ordered[:8]:
+                        print("[DBG] BKS discovered:", u)
+                except Exception:
+                    pass
+
+            r, pdf_url_used = _try_pdf_urls(ordered)
+        except Exception as e:
+            if debug_pdf:
+                try:
+                    print("[DBG] BKS PDF discovery error", {"err": str(e)})
+                except Exception:
+                    pass
+
+    if r is None or not pdf_url_used:
         return None
 
     try:
         with pdfplumber.open(io.BytesIO(r.content)) as pdf:
             text = "\n".join([(p.extract_text() or "") for p in pdf.pages])
-    except Exception:
+    except Exception as e:
+        if debug_pdf:
+            try:
+                print("[DBG] BKS PDF open/extract error",
+                      {"bytes": 0 if not r.content else len(r.content), "err": str(e)})
+            except Exception:
+                pass
         return None
 
     if not text:
+        if debug_pdf:
+            try:
+                print("[DBG] BKS PDF empty text", {
+                      "bytes": 0 if not r.content else len(r.content)})
+            except Exception:
+                pass
         return None
 
+    if debug_pdf:
+        try:
+            print("[DBG] BKS PDF url", pdf_url_used)
+            print("[DBG] BKS PDF extracted", {"text_len": len(text)})
+            head = " ".join(text[:1500].replace(
+                "\r", " ").replace("\n", " ").split())
+            print("[DBG] BKS head:", head)
+        except Exception:
+            pass
+
     # Very tolerant extraction: look for '<term> mesecev ... <rate>' anywhere.
+    b = " ".join((text or "").replace("\r", " ").replace("\n", " ").split())
     scraped_terms = {term: None for term in EXPECTED_TERMS}
     for term in scraped_terms.keys():
+        term_word = r"(?:mesec(?:ev|e|i)?|monate?n?|months?)"
         patterns = [
-            rf"\b{term}\s*mesec(?:ev|e|i)?\b[^0-9%]{{0,40}}(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
-            rf"\b{term}\s*M\b[^0-9%]{{0,40}}(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+            rf"\b{term}\s*{term_word}\b[\s\S]{{0,260}}?(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+            rf"\b{term}\s*M\b[\s\S]{{0,260}}?(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
         ]
         for pat in patterns:
-            m = re.search(pat, text, flags=re.IGNORECASE)
+            m = re.search(pat, b, flags=re.IGNORECASE)
             if m:
                 scraped_terms[term] = _to_float_rate(m.group(1))
                 break
+
+    # Table extraction fallback (some PDFs store the offer matrix primarily as tables).
+    if not any(v is not None for v in scraped_terms.values()):
+        try:
+            with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+                for page in pdf.pages:
+                    for tbl in (page.extract_tables() or []):
+                        for row in (tbl or []):
+                            if not row:
+                                continue
+                            row_txt = " ".join([(c or "") for c in row])
+                            if not row_txt:
+                                continue
+                            row_norm = " ".join(row_txt.split())
+                            for term in scraped_terms.keys():
+                                if scraped_terms[term] is not None:
+                                    continue
+                                term_word = r"(?:mesec(?:ev|e|i)?|monate?n?|months?)"
+                                for pat in [
+                                    rf"\b{term}\s*{term_word}\b[\s\S]{{0,220}}?(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+                                    rf"\b{term}\s*M\b[\s\S]{{0,220}}?(\d{{1,2}}(?:[\.,]\d{{1,4}})?)\s*%?",
+                                ]:
+                                    mm = re.search(
+                                        pat, row_norm, flags=re.IGNORECASE)
+                                    if mm:
+                                        scraped_terms[term] = _to_float_rate(
+                                            mm.group(1))
+                                        break
+        except Exception:
+            pass
+
+    if debug_pdf and not any(v is not None for v in scraped_terms.values()):
+        try:
+            with pdfplumber.open(io.BytesIO(r.content)) as pdf:
+                tables = []
+                for page in pdf.pages[:2]:
+                    tables.extend(page.extract_tables() or [])
+                print("[DBG] BKS tables", {"count": len(tables)})
+                for i, tbl in enumerate(tables[:2]):
+                    sample_rows = []
+                    for rrow in (tbl or [])[:4]:
+                        sample_rows.append(" | ".join(
+                            [(c or "") for c in (rrow or [])]))
+                    print(f"[DBG] BKS table[{i}] sample:")
+                    for sr in sample_rows:
+                        print("[DBG]   ", " ".join(sr.split())[:240])
+        except Exception:
+            pass
 
     found_terms = [t for t, r in scraped_terms.items() if r is not None]
     if not found_terms:
@@ -86,7 +222,7 @@ def scrape_bks_from_pdf():
             "rate_branch": rate,
             "rate_klik_bonus": 0.0,
             "rate_klik_total": rate,
-            "url": PDF_URL,
+            "url": pdf_url_used,
             "last_updated": datetime.today().strftime("%Y-%m-%d"),
             "notes": "scraped via PDF",
         })
