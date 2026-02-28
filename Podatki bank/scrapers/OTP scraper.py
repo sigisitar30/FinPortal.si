@@ -1014,7 +1014,6 @@ def scrape_otp():
         print(f"[OK] OTP: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
 
         regular_rows = []
-        long_special_rows = []
         try:
             with sync_playwright() as p:
                 browser = p.chromium.launch(headless=True)
@@ -1055,33 +1054,16 @@ def scrape_otp():
                     except:
                         pass
 
-                    # Regular long-term rows can coexist on the same page.
-                    # Keep them as REGULAR, but exclude the 12M special-offer bands (handled below).
-                    page_regular = _scrape_visible_tables(
-                        page,
-                        500,
-                        debug_label="long_regular",
-                        source_url=URL_LONG_SPECIAL_RATES,
-                        offer_prefix=None,
-                        offer_notes="scraped via Playwright",
-                    )
-                    for r in page_regular:
-                        try:
-                            if r.get("term_unit") == "months" and int(r.get("min_term")) == 12 and int(r.get("max_term")) == 12:
-                                continue
-                        except Exception:
-                            pass
-                        regular_rows.append(r)
-
-                    # Special offer: only 12M amount bands
-                    long_special_rows = _scrape_visible_tables(
+                    # Treat long-term offers (incl. 12M+) as REGULAR offers.
+                    # OTP web table is the primary source and these rows should not be hidden behind the special toggle.
+                    regular_rows.extend(_scrape_visible_tables(
                         page,
                         500,
                         debug_label="long",
                         source_url=URL_LONG_SPECIAL_RATES,
-                        offer_prefix="POSEBNA PONUDBA",
-                        offer_notes="scraped via Playwright; posebna ponudba",
-                    )
+                        offer_prefix=None,
+                        offer_notes="scraped via Playwright",
+                    ))
                 except Exception as e:
                     print(
                         f"WRN OTP: ni uspelo prebrati posebne ponudbe ({URL_LONG_SPECIAL_RATES}): {e}")
@@ -1093,10 +1075,9 @@ def scrape_otp():
         # Prefer HTML-derived regular rows when available; fallback to PDF regular rows otherwise.
         base_regular = regular_rows if regular_rows else list(pdf_rows)
 
-        # Keep both regular and special rows (UI decides which to show).
         # Only drop exact duplicates (same dict content).
         dedup = {}
-        for row in list(base_regular) + list(long_special_rows):
+        for row in list(base_regular):
             dedup[tuple(sorted(row.items()))] = row
         return list(dedup.values())
 
@@ -1146,8 +1127,8 @@ def scrape_otp():
                 min_floor,
                 debug_label="long",
                 source_url=URL_LONG_SPECIAL_RATES,
-                offer_prefix="POSEBNA PONUDBA",
-                offer_notes="scraped via Playwright; posebna ponudba",
+                offer_prefix=None,
+                offer_notes="scraped via Playwright",
             ))
             print(f"INFO OTP[long]: dodanih vrstic={len(results) - before}")
         except Exception as e:
