@@ -4291,7 +4291,12 @@ function pickDepositOffer(offers, opts) {
 
     if (showSpecial) {
         const specialPick = specialOffers.length ? pickFromPool(specialOffers) : null;
-        if (specialPick) return specialPick;
+        const specialIsRealMatch = !specialPick
+            ? false
+            : (targetTermMonths === null
+                ? Number.isFinite(effRate(specialPick))
+                : Number.isFinite(specialPick.termMonths) && Number.isFinite(effRate(specialPick)));
+        if (specialIsRealMatch) return specialPick;
         const regularPick = regularOffers.length ? pickFromPool(regularOffers) : null;
         if (regularPick) return regularPick;
         return pickFromPool(typedOffers);
