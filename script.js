@@ -4088,102 +4088,84 @@ function pickDepositOffer(offers, opts) {
     };
 
     const typedOffers = Array.isArray(offers) ? offers : [];
-    const offerPoolByType = showSpecial
-        ? typedOffers.filter(o => o && o.isSpecialOffer)
-        : typedOffers.filter(o => o && !o.isSpecialOffer);
-    const offersByType = offerPoolByType.length > 0 ? offerPoolByType : typedOffers;
 
-    const offersByAmount = Number.isFinite(amount)
-        ? offersByType.filter(o => {
-            const minOk = !Number.isFinite(o.min) || amount >= Number(o.min);
-            const maxOk = (o.max === null || o.max === undefined || !Number.isFinite(o.max)) ? true : amount <= Number(o.max);
-            return minOk && maxOk;
-        })
-        : offersByType;
+    const pickFromPool = (pool) => {
+        const offersByAmount = Number.isFinite(amount)
+            ? pool.filter(o => {
+                const minOk = !Number.isFinite(o.min) || amount >= Number(o.min);
+                const maxOk = (o.max === null || o.max === undefined || !Number.isFinite(o.max)) ? true : amount <= Number(o.max);
+                return minOk && maxOk;
+            })
+            : pool;
 
-    const poolOffers = offersByAmount.length > 0 ? offersByAmount : offersByType;
-    const validAll = poolOffers.filter(o => Number.isFinite(effRate(o)) && Number.isFinite(o.termMonths));
-    const monthsOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "months");
-    const daysOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "days");
+        const poolOffers = offersByAmount.length > 0 ? offersByAmount : pool;
+        const validAll = poolOffers.filter(o => Number.isFinite(effRate(o)) && Number.isFinite(o.termMonths));
+        const monthsOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "months");
+        const daysOffers = validAll.filter(o => String(o.termUnit || "").toLowerCase() === "days");
 
-    let valid = validAll;
-    if (targetTermUnit === "months") {
-        if (monthsOffers.length > 0) {
-            const monthMin = (o) => {
-                const v = o && o.termMonthsMin !== null && o.termMonthsMin !== undefined ? Number(o.termMonthsMin) : NaN;
-                return Number.isFinite(v) ? v : Number(o.termMonths);
-            };
-            const minMonthTerm = monthsOffers.reduce((m, o) => {
-                const mm = monthMin(o);
-                return Number.isFinite(mm) && mm < m ? mm : m;
-            }, monthMin(monthsOffers[0]));
-            const minDayMin = daysOffers
-                .map(o => {
-                    const r = toDaysRange(o);
-                    return r.a;
-                })
-                .filter(n => Number.isFinite(n))
-                .reduce((m, n) => (m === null || n < m ? n : m), null);
+        let valid = validAll;
+        if (targetTermUnit === "months") {
+            if (monthsOffers.length > 0) {
+                const monthMin = (o) => {
+                    const v = o && o.termMonthsMin !== null && o.termMonthsMin !== undefined ? Number(o.termMonthsMin) : NaN;
+                    return Number.isFinite(v) ? v : Number(o.termMonths);
+                };
+                const minMonthTerm = monthsOffers.reduce((m, o) => {
+                    const mm = monthMin(o);
+                    return Number.isFinite(mm) && mm < m ? mm : m;
+                }, monthMin(monthsOffers[0]));
+                const minDayMin = daysOffers
+                    .map(o => toDaysRange(o).a)
+                    .filter(n => Number.isFinite(n))
+                    .reduce((m, n) => (m === null || n < m ? n : m), null);
 
-            // Convert months->days for matching day ranges.
-            // Use floor() so boundaries match common bank tables where 3M starts at 91 days.
-            // Keep 1M as 31 days minimum (so banks starting at 31D match 1M).
-            const targetDaysFromMonths = Number.isFinite(targetTermMonths)
-                ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
-                : NaN;
+                const targetDaysFromMonths = Number.isFinite(targetTermMonths)
+                    ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
+                    : NaN;
 
-            // Allow months->days fallback only for banks whose day offers cover typical short terms
-            // (e.g. GBKR 31-365). Do NOT fall back for banks where day offers start at 91 days
-            // (e.g. Addiko), because that would incorrectly show 1M/2M.
-            const allowMonthsToDaysFallback =
-                daysOffers.length > 0 &&
-                Number.isFinite(minMonthTerm) &&
-                Number.isFinite(minDayMin) &&
-                (
-                    // Classic short-term day offers that start at ~1 month (DBS, GBKR, Sparkasse, ...)
-                    Number(minDayMin) <= 31 ||
-                    // If day offers start later, only allow fallback when the selected month term is within day coverage
-                    (Number.isFinite(targetDaysFromMonths) && targetDaysFromMonths >= Number(minDayMin))
-                );
-            if (allowMonthsToDaysFallback && Number.isFinite(targetTermMonths) && Number.isFinite(minMonthTerm) && targetTermMonths < minMonthTerm) {
-                let targetDays = targetDaysFromMonths;
-                if (Number.isFinite(minDayMin) && Number.isFinite(targetDays) && targetDays < minDayMin) {
-                    targetDays = minDayMin;
+                const allowMonthsToDaysFallback =
+                    daysOffers.length > 0 &&
+                    Number.isFinite(minMonthTerm) &&
+                    Number.isFinite(minDayMin) &&
+                    (
+                        Number(minDayMin) <= 31 ||
+                        (Number.isFinite(targetDaysFromMonths) && targetDaysFromMonths >= Number(minDayMin))
+                    );
+                if (allowMonthsToDaysFallback && Number.isFinite(targetTermMonths) && Number.isFinite(minMonthTerm) && targetTermMonths < minMonthTerm) {
+                    let targetDays = targetDaysFromMonths;
+                    if (Number.isFinite(minDayMin) && Number.isFinite(targetDays) && targetDays < minDayMin) {
+                        targetDays = minDayMin;
+                    }
+                    const byRange = daysOffers.find(o => {
+                        const r = toDaysRange(o);
+                        return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
+                    });
+                    if (byRange) return byRange;
+                    return null;
                 }
+                valid = monthsOffers;
+            } else if (daysOffers.length > 0) {
+                const targetDays = Number.isFinite(targetTermMonths)
+                    ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
+                    : NaN;
                 const byRange = daysOffers.find(o => {
                     const r = toDaysRange(o);
                     return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
                 });
                 if (byRange) return byRange;
-                // Strict: if the computed day count for selected months is not covered by ANY day-range,
-                // do not pick an approximate offer (e.g. 31-90 days must NOT match 3M ~ 91+ days).
                 return null;
-            } else {
-                valid = monthsOffers;
             }
-        } else if (daysOffers.length > 0) {
-            // Only day offers exist, but the user selected months.
-            // Match strictly by converting selected months to target days and checking the day interval.
-            const targetDays = Number.isFinite(targetTermMonths)
-                ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
-                : NaN;
-            const byRange = daysOffers.find(o => {
-                const r = toDaysRange(o);
-                return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
-            });
-            if (byRange) return byRange;
-            return null;
-        }
-    } else if (targetTermUnit === "days") {
-        if (daysOffers.length > 0) {
-            const targetDays = Math.round(Number(selectedTerm));
-            const byRange = daysOffers.find(o => {
-                const r = toDaysRange(o);
-                return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
-            });
-            if (byRange) return byRange;
-            return null;
-        } else {
+        } else if (targetTermUnit === "days") {
+            if (daysOffers.length > 0) {
+                const targetDays = Math.round(Number(selectedTerm));
+                const byRange = daysOffers.find(o => {
+                    const r = toDaysRange(o);
+                    return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
+                });
+                if (byRange) return byRange;
+                return null;
+            }
+
             const targetDays = Math.round(Number(selectedTerm));
             if (Number.isFinite(targetDays) && targetDays > 0 && targetDays <= 30) return null;
             if (monthsOffers.length === 0) return null;
@@ -4218,68 +4200,29 @@ function pickDepositOffer(offers, opts) {
             }
             return higherOrEqual.reduce((best, cur) => (cur.termMonths < best.termMonths ? cur : best), higherOrEqual[0]);
         }
-    }
 
-    if (valid.length === 0) return poolOffers[0] || null;
+        if (valid.length === 0) return poolOffers[0] || null;
 
-    if (targetTermMonths !== null) {
-        const inRange = valid.filter(o => String(o.termUnit || "").toLowerCase() === "months" && monthRangeContains(o, targetTermMonths));
-        if (inRange.length === 1) return inRange[0];
-        if (inRange.length > 1) {
-            return inRange.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), inRange[0]);
-        }
-
-        const exactMatches = valid.filter(o => o.termMonths === targetTermMonths);
-        if (exactMatches.length === 1) return exactMatches[0];
-        if (exactMatches.length > 1) {
-            return exactMatches.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), exactMatches[0]);
-        }
-
-        const bankName = String(valid[0]?.bank ?? offers[0]?.bank ?? "").trim();
-        const useFloor = bankName === "BKS Bank AG";
-        const useCeiling = bankName === "Addiko Bank d.d.";
-
-        const minAvailableTerm = valid.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), valid[0].termMonths);
-        if (Number.isFinite(minAvailableTerm) && targetTermMonths < minAvailableTerm) {
-            const minOffer = valid.find(o => o.termMonths === minAvailableTerm) || valid[0];
-            return {
-                ...minOffer,
-                rateBase: NaN,
-                rateSpecial: null,
-                termMonths: null,
-                term: ""
-            };
-        }
-
-        if (useCeiling) {
-            const higherOrEqual = valid.filter(o => o.termMonths >= targetTermMonths);
-            if (higherOrEqual.length === 0) {
-                const maxTerm = valid.reduce((m, o) => (o.termMonths > m ? o.termMonths : m), valid[0].termMonths);
-                return valid.find(o => o.termMonths === maxTerm) || valid[0];
+        if (targetTermMonths !== null) {
+            const inRange = valid.filter(o => String(o.termUnit || "").toLowerCase() === "months" && monthRangeContains(o, targetTermMonths));
+            if (inRange.length === 1) return inRange[0];
+            if (inRange.length > 1) {
+                return inRange.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), inRange[0]);
             }
-            return higherOrEqual.reduce((best, cur) => (cur.termMonths < best.termMonths ? cur : best), higherOrEqual[0]);
-        }
 
-        const category = termTypeLabel(targetTermMonths);
-        const sameCategory = valid.filter(o => termTypeLabel(o.termMonths) === category);
-        const pool = useFloor ? valid : (sameCategory.length > 0 ? sameCategory : valid);
+            const exactMatches = valid.filter(o => o.termMonths === targetTermMonths);
+            if (exactMatches.length === 1) return exactMatches[0];
+            if (exactMatches.length > 1) {
+                return exactMatches.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), exactMatches[0]);
+            }
 
-        const minTerm = pool.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), pool[0].termMonths);
-        if (Number.isFinite(minTerm) && targetTermMonths < minTerm) {
-            const minOffer = pool.find(o => o.termMonths === minTerm) || pool[0];
-            return {
-                ...minOffer,
-                rateBase: NaN,
-                rateSpecial: null,
-                termMonths: null,
-                term: ""
-            };
-        }
+            const bankName = String(valid[0]?.bank ?? offers[0]?.bank ?? "").trim();
+            const useFloor = bankName === "BKS Bank AG";
+            const useCeiling = bankName === "Addiko Bank d.d.";
 
-        if (useFloor) {
-            const lowerOrEqual = pool.filter(o => o.termMonths <= targetTermMonths);
-            if (lowerOrEqual.length === 0) {
-                const minOffer = pool.find(o => o.termMonths === minTerm) || pool[0];
+            const minAvailableTerm = valid.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), valid[0].termMonths);
+            if (Number.isFinite(minAvailableTerm) && targetTermMonths < minAvailableTerm) {
+                const minOffer = valid.find(o => o.termMonths === minAvailableTerm) || valid[0];
                 return {
                     ...minOffer,
                     rateBase: NaN,
@@ -4288,21 +4231,75 @@ function pickDepositOffer(offers, opts) {
                     term: ""
                 };
             }
-            return lowerOrEqual.reduce((best, cur) => {
-                if (cur.termMonths !== best.termMonths) return cur.termMonths > best.termMonths ? cur : best;
+
+            if (useCeiling) {
+                const higherOrEqual = valid.filter(o => o.termMonths >= targetTermMonths);
+                if (higherOrEqual.length === 0) {
+                    const maxTerm = valid.reduce((m, o) => (o.termMonths > m ? o.termMonths : m), valid[0].termMonths);
+                    return valid.find(o => o.termMonths === maxTerm) || valid[0];
+                }
+                return higherOrEqual.reduce((best, cur) => (cur.termMonths < best.termMonths ? cur : best), higherOrEqual[0]);
+            }
+
+            const category = termTypeLabel(targetTermMonths);
+            const sameCategory = valid.filter(o => termTypeLabel(o.termMonths) === category);
+            const pool2 = useFloor ? valid : (sameCategory.length > 0 ? sameCategory : valid);
+
+            const minTerm = pool2.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), pool2[0].termMonths);
+            if (Number.isFinite(minTerm) && targetTermMonths < minTerm) {
+                const minOffer = pool2.find(o => o.termMonths === minTerm) || pool2[0];
+                return {
+                    ...minOffer,
+                    rateBase: NaN,
+                    rateSpecial: null,
+                    termMonths: null,
+                    term: ""
+                };
+            }
+
+            if (useFloor) {
+                const lowerOrEqual = pool2.filter(o => o.termMonths <= targetTermMonths);
+                if (lowerOrEqual.length === 0) {
+                    const minOffer = pool2.find(o => o.termMonths === minTerm) || pool2[0];
+                    return {
+                        ...minOffer,
+                        rateBase: NaN,
+                        rateSpecial: null,
+                        termMonths: null,
+                        term: ""
+                    };
+                }
+                return lowerOrEqual.reduce((best, cur) => {
+                    if (cur.termMonths !== best.termMonths) return cur.termMonths > best.termMonths ? cur : best;
+                    return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
+                }, lowerOrEqual[0]);
+            }
+
+            return pool2.reduce((best, cur) => {
+                const bestDiff = Math.abs(best.termMonths - targetTermMonths);
+                const curDiff = Math.abs(cur.termMonths - targetTermMonths);
+                if (curDiff !== bestDiff) return curDiff < bestDiff ? cur : best;
                 return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
-            }, lowerOrEqual[0]);
+            }, pool2[0]);
         }
 
-        return pool.reduce((best, cur) => {
-            const bestDiff = Math.abs(best.termMonths - targetTermMonths);
-            const curDiff = Math.abs(cur.termMonths - targetTermMonths);
-            if (curDiff !== bestDiff) return curDiff < bestDiff ? cur : best;
-            return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
-        }, pool[0]);
+        return valid.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), valid[0]);
+    };
+
+    const regularOffers = typedOffers.filter(o => o && !o.isSpecialOffer);
+    const specialOffers = typedOffers.filter(o => o && o.isSpecialOffer);
+
+    if (showSpecial) {
+        const specialPick = specialOffers.length ? pickFromPool(specialOffers) : null;
+        if (specialPick) return specialPick;
+        const regularPick = regularOffers.length ? pickFromPool(regularOffers) : null;
+        if (regularPick) return regularPick;
+        return pickFromPool(typedOffers);
     }
 
-    return valid.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), valid[0]);
+    const regularPick = regularOffers.length ? pickFromPool(regularOffers) : null;
+    if (regularPick) return regularPick;
+    return pickFromPool(typedOffers);
 }
 
 function renderDepositTable() {
