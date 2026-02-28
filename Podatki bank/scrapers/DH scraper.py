@@ -176,6 +176,8 @@ def _scrape_dh_from_pdf():
                 "rate_branch": rate,
                 "rate_klik_bonus": 0.0,
                 "rate_klik_total": rate,
+                "offer_type": "regular",
+                "source": "pdf",
                 "url": PDF_URL,
                 "last_updated": today,
                 "notes": notes_text,
@@ -217,6 +219,7 @@ def _scrape_dh_from_pdf():
                 "rate_branch": rate,
                 "rate_klik_bonus": 0.0,
                 "rate_klik_total": rate,
+                "offer_type": "regular",
                 "url": PDF_URL,
                 "last_updated": today,
                 "notes": notes_text,
@@ -380,6 +383,14 @@ def save_to_csv(rows, filename="dh_depoziti.csv"):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)
 
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
+
     fieldnames = [
         "id",
         "bank",
@@ -393,6 +404,8 @@ def save_to_csv(rows, filename="dh_depoziti.csv"):
         "rate_branch",
         "rate_klik_bonus",
         "rate_klik_total",
+        "offer_type",
+        "source",
         "url",
         "last_updated",
         "notes",

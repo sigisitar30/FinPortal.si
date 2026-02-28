@@ -141,6 +141,8 @@ def scrape_sparkasse():
             "rate_branch": rb,
             "rate_klik_bonus": ro - rb,
             "rate_klik_total": ro,
+            "offer_type": "regular",
+            "source": "web",
             "url": URL,
             "last_updated": datetime.today().strftime("%Y-%m-%d"),
             "notes": "scraped from Sparkasse GEM JSON tabela",
@@ -187,6 +189,14 @@ def save_to_csv(rows, filename="sparkasse_depoziti.csv"):
     if not rows:
         print("Ni podatkov za zapis v CSV.")
         return
+
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)

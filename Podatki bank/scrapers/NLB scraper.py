@@ -218,6 +218,7 @@ def _scrape_nlb_from_pdf():
                 "rate_branch": round(float(branch), 4),
                 "rate_klik_bonus": klik_bonus,
                 "rate_klik_total": round(float(klik_total), 4),
+                "offer_type": "regular",
                 "url": PDF_URL,
                 "last_updated": today,
                 "notes": "scraped via PDF",
@@ -292,6 +293,8 @@ def _scrape_nlb_from_api():
             "rate_branch": poslovalnica,
             "rate_klik_bonus": klik_pribitek,
             "rate_klik_total": klik,
+            "offer_type": "regular",
+            "source": "api",
             "url": BASE_CALC,
             "last_updated": datetime.today().strftime("%Y-%m-%d"),
             "notes": "scraped from NLB API (Klik obrestna mera)"
@@ -334,6 +337,14 @@ def save_to_csv(rows, filename="nlb_depoziti.csv"):
         print("⚠ Ni podatkov za zapis v CSV.")
         return
 
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "api" if ("api" in u or "calc" in u or "calculator" in u) else (
+                "pdf" if (".pdf" in u or "downloadfile" in u or "fileid" in u) else "web")
+
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)
 
@@ -350,6 +361,8 @@ def save_to_csv(rows, filename="nlb_depoziti.csv"):
         "rate_branch",
         "rate_klik_bonus",
         "rate_klik_total",
+        "offer_type",
+        "source",
         "url",
         "last_updated",
         "notes",

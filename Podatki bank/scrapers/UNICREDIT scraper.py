@@ -540,6 +540,7 @@ def scrape_unicredit_from_pdf():
             "rate_branch": rb,
             "rate_klik_bonus": ro - rb,
             "rate_klik_total": ro,
+            "offer_type": "regular",
             "url": PDF_URL,
             "last_updated": today,
             "notes": "scraped from UniCredit PDF",
@@ -798,6 +799,7 @@ def scrape_unicredit():
                         "rate_branch": rb,
                         "rate_klik_bonus": ro - rb,
                         "rate_klik_total": ro,
+                        "offer_type": "regular",
                         "url": URL,
                         "last_updated": datetime.today().strftime("%Y-%m-%d"),
                         "notes": notes,
@@ -823,6 +825,7 @@ def scrape_unicredit():
                 "rate_branch": rb,
                 "rate_klik_bonus": ro - rb,
                 "rate_klik_total": ro,
+                "offer_type": "regular",
                 "url": URL,
                 "last_updated": datetime.today().strftime("%Y-%m-%d"),
                 "notes": notes,
@@ -878,10 +881,25 @@ def save_to_csv(rows, filename="unicredit_depoziti.csv"):
         print("Ni podatkov za zapis v CSV.")
         return
 
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
+
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)
 
     fieldnames = [k for k in rows[0].keys() if k != "key"]
+    if "source" not in fieldnames:
+        # Keep deterministic ordering: place source next to offer_type when possible.
+        try:
+            i = fieldnames.index("offer_type")
+            fieldnames.insert(i + 1, "source")
+        except Exception:
+            fieldnames.append("source")
 
     with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=";")

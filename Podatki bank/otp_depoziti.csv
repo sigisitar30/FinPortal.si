@@ -1,22 +1,19 @@
-id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes
-2;OTP banka;Depozit 8-14 dni;500;15000;EUR;8;14;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 15-30 dni;500;15000;EUR;15;30;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 31-90 dni;500;15000;EUR;31;90;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 91-180 dni;500;15000;EUR;91;180;days;0.6;0.0;0.6;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 8-14 dni;15001;50000;EUR;8;14;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 15-30 dni;15001;50000;EUR;15;30;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 31-90 dni;15001;50000;EUR;31;90;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 91-180 dni;15001;50000;EUR;91;180;days;0.6;0.0;0.6;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 8-14 dni;50001;;EUR;8;14;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 15-30 dni;50001;;EUR;15;30;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 31-90 dni;50001;;EUR;31;90;days;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;Depozit 91-180 dni;50001;;EUR;91;180;days;0.6;0.0;0.6;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;scraped via PDF
-2;OTP banka;POSEBNA PONUDBA - Depozit 181-365 dni;500;;EUR;181;365;days;0.7;0.0;0.7;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 12M;500;;EUR;12;12;months;0.7;0.0;0.7;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 12-18M;500;;EUR;12;18;months;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 18-36M;500;;EUR;18;36;months;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 36-60M;500;;EUR;36;60;months;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 60-120M;500;;EUR;60;120;months;0.01;0.0;0.01;https://www.otpbanka.si/downloadfile.ashx?fileid=329074;2026-02-28;"scraped via PDF; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 12M;500;50000;EUR;12;12;months;1.5;0.0;1.5;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 12M;50000;100000;EUR;12;12;months;1.5;0.0;1.5;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"
-2;OTP banka;POSEBNA PONUDBA - Depozit 12M;100000;;EUR;12;12;months;1.5;0.0;1.5;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"
+id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;offer_type;url;last_updated;notes
+2;OTP banka;Depozit 8-14 dni;500;15000;EUR;8;14;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 8-14 dni;15000;50000;EUR;8;14;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 8-14 dni;50000;;EUR;8;14;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 15-30 dni;500;15000;EUR;15;30;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 15-30 dni;15000;50000;EUR;15;30;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 15-30 dni;50000;;EUR;15;30;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 31-90 dni;500;15000;EUR;31;90;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 31-90 dni;15000;50000;EUR;31;90;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 31-90 dni;50000;;EUR;31;90;days;0.01;0.0;0.01;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 91-180 dni;500;15000;EUR;91;180;days;0.5;0.0;0.5;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 91-180 dni;15000;50000;EUR;91;180;days;0.5;0.0;0.5;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 91-180 dni;50000;;EUR;91;180;days;0.5;0.0;0.5;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 181-365 dni;500;15000;EUR;181;365;days;0.75;0.0;0.75;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 181-365 dni;15000;50000;EUR;181;365;days;0.75;0.0;0.75;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;Depozit 181-365 dni;50000;;EUR;181;365;days;0.75;0.0;0.75;regular;https://www.otpbanka.si/obrestne-mere-kratkorocni-depozit;2026-02-28;scraped via Playwright
+2;OTP banka;POSEBNA PONUDBA - Depozit 12M;500;50000;EUR;12;12;months;1.5;0.0;1.5;special;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"
+2;OTP banka;POSEBNA PONUDBA - Depozit 12M;50000;100000;EUR;12;12;months;1.5;0.0;1.5;special;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"
+2;OTP banka;POSEBNA PONUDBA - Depozit 12M;100000;;EUR;12;12;months;1.5;0.0;1.5;special;https://www.otpbanka.si/obrestne-mere-dolgorocni-depoziti-s-fiksno-obrestno-mero-posebna-ponudba;2026-02-28;"scraped via Playwright; posebna ponudba"

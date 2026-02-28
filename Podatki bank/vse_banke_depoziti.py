@@ -148,7 +148,8 @@ REQUIRED_COLUMNS = [
     "amount_min", "amount_max", "amount_currency",
     "min_term", "max_term", "term_unit",
     "rate_branch", "rate_klik_bonus", "rate_klik_total",
-    "url", "last_updated", "notes", "offer_type"
+    "url", "last_updated", "notes", "offer_type",
+    "source"
 ]
 
 
@@ -219,6 +220,13 @@ def _validate_invariants(df, source_file):
         if bad_offer.any():
             errs.append(
                 "offer_type ima neveljavne vrednosti (dovoljeno: regular/special)")
+
+    if "source" in df.columns:
+        bad_source = ~df["source"].astype(
+            str).str.lower().isin(["pdf", "web", "api"])
+        if bad_source.any():
+            errs.append(
+                "source ima neveljavne vrednosti (dovoljeno: pdf/web/api)")
 
     if source_file == "otp_depoziti.csv":
         otp_months = df["term_unit"] == "months"

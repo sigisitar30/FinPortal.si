@@ -109,6 +109,8 @@ def scrape_intesa():
                 "rate_branch": entry["single"],
                 "rate_klik_bonus": 0.0,
                 "rate_klik_total": entry["single"],
+                "offer_type": "regular",
+                "source": "pdf",
                 "url": PDF_URL,
                 "last_updated": datetime.today().strftime("%d/%m/%Y"),
                 "notes": "redna ponudba"
@@ -137,10 +139,33 @@ def scrape_intesa():
                 "rate_branch": base_rate,
                 "rate_klik_bonus": klik_bonus,
                 "rate_klik_total": klik_total,
+                "offer_type": "regular",
+                "source": "pdf",
                 "url": PDF_URL,
                 "last_updated": datetime.today().strftime("%d/%m/%Y"),
                 "notes": "redna ponudba"
             })
+
+            if special_rate is not None and abs(float(special_rate) - float(base_rate)) > 1e-9:
+                results.append({
+                    "id": BANK_ID,
+                    "bank": BANK_NAME,
+                    "product_name": f"POSEBNA PONUDBA - Depozit {month}M",
+                    "amount_min": 300,
+                    "amount_max": AMOUNT_BREAKPOINT,
+                    "amount_currency": "EUR",
+                    "min_term": month,
+                    "max_term": month,
+                    "term_unit": "months",
+                    "rate_branch": float(special_rate),
+                    "rate_klik_bonus": 0.0,
+                    "rate_klik_total": float(special_rate),
+                    "offer_type": "special",
+                    "source": "pdf",
+                    "url": PDF_URL,
+                    "last_updated": datetime.today().strftime("%d/%m/%Y"),
+                    "notes": "posebna ponudba",
+                })
 
             if "high" in entry:
                 base_rate = entry["high"]
@@ -163,10 +188,33 @@ def scrape_intesa():
                     "rate_branch": base_rate,
                     "rate_klik_bonus": klik_bonus,
                     "rate_klik_total": klik_total,
+                    "offer_type": "regular",
+                    "source": "pdf",
                     "url": PDF_URL,
                     "last_updated": datetime.today().strftime("%d/%m/%Y"),
                     "notes": "redna ponudba"
                 })
+
+                if special_rate is not None and abs(float(special_rate) - float(base_rate)) > 1e-9:
+                    results.append({
+                        "id": BANK_ID,
+                        "bank": BANK_NAME,
+                        "product_name": f"POSEBNA PONUDBA - Depozit {month}M",
+                        "amount_min": AMOUNT_BREAKPOINT,
+                        "amount_max": 100000,
+                        "amount_currency": "EUR",
+                        "min_term": month,
+                        "max_term": month,
+                        "term_unit": "months",
+                        "rate_branch": float(special_rate),
+                        "rate_klik_bonus": 0.0,
+                        "rate_klik_total": float(special_rate),
+                        "offer_type": "special",
+                        "source": "pdf",
+                        "url": PDF_URL,
+                        "last_updated": datetime.today().strftime("%d/%m/%Y"),
+                        "notes": "posebna ponudba",
+                    })
 
     print(f"✓ Najdenih zapisov: {len(results)}")
     return results
@@ -181,8 +229,17 @@ def save_to_csv(rows, filename="intesa_depoziti.csv"):
         "amount_min", "amount_max", "amount_currency",
         "min_term", "max_term", "term_unit",
         "rate_branch", "rate_klik_bonus", "rate_klik_total",
-        "url", "last_updated", "notes"
+        "offer_type", "source", "url", "last_updated", "notes"
     ]
+
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "special" if "posebna" in str(
+                r.get("notes") or "").lower() else "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
 
     with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=";")

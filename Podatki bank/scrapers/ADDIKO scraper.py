@@ -267,7 +267,7 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
     amount_max = int(EXPECTED_MAX_AMOUNT)
     out = []
 
-    def _row(product_name, min_term, max_term, term_unit, rate_branch, rate_klik_total, notes):
+    def _row(product_name, min_term, max_term, term_unit, rate_branch, rate_klik_total, notes, offer_type):
         out.append(
             {
                 "id": bank_id,
@@ -282,6 +282,7 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
                 "rate_branch": float(rate_branch),
                 "rate_klik_bonus": float(rate_klik_total) - float(rate_branch),
                 "rate_klik_total": float(rate_klik_total),
+                "offer_type": offer_type,
                 "url": ADDICO_PDF_URL,
                 "last_updated": today,
                 "notes": notes,
@@ -290,7 +291,7 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
 
     if rate_91_180 is not None:
         _row("Kratkoročni evrski depozit 91–180 dni", 91, 180,
-             "days", rate_91_180, rate_91_180, "redna ponudba")
+             "days", rate_91_180, rate_91_180, "redna ponudba", "regular")
 
         # Align month-based buckets to the PDF day ranges.
         # 91–180 days ~= 3–5 months
@@ -302,10 +303,11 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
             rate_91_180,
             rate_91_180,
             "redna ponudba (3-5M derived from 91-180 days)",
+            "regular",
         )
     if rate_181_270 is not None:
         _row("Kratkoročni evrski depozit 181–270 dni", 181, 270,
-             "days", rate_181_270, rate_181_270, "redna ponudba")
+             "days", rate_181_270, rate_181_270, "redna ponudba", "regular")
 
         # 181–270 days ~= 6–8 months
         _row(
@@ -316,10 +318,11 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
             rate_181_270,
             rate_181_270,
             "redna ponudba (6-8M derived from 181-270 days)",
+            "regular",
         )
     if rate_271_365 is not None:
         _row("Kratkoročni evrski depozit 271 dni–1 leto", 271, 365,
-             "days", rate_271_365, rate_271_365, "redna ponudba")
+             "days", rate_271_365, rate_271_365, "redna ponudba", "regular")
 
         # 271–365 days ~= 9–11 months
         _row(
@@ -330,18 +333,19 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
             rate_271_365,
             rate_271_365,
             "redna ponudba (9-11M derived from 271-365 days)",
+            "regular",
         )
 
     # PDF uses "nad" (strictly greater) thresholds; approximate with next whole month ranges.
     if rate_long_1_2 is not None:
         _row("Dolgoročni evrski depozit >1–2 leti", 12, 23,
-             "months", rate_long_1_2, rate_long_1_2, "redna ponudba")
+             "months", rate_long_1_2, rate_long_1_2, "redna ponudba", "regular")
     if rate_long_2_3 is not None:
         _row("Dolgoročni evrski depozit >2–3 leta", 24, 36,
-             "months", rate_long_2_3, rate_long_2_3, "redna ponudba")
+             "months", rate_long_2_3, rate_long_2_3, "redna ponudba", "regular")
     if rate_long_3_5 is not None:
         _row("Dolgoročni evrski depozit >3–5 let", 37, 60, "months",
-             rate_long_3_5, rate_long_3_5, "redna ponudba")
+             rate_long_3_5, rate_long_3_5, "redna ponudba", "regular")
 
     if rate_promo_1_5_2 is not None:
         # promotional/special
@@ -353,6 +357,7 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
             rate_long_1_2 if rate_long_1_2 is not None else rate_promo_1_5_2,
             rate_promo_1_5_2,
             "akcijska ponudba",
+            "special",
         )
 
     return out
@@ -513,6 +518,8 @@ def scrape_addiko():
                 "rate_branch": rate,
                 "rate_klik_bonus": 0.0,
                 "rate_klik_total": rate,
+                "offer_type": "regular",
+                "source": "pdf" if (".pdf" in str(csv_url).lower() or "downloadfile" in str(csv_url).lower() or "fileid" in str(csv_url).lower()) else "web",
                 "url": csv_url,
                 "last_updated": datetime.today().strftime("%Y-%m-%d"),
                 "notes": "redna ponudba" if term != 3 else "redna ponudba (3M map->6M)"
@@ -525,6 +532,15 @@ def scrape_addiko():
 def save_to_csv(rows, filename="addiko_depoziti.csv"):
     if not rows:
         return
+
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "special" if "akcij" in str(
+                r.get("notes") or "").lower() else "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
 
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     filename = os.path.join(base_dir, filename)
@@ -542,6 +558,8 @@ def save_to_csv(rows, filename="addiko_depoziti.csv"):
         "rate_branch",
         "rate_klik_bonus",
         "rate_klik_total",
+        "offer_type",
+        "source",
         "url",
         "last_updated",
         "notes",

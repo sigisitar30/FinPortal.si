@@ -206,6 +206,7 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
                     "notes": "scraped via PDF",
@@ -234,7 +235,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 181-365 dni",
+                    "product_name": "Depozit 181-365 dni",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -244,9 +245,10 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         m = re.search(
@@ -257,7 +259,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 12M",
+                    "product_name": "Depozit 12M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -267,9 +269,10 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         m = re.search(
@@ -280,7 +283,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 12-18M",
+                    "product_name": "Depozit 12-18M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -290,9 +293,10 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         m = re.search(
@@ -303,7 +307,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 18-36M",
+                    "product_name": "Depozit 18-36M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -313,9 +317,10 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         m = re.search(
@@ -326,7 +331,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 36-60M",
+                    "product_name": "Depozit 36-60M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -336,9 +341,10 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         m = re.search(
@@ -349,7 +355,7 @@ def scrape_otp_from_pdf():
                 out.append({
                     "id": bank_id,
                     "bank": bank_name,
-                    "product_name": "POSEBNA PONUDBA - Depozit 60-120M",
+                    "product_name": "Depozit 60-120M",
                     "amount_min": int(min_floor),
                     "amount_max": None,
                     "amount_currency": "EUR",
@@ -359,17 +365,17 @@ def scrape_otp_from_pdf():
                     "rate_branch": rate,
                     "rate_klik_bonus": 0.0,
                     "rate_klik_total": rate,
+                    "offer_type": "regular",
                     "url": PDF_URL,
                     "last_updated": today,
-                    "notes": "scraped via PDF; posebna ponudba",
+                    "notes": "scraped via PDF",
                 })
 
         return out
 
     structured = []
     structured.extend(_structured_parse_poslovalnice(text))
-    structured.extend(_structured_parse_special_offer(text))
-    if len(structured) >= 12:
+    if len(structured) >= 9:
         dedup = {}
         for row in structured:
             k = (
@@ -669,6 +675,7 @@ def scrape_otp_from_pdf():
                                 "rate_branch": rate,
                                 "rate_klik_bonus": 0.0,
                                 "rate_klik_total": rate,
+                                "offer_type": "regular",
                                 "url": PDF_URL,
                                 "last_updated": today,
                                 "notes": "scraped via PDF",
@@ -933,6 +940,15 @@ def scrape_otp():
                 if min_term is None:
                     continue
 
+                # OTP long-term special offer page contains multiple long-term tables.
+                # We only want the dedicated special-offer product (the 12M fixed-term bands).
+                if offer_prefix:
+                    try:
+                        if unit != "months" or int(min_term) != 12 or int(max_term) != 12:
+                            continue
+                    except Exception:
+                        continue
+
                 amount_min, amount_max = parse_amount(amount)
                 if amount_min is None:
                     amount_min = 0
@@ -942,9 +958,21 @@ def scrape_otp():
                     amount_max = None
 
                 if unit == "months":
-                    product_name = f"Depozit {min_term}M"
+                    try:
+                        if int(max_term) != int(min_term):
+                            product_name = f"Depozit {min_term}-{max_term}M"
+                        else:
+                            product_name = f"Depozit {min_term}M"
+                    except Exception:
+                        product_name = f"Depozit {min_term}M"
                 else:
-                    product_name = f"Depozit {min_term}-{max_term} dni"
+                    try:
+                        if int(max_term) != int(min_term):
+                            product_name = f"Depozit {min_term}-{max_term} dni"
+                        else:
+                            product_name = f"Depozit {min_term} dni"
+                    except Exception:
+                        product_name = f"Depozit {min_term}-{max_term} dni"
 
                 if offer_prefix:
                     product_name = f"{offer_prefix} - {product_name}"
@@ -962,6 +990,8 @@ def scrape_otp():
                     "rate_branch": rate_branch,
                     "rate_klik_bonus": rate_klik_bonus,
                     "rate_klik_total": rate_klik_total,
+                    "offer_type": "special" if offer_prefix else "regular",
+                    "source": "web",
                     "url": source_url or URL,
                     "last_updated": datetime.today().strftime("%Y-%m-%d"),
                     "notes": offer_notes or "scraped via Playwright",
@@ -983,6 +1013,7 @@ def scrape_otp():
     if pdf_rows and len(pdf_rows) >= MIN_PDF_ROWS:
         print(f"[OK] OTP: PDF vir uporabljen ({len(pdf_rows)} zapisov)")
 
+        regular_rows = []
         long_special_rows = []
         try:
             with sync_playwright() as p:
@@ -993,6 +1024,22 @@ def scrape_otp():
                     ignore_https_errors=True,
                 )
                 page = context.new_page()
+
+                # 1) Regular offers from official HTML pages (preferred when present)
+                try:
+                    page.goto(URL_SHORT_RATES, wait_until="domcontentloaded")
+                    page.wait_for_timeout(800)
+                    _prepare_rates_page(page)
+                    regular_rows.extend(_scrape_visible_tables(
+                        page,
+                        500,
+                        debug_label="short",
+                        source_url=URL_SHORT_RATES,
+                        offer_prefix=None,
+                        offer_notes="scraped via Playwright",
+                    ))
+                except Exception:
+                    pass
 
                 try:
                     page.goto(URL_LONG_SPECIAL_RATES,
@@ -1008,6 +1055,25 @@ def scrape_otp():
                     except:
                         pass
 
+                    # Regular long-term rows can coexist on the same page.
+                    # Keep them as REGULAR, but exclude the 12M special-offer bands (handled below).
+                    page_regular = _scrape_visible_tables(
+                        page,
+                        500,
+                        debug_label="long_regular",
+                        source_url=URL_LONG_SPECIAL_RATES,
+                        offer_prefix=None,
+                        offer_notes="scraped via Playwright",
+                    )
+                    for r in page_regular:
+                        try:
+                            if r.get("term_unit") == "months" and int(r.get("min_term")) == 12 and int(r.get("max_term")) == 12:
+                                continue
+                        except Exception:
+                            pass
+                        regular_rows.append(r)
+
+                    # Special offer: only 12M amount bands
                     long_special_rows = _scrape_visible_tables(
                         page,
                         500,
@@ -1018,17 +1084,19 @@ def scrape_otp():
                     )
                 except Exception as e:
                     print(
-                        f"WRN OTP: ni uspelo prebrati posebne ponudbe ({URL_LONG_SPECIAL_RATES}): {e}"
-                    )
+                        f"WRN OTP: ni uspelo prebrati posebne ponudbe ({URL_LONG_SPECIAL_RATES}): {e}")
 
                 browser.close()
         except Exception:
             pass
 
+        # Prefer HTML-derived regular rows when available; fallback to PDF regular rows otherwise.
+        base_regular = regular_rows if regular_rows else list(pdf_rows)
+
         # Keep both regular and special rows (UI decides which to show).
         # Only drop exact duplicates (same dict content).
         dedup = {}
-        for row in list(pdf_rows) + list(long_special_rows):
+        for row in list(base_regular) + list(long_special_rows):
             dedup[tuple(sorted(row.items()))] = row
         return list(dedup.values())
 
@@ -1153,8 +1221,18 @@ def save_to_csv(rows, filename="otp_depoziti.csv"):
         "amount_min", "amount_max", "amount_currency",
         "min_term", "max_term", "term_unit",
         "rate_branch", "rate_klik_bonus", "rate_klik_total",
+        "offer_type",
+        "source",
         "url", "last_updated", "notes"
     ]
+
+    for r in rows:
+        if isinstance(r, dict) and not r.get("offer_type"):
+            r["offer_type"] = "regular"
+        if isinstance(r, dict) and not r.get("source"):
+            u = str(r.get("url") or "").lower()
+            r["source"] = "pdf" if (
+                ".pdf" in u or "downloadfile" in u or "fileid" in u) else "web"
 
     with open(filename, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames, delimiter=";")
