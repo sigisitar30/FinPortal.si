@@ -16,7 +16,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "61-90-days": {
@@ -36,7 +36,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "91-120-days": {
@@ -56,7 +56,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "121-150-days": {
@@ -76,7 +76,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "151-180-days": {
@@ -96,7 +96,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "181-210-days": {
@@ -116,7 +116,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "211-240-days": {
@@ -136,7 +136,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "241-270-days": {
@@ -156,7 +156,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "271-300-days": {
@@ -176,7 +176,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "301-330-days": {
@@ -196,7 +196,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "331-365-days": {
@@ -216,7 +216,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "12-14-months": {
@@ -236,7 +236,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "14-17-months": {
@@ -256,7 +256,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "17-20-months": {
@@ -276,7 +276,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "20-23-months": {
@@ -296,7 +296,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "23-35-months": {
@@ -316,7 +316,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "35-47-months": {
@@ -336,7 +336,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "47-59-months": {
@@ -356,7 +356,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   },
   "59-59-months": {
@@ -376,7 +376,7 @@
     "offer_type": "regular",
     "source": "web",
     "url": "https://www.sparkasse.si/sl/prebivalstvo/ceniki-in-obrestne-mere/varcevanja",
-    "last_updated": "2026-02-28",
+    "last_updated": "2026-03-01",
     "notes": "scraped from Sparkasse GEM JSON tabela"
   }
 }
