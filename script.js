@@ -3519,11 +3519,13 @@ function getDepositCompareTermMonths() {
 
     if (!Number.isFinite(term) || term <= 0) return null;
     if (unit === "days") {
-        // 1M = 30 days (threshold-based, not nearest).
+        // Map day input to the starting day-bucket for months:
+        // 31–60d -> 1M, 61–90d -> 2M, 91–120d -> 3M, ...
         const days = Math.round(Number(term));
         if (!Number.isFinite(days) || days <= 0) return null;
         if (days < 30) return null;
-        return Math.max(1, Math.floor(days / 30.4167));
+        if (days < 31) return null;
+        return Math.max(1, 1 + Math.floor((days - 31) / 30));
     }
     return term;
 }
@@ -4153,6 +4155,15 @@ function pickDepositOffer(offers, opts) {
         return 30 * (whole - 1) + 31;
     };
 
+    const daysToMonthBucket = (days) => {
+        const d = Number(days);
+        if (!Number.isFinite(d) || d <= 0) return NaN;
+        const whole = Math.floor(d);
+        if (whole < 31) return NaN;
+        // Map 31–60d -> 1M, 61–90d -> 2M, 91–120d -> 3M, ...
+        return Math.max(1, 1 + Math.floor((whole - 31) / 30));
+    };
+
     const toDaysRange = (o) => {
         if (!o) return { a: null, b: null };
         const a = o.termDaysMin === null || o.termDaysMin === undefined ? null : Number(o.termDaysMin);
@@ -4234,19 +4245,13 @@ function pickDepositOffer(offers, opts) {
             if (monthsOffers.length === 0) return null;
 
             const targetMonths = Number.isFinite(targetDays) && targetDays > 0
-                ? Math.max(1, Math.floor(targetDays / 30.4167))
+                ? daysToMonthBucket(targetDays)
                 : NaN;
             if (!Number.isFinite(targetMonths) || targetMonths <= 0) return null;
 
-            const withTerms = monthsOffers.filter(o => Number.isFinite(o.termMonths));
-            if (withTerms.length === 0) return null;
-
-            const inRange = withTerms.filter(o => monthRangeContains(o, targetMonths));
-            if (inRange.length === 1) return inRange[0];
-            if (inRange.length > 1) {
-                return inRange.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), inRange[0]);
-            }
-
+            const byThreshold = pickMonthThreshold(monthsOffers, targetMonths);
+            if (byThreshold) return byThreshold;
+            return null;
             const minTerm = withTerms.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), withTerms[0].termMonths);
             if (Number.isFinite(minTerm) && targetMonths < minTerm) return null;
 
