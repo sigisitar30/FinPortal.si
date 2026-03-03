@@ -205,7 +205,15 @@ def scrape_gbkr_from_pdf():
         except Exception:
             pass
 
-    b = " ".join(text.replace("\r", " ").replace("\n", " ").split())
+    b_full = " ".join(text.replace("\r", " ").replace("\n", " ").split())
+    b_low = b_full.lower()
+    cut_idx = -1
+    for needle in ["kombinirano nalozbo", "kombinirano naložbo", "kombinirano"]:
+        i = b_low.find(needle)
+        if i != -1:
+            cut_idx = i
+            break
+    b = b_full[:cut_idx] if cut_idx != -1 else b_full
     structured_days_added = False
     structured_months_added = False
     m = re.search(
