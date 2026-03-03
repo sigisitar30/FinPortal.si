@@ -6,6 +6,7 @@ import json
 import os
 import re
 import io
+import sys
 
 import requests
 
@@ -294,6 +295,8 @@ def scrape_unicredit_from_pdf():
                 pass
             return pdf_data
 
+    print(f"INFO UniCredit: PDF url={pdf_url}")
+
     r = SESSION.get(
         pdf_url,
         headers={
@@ -325,6 +328,16 @@ def scrape_unicredit_from_pdf():
         txt = txt[idx:]
 
     txt_norm = re.sub(r"\s+", " ", txt).strip()
+
+    def _label_re(*parts: str) -> str:
+        """Build a tolerant regex label matcher for PDF extracted text."""
+        dash = r"(?:-|–|—)"
+        return r"\\s*".join(
+            [
+                re.escape(p).replace("\\ ", r"\\s*")
+                for p in parts
+            ]
+        ).replace("-", dash)
 
     def _parse_amount_range():
         # Look for note like: "... veljajo za depozite v zneskih med 500,00 in 100.000,00 EUR"
@@ -425,10 +438,12 @@ def scrape_unicredit_from_pdf():
         except Exception:
             return None
 
-    lab_31_90 = r"Od\s*31\s*do\s*90\s*dni"
-    lab_91_365 = r"Od\s*91\s*do\s*365\s*dni"
-    lab_12_36 = r"Nad\s*12\s*do\s*36\s*mesecev"
-    lab_36_60 = r"Nad\s*36\s*do\s*60\s*mesecev"
+    dash = r"(?:-|–|—)"
+    lab_31_90 = rf"(?:Od|od)\\s*31\\s*(?:do|{dash})\\s*90\\s*dni"
+    lab_91_365 = rf"(?:Od|od)\\s*91\\s*(?:do|{dash})\\s*365\\s*dni"
+    # PDF wording varies (nad/od, do/–); keep it tolerant. We still output 12–35M and 36–60M.
+    lab_12_36 = rf"(?:Nad|nad|Od|od)\\s*12\\s*(?:do|{dash})\\s*(?:35|36)\\s*mesecev"
+    lab_36_60 = rf"(?:Nad|nad|Od|od)\\s*36\\s*(?:do|{dash})\\s*60\\s*mesecev"
 
     def _to_float_token(s: str):
         try:
@@ -537,6 +552,8 @@ def scrape_unicredit_from_pdf():
 
     if not (r_31_90 and r_91_365 and r_12_36 and r_36_60):
         print("ERR UniCredit PDF: ne najdem vseh OM segmentov")
+        print(f"  PDF url={pdf_url}")
+        print(f"  A.3.2 found={idx != -1}")
         print(f"  31-90D found={bool(r_31_90)}")
         print(f"  91-365D found={bool(r_91_365)}")
         print(f"  12-36M found={bool(r_12_36)}")
@@ -550,16 +567,21 @@ def scrape_unicredit_from_pdf():
             b = min(len(txt_norm), m.end() + 180)
             return txt_norm[a:b]
 
-        for lab in (
-            r"Od\s*31\s*do\s*90\s*dni",
-            r"Od\s*91\s*do\s*365\s*dni",
-            r"Nad\s*12\s*do\s*36\s*mesecev",
-            r"Nad\s*36\s*do\s*60\s*mesecev",
-        ):
+        for lab in (lab_31_90, lab_91_365, lab_12_36, lab_36_60):
             sn = _snippet(lab)
             if sn:
                 print("  snippet:", sn)
-        raise RuntimeError("Ne najdem vseh obrestnih mer v PDF-ju")
+
+        try:
+            perc_all = re.findall(r"(\d+(?:[\.,]\d+)?)\s*%", txt_norm)
+            if perc_all:
+                print(f"  diag: first_perc_tokens={perc_all[:20]}")
+        except Exception:
+            pass
+
+        raise RuntimeError(
+            "ALERT: UniCredit PDF format se je verjetno spremenil (segmentov ni mogoče najti)"
+        )
 
     parsed_range = _parse_amount_range()
     if parsed_range:
@@ -667,7 +689,16 @@ def scrape_unicredit():
     try:
         return scrape_unicredit_from_pdf()
     except Exception as e:
-        print(f"WRN UniCredit PDF scrape failed: {type(e).__name__}: {e}")
+        print(f"ERR UniCredit PDF scrape failed: {type(e).__name__}: {e}")
+
+    allow_web = os.environ.get(
+        "UNICREDIT_ALLOW_WEB_FALLBACK", "").strip() == "1"
+    if not allow_web:
+        print(
+            "ERR UniCredit: PDF je primarni vir in je padel. Web fallback je onemogočen. "
+            "Če želiš začasno fallback, nastavi UNICREDIT_ALLOW_WEB_FALLBACK=1."
+        )
+        return []
 
     results = []
     test_terms = list(range(1, 13)) + [13, 18, 24, 36, 37, 60]
@@ -902,6 +933,8 @@ def scrape_unicredit():
     _append_tiers(36, 60, 60, "Depozit 36–60M",
                   "scraped via Playwright (amount tiers)")
 
+    if not results:
+        raise RuntimeError("UniCredit scrape produced 0 rows")
     return results
 
 
@@ -974,6 +1007,8 @@ def save_to_csv(rows, filename="unicredit_depoziti.csv"):
 # -----------------------------
 if __name__ == "__main__":
     data = scrape_unicredit()
-    if data:
-        check_changes(data)
-        save_to_csv(data)
+    if not data:
+        print("[WARN] UniCredit: ni podatkov (CSV ne bo posodobljen)")
+        sys.exit(1)
+    check_changes(data)
+    save_to_csv(data)

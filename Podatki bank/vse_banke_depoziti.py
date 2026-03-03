@@ -118,12 +118,21 @@ for scraper, p in processes:
                     print(s)
                 elif otp_html_debug and s.startswith("INFO OTP["):
                     print(s)
-                elif otp_pdf_debug and s.startswith("[DBG]"):
+                elif otp_pdf_debug and s.startswith("INFO OTP["):
                     print(s)
-                elif bks_pdf_debug and s.startswith("[DBG] BKS"):
+                elif bks_pdf_debug and s.startswith("INFO BKS["):
                     print(s)
     except Exception:
         pass
+
+
+def _fmt_mtime(path: str):
+    try:
+        ts = os.path.getmtime(path)
+        return datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S")
+    except Exception:
+        return None
+
 
 failed_scrapers = [s for s, code, _,
                    _ in scraper_statuses if code not in (0, None)]
@@ -142,6 +151,95 @@ if failed_scrapers:
 
 print("OK Vsi scraperji so koncali.")
 
+# 7) Združimo CSV-je
+dfs = []
+
+print("Najdeni CSV-ji:")
+for file in CSV_FILES:
+    if os.path.exists(file):
+        mt = _fmt_mtime(file)
+        if mt:
+            print(" -", file, f"(mtime={mt})")
+        else:
+            print(" -", file)
+    else:
+        print(" -", file, "(NE OBSTAJA)")
+    csv_path = os.path.join(BASE_DIR, file)
+    if os.path.exists(csv_path):
+        df = pd.read_csv(csv_path, delimiter=";")
+        schema_errs, schema_warns = _validate_schema(df, file)
+        inv_errs, inv_warns = _validate_invariants(df, file)
+
+        prev_path = _latest_archive_for(file, today)
+        diff_warns = []
+        if prev_path is not None and os.path.exists(prev_path):
+            df_prev = pd.read_csv(prev_path, delimiter=";")
+            diff_warns = _diff_metrics(df, df_prev, source_file=file)
+
+        if schema_errs or inv_errs:
+            print(f"ERR Validacija FAIL za {file}:")
+            for msg in (schema_errs + inv_errs):
+                print(f" - {msg}")
+            sys.exit(1)
+
+        all_warns = schema_warns + inv_warns + diff_warns
+        if all_warns:
+            print(f"WRN Validacija WARN za {file}:")
+            for msg in all_warns:
+                print(f" - {msg}")
+        else:
+            print(f"OK Validacija OK za {file}")
+
+        df["source_file"] = file
+        dfs.append(df)
+    else:
+        print(f"WRN CSV {file} ne obstaja in bo preskocen.")
+
+# 8) Ustvarimo master CSV
+if dfs:
+    combined = pd.concat(dfs, ignore_index=True)
+    combined.to_csv(os.path.join(BASE_DIR, "all_banks.csv"),
+                    sep=";", index=False)
+    print("OK all_banks.csv uspesno ustvarjen.")
+else:
+    print("WRN Ni CSV datotek za zdruziti.")
+    sys.exit(1)
+
+# 9) Arhiviranje master CSV-ja
+archive_master = f"archive/all_banks_{today}.csv"
+all_banks_path = os.path.join(BASE_DIR, "all_banks.csv")
+if os.path.exists(all_banks_path):
+    try:
+        shutil.copy(all_banks_path, archive_master)
+        print(f"OK Arhiviran master CSV -> {archive_master}")
+    except PermissionError:
+        print(
+            f"ERR Ni mogoce zapisati v {archive_master} (datoteka je verjetno odprta v Excelu)")
+        sys.exit(1)
+    except Exception as e:
+        print(f"ERR Napaka pri arhiviranju master CSV ({archive_master}): {e}")
+        sys.exit(1)
+else:
+    print("ERR all_banks.csv ne obstaja, arhiviranje preskoceno")
+    sys.exit(1)
+
+# 10) Arhiviranje posameznih bank
+for file in CSV_FILES:
+    if os.path.exists(file):
+        archive_file = f"archive/{file.replace('.csv', '')}_{today}.csv"
+        try:
+            shutil.copy(file, archive_file)
+            print(f"OK Arhivirano -> {archive_file}")
+        except PermissionError:
+            print(
+                f"ERR Ni mogoce zapisati v {archive_file} (datoteka je verjetno odprta v Excelu)")
+            sys.exit(1)
+        except Exception as e:
+            print(f"ERR Napaka pri arhiviranju {file} ({archive_file}): {e}")
+            sys.exit(1)
+
+print("OK Dnevno arhiviranje zakljuceno.")
+
 
 REQUIRED_COLUMNS = [
     "id", "bank", "product_name",
@@ -151,24 +249,6 @@ REQUIRED_COLUMNS = [
     "url", "last_updated", "notes", "offer_type",
     "source"
 ]
-
-
-def _latest_archive_for(csv_filename, today_str):
-    stem = csv_filename.replace(".csv", "")
-    pattern = os.path.join("archive", f"{stem}_*.csv")
-    candidates = []
-    for path in glob.glob(pattern):
-        base = os.path.basename(path)
-        if not base.startswith(stem + "_"):
-            continue
-        date_part = base[len(stem) + 1: -4]
-        if date_part == today_str:
-            continue
-        candidates.append((date_part, path))
-    if not candidates:
-        return None
-    candidates.sort(key=lambda x: x[0])
-    return candidates[-1][1]
 
 
 def _validate_schema(df, source_file):
@@ -386,43 +466,23 @@ def _diff_metrics(df_now, df_prev, source_file=None):
     return warns
 
 
-# 7) Združimo CSV-je
-dfs = []
+def _latest_archive_for(csv_filename, today_str):
+    stem = csv_filename.replace(".csv", "")
+    pattern = os.path.join("archive", f"{stem}_*.csv")
+    candidates = []
+    for path in glob.glob(pattern):
+        base = os.path.basename(path)
+        if not base.startswith(stem + "_"):
+            continue
+        date_part = base[len(stem) + 1: -4]
+        if date_part == today_str:
+            continue
+        candidates.append((date_part, path))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x[0])
+    return candidates[-1][1]
 
-print("Najdeni CSV-ji:")
-for file in CSV_FILES:
-    print(" -", file)
-
-    csv_path = os.path.join(BASE_DIR, file)
-    if os.path.exists(csv_path):
-        df = pd.read_csv(csv_path, delimiter=";")
-        schema_errs, schema_warns = _validate_schema(df, file)
-        inv_errs, inv_warns = _validate_invariants(df, file)
-
-        prev_path = _latest_archive_for(file, today)
-        diff_warns = []
-        if prev_path is not None and os.path.exists(prev_path):
-            df_prev = pd.read_csv(prev_path, delimiter=";")
-            diff_warns = _diff_metrics(df, df_prev, source_file=file)
-
-        if schema_errs or inv_errs:
-            print(f"ERR Validacija FAIL za {file}:")
-            for msg in (schema_errs + inv_errs):
-                print(f" - {msg}")
-            sys.exit(1)
-
-        all_warns = schema_warns + inv_warns + diff_warns
-        if all_warns:
-            print(f"WRN Validacija WARN za {file}:")
-            for msg in all_warns:
-                print(f" - {msg}")
-        else:
-            print(f"OK Validacija OK za {file}")
-
-        df["source_file"] = file
-        dfs.append(df)
-    else:
-        print(f"WRN CSV {file} ne obstaja in bo preskocen.")
 
 # 8) Ustvarimo master CSV
 if dfs:
