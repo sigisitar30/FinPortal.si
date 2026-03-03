@@ -6,6 +6,243 @@ import shutil
 import glob
 import sys
 
+
+REQUIRED_COLUMNS = [
+    "id", "bank", "product_name",
+    "amount_min", "amount_max", "amount_currency",
+    "min_term", "max_term", "term_unit",
+    "rate_branch", "rate_klik_bonus", "rate_klik_total",
+    "url", "last_updated", "notes", "offer_type",
+    "source"
+]
+
+
+def _validate_schema(df, source_file):
+    missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
+    if missing:
+        return [f"Manjkajo kolone: {missing}"], []
+    return [], []
+
+
+def _validate_invariants(df, source_file):
+    errs = []
+    warns = []
+
+    numeric_cols = ["amount_min", "amount_max", "min_term",
+                    "max_term", "rate_branch", "rate_klik_total"]
+    for c in numeric_cols:
+        if c in df.columns:
+            df[c] = pd.to_numeric(df[c], errors="coerce")
+
+    if (df["amount_min"].isna()).any():
+        errs.append("amount_min vsebuje prazne/neveljavne vrednosti")
+    if (df["amount_min"] < 0).any():
+        errs.append("amount_min < 0")
+
+    if "amount_max" in df.columns:
+        bad_max = df["amount_max"].notna() & (
+            df["amount_max"] < df["amount_min"])
+        if bad_max.any():
+            errs.append("amount_max < amount_min")
+
+    bad_unit = ~df["term_unit"].isin(["days", "months"])
+    if bad_unit.any():
+        errs.append(
+            "term_unit ima neveljavne vrednosti (dovoljeno: days/months)")
+
+    bad_term = df["min_term"].isna() | (df["max_term"].notna() &
+                                        (df["min_term"] > df["max_term"]))
+    if bad_term.any():
+        errs.append("neveljaven interval roka (min_term/max_term)")
+
+    bad_rate = df["rate_branch"].isna() | (
+        df["rate_branch"] < 0) | (df["rate_branch"] > 25)
+    if bad_rate.any():
+        warns.append("sumljive vrednosti rate_branch (NaN ali izven 0-25)")
+
+    if "offer_type" in df.columns:
+        bad_offer = ~df["offer_type"].astype(
+            str).str.lower().isin(["regular", "special"])
+        if bad_offer.any():
+            errs.append(
+                "offer_type ima neveljavne vrednosti (dovoljeno: regular/special)")
+
+    if "source" in df.columns:
+        bad_source = ~df["source"].astype(
+            str).str.lower().isin(["pdf", "web", "api"])
+        if bad_source.any():
+            errs.append(
+                "source ima neveljavne vrednosti (dovoljeno: pdf/web/api)")
+
+    if source_file == "otp_depoziti.csv":
+        otp_months = df["term_unit"] == "months"
+        if otp_months.any() and (df.loc[otp_months, "amount_min"] < 500).any():
+            errs.append(
+                "OTP: dolgoročni depoziti morajo imeti amount_min >= 500")
+
+    if source_file == "gbkr_depoziti.csv":
+        gbkr_days = df["term_unit"] == "days"
+        gbkr_months = df["term_unit"] == "months"
+
+        if not gbkr_days.any():
+            errs.append("GBKR: manjkajo dnevne ročnosti (term_unit=days)")
+        else:
+            if (df.loc[gbkr_days, "min_term"] < 31).any() or (df.loc[gbkr_days, "max_term"] > 365).any():
+                warns.append(
+                    "GBKR: dnevne ročnosti izven pričakovanega območja (31–365)")
+
+        if not gbkr_months.any():
+            errs.append("GBKR: manjkajo mesečne ročnosti (term_unit=months)")
+        else:
+            if (df.loc[gbkr_months, "min_term"] < 13).any():
+                warns.append(
+                    "GBKR: mesečne ročnosti vsebujejo vrednosti < 13M")
+
+    days_mask = df["term_unit"] == "days"
+    if days_mask.any():
+        try:
+            day_rows = df.loc[days_mask].copy()
+            day_rows["min_term"] = pd.to_numeric(
+                day_rows["min_term"], errors="coerce")
+            day_rows["max_term"] = pd.to_numeric(
+                day_rows["max_term"], errors="coerce")
+
+            covers_31 = ((day_rows["min_term"] <= 31) & (
+                day_rows["max_term"].fillna(day_rows["min_term"]) >= 31)).any()
+            covers_91 = ((day_rows["min_term"] <= 91) & (
+                day_rows["max_term"].fillna(day_rows["min_term"]) >= 91)).any()
+            if covers_31 and not covers_91:
+                warns.append(
+                    "day ročnosti pokrivajo ~1M (31d), ne pa 3M meje (91d); preveri, ali banka res nima 3M ali je scraper izpustil interval"
+                )
+
+            ends_90 = (day_rows["max_term"].fillna(
+                day_rows["min_term"]) == 90).any()
+            starts_le_91 = (day_rows["min_term"] <= 91).any()
+            if ends_90 and not starts_le_91:
+                warns.append(
+                    "zaznan interval do 90 dni, vendar ni intervala, ki bi se začel pri 91 dni ali prej; preveri prehod 2M->3M"
+                )
+        except Exception:
+            pass
+
+    return errs, warns
+
+
+def _diff_metrics(df_now, df_prev, source_file=None):
+    warns = []
+    if df_prev is None or df_prev.empty:
+        return warns
+
+    if source_file == "gbkr_depoziti.csv":
+        return warns
+
+    if source_file == "dh_depoziti.csv":
+        return warns
+
+    if source_file == "otp_depoziti.csv":
+        return warns
+
+    now_rows = len(df_now)
+    prev_rows = len(df_prev)
+    if prev_rows > 0:
+        ratio = now_rows / prev_rows
+        if ratio < 0.7 or ratio > 1.3:
+            warns.append(
+                f"row_count odstopa (prej={prev_rows}, zdaj={now_rows})")
+
+    key_cols = ["product_name", "min_term", "max_term",
+                "term_unit", "amount_min", "amount_max"]
+    for c in key_cols:
+        if c not in df_now.columns or c not in df_prev.columns:
+            return warns
+
+    now_keys = set(tuple(x) for x in df_now[key_cols].fillna(-1).to_numpy())
+    prev_keys = set(tuple(x) for x in df_prev[key_cols].fillna(-1).to_numpy())
+
+    removed = prev_keys - now_keys
+    added = now_keys - prev_keys
+
+    if removed:
+        warns.append(f"odstranjeni produkti: {min(len(removed), 5)} primerov")
+    if added:
+        warns.append(f"novi produkti: {min(len(added), 5)} primerov")
+
+    try:
+        now = df_now.copy()
+        prev = df_prev.copy()
+
+        for c in ["rate_branch", "rate_klik_total", "amount_min", "amount_max", "min_term", "max_term"]:
+            if c in now.columns:
+                now[c] = pd.to_numeric(now[c], errors="coerce")
+            if c in prev.columns:
+                prev[c] = pd.to_numeric(prev[c], errors="coerce")
+
+        key_cols_rate = [
+            "product_name",
+            "min_term",
+            "max_term",
+            "term_unit",
+            "amount_min",
+            "amount_max",
+        ]
+        if all(c in now.columns for c in key_cols_rate) and all(c in prev.columns for c in key_cols_rate):
+            now_merge = now[key_cols_rate +
+                            ["rate_branch", "rate_klik_total"]].fillna(-1)
+            prev_merge = prev[key_cols_rate +
+                              ["rate_branch", "rate_klik_total"]].fillna(-1)
+
+            merged = now_merge.merge(
+                prev_merge,
+                on=key_cols_rate,
+                how="inner",
+                suffixes=("_now", "_prev"),
+            )
+
+            if not merged.empty:
+                merged["d_branch"] = (
+                    merged["rate_branch_now"] - merged["rate_branch_prev"]).abs()
+                merged["d_klik"] = (
+                    merged["rate_klik_total_now"] - merged["rate_klik_total_prev"]).abs()
+
+                threshold = 0.05
+                changed = merged[(merged["d_branch"] > threshold)
+                                 | (merged["d_klik"] > threshold)]
+                if len(changed) > 0:
+                    top = changed.sort_values(
+                        ["d_branch", "d_klik"], ascending=False).head(3)
+                    examples = []
+                    for _, r in top.iterrows():
+                        examples.append(
+                            f"{r['product_name']} {r['min_term']}-{r['max_term']}{r['term_unit']} {r['amount_min']}-{r['amount_max']}"
+                        )
+                    warns.append(
+                        f"spremenjene obrestne mere na obstoječih produktih (> {threshold}): {len(changed)} primerov; npr. {', '.join(examples)}"
+                    )
+    except Exception:
+        pass
+
+    return warns
+
+
+def _latest_archive_for(csv_filename, today_str):
+    stem = csv_filename.replace(".csv", "")
+    pattern = os.path.join("archive", f"{stem}_*.csv")
+    candidates = []
+    for path in glob.glob(pattern):
+        base = os.path.basename(path)
+        if not base.startswith(stem + "_"):
+            continue
+        date_part = base[len(stem) + 1: -4]
+        if date_part == today_str:
+            continue
+        candidates.append((date_part, path))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x[0])
+    return candidates[-1][1]
+
+
 # 1) Seznam scraperjev z dejanskimi imeni datotek
 SCRAPERS = [
     "ADDIKO scraper.py",
@@ -194,295 +431,6 @@ for file in CSV_FILES:
         dfs.append(df)
     else:
         print(f"WRN CSV {file} ne obstaja in bo preskocen.")
-
-# 8) Ustvarimo master CSV
-if dfs:
-    combined = pd.concat(dfs, ignore_index=True)
-    combined.to_csv(os.path.join(BASE_DIR, "all_banks.csv"),
-                    sep=";", index=False)
-    print("OK all_banks.csv uspesno ustvarjen.")
-else:
-    print("WRN Ni CSV datotek za zdruziti.")
-    sys.exit(1)
-
-# 9) Arhiviranje master CSV-ja
-archive_master = f"archive/all_banks_{today}.csv"
-all_banks_path = os.path.join(BASE_DIR, "all_banks.csv")
-if os.path.exists(all_banks_path):
-    try:
-        shutil.copy(all_banks_path, archive_master)
-        print(f"OK Arhiviran master CSV -> {archive_master}")
-    except PermissionError:
-        print(
-            f"ERR Ni mogoce zapisati v {archive_master} (datoteka je verjetno odprta v Excelu)")
-        sys.exit(1)
-    except Exception as e:
-        print(f"ERR Napaka pri arhiviranju master CSV ({archive_master}): {e}")
-        sys.exit(1)
-else:
-    print("ERR all_banks.csv ne obstaja, arhiviranje preskoceno")
-    sys.exit(1)
-
-# 10) Arhiviranje posameznih bank
-for file in CSV_FILES:
-    if os.path.exists(file):
-        archive_file = f"archive/{file.replace('.csv', '')}_{today}.csv"
-        try:
-            shutil.copy(file, archive_file)
-            print(f"OK Arhivirano -> {archive_file}")
-        except PermissionError:
-            print(
-                f"ERR Ni mogoce zapisati v {archive_file} (datoteka je verjetno odprta v Excelu)")
-            sys.exit(1)
-        except Exception as e:
-            print(f"ERR Napaka pri arhiviranju {file} ({archive_file}): {e}")
-            sys.exit(1)
-
-print("OK Dnevno arhiviranje zakljuceno.")
-
-
-REQUIRED_COLUMNS = [
-    "id", "bank", "product_name",
-    "amount_min", "amount_max", "amount_currency",
-    "min_term", "max_term", "term_unit",
-    "rate_branch", "rate_klik_bonus", "rate_klik_total",
-    "url", "last_updated", "notes", "offer_type",
-    "source"
-]
-
-
-def _validate_schema(df, source_file):
-    missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
-    if missing:
-        return [f"Manjkajo kolone: {missing}"], []
-    return [], []
-
-
-def _validate_invariants(df, source_file):
-    errs = []
-    warns = []
-
-    numeric_cols = ["amount_min", "amount_max", "min_term",
-                    "max_term", "rate_branch", "rate_klik_total"]
-    for c in numeric_cols:
-        if c in df.columns:
-            df[c] = pd.to_numeric(df[c], errors="coerce")
-
-    if (df["amount_min"].isna()).any():
-        errs.append("amount_min vsebuje prazne/neveljavne vrednosti")
-    if (df["amount_min"] < 0).any():
-        errs.append("amount_min < 0")
-
-    if "amount_max" in df.columns:
-        bad_max = df["amount_max"].notna() & (
-            df["amount_max"] < df["amount_min"])
-        if bad_max.any():
-            errs.append("amount_max < amount_min")
-
-    bad_unit = ~df["term_unit"].isin(["days", "months"])
-    if bad_unit.any():
-        errs.append(
-            "term_unit ima neveljavne vrednosti (dovoljeno: days/months)")
-
-    bad_term = df["min_term"].isna() | (df["max_term"].notna() &
-                                        (df["min_term"] > df["max_term"]))
-    if bad_term.any():
-        errs.append("neveljaven interval roka (min_term/max_term)")
-
-    bad_rate = df["rate_branch"].isna() | (
-        df["rate_branch"] < 0) | (df["rate_branch"] > 25)
-    if bad_rate.any():
-        warns.append("sumljive vrednosti rate_branch (NaN ali izven 0-25)")
-
-    if "offer_type" in df.columns:
-        bad_offer = ~df["offer_type"].astype(
-            str).str.lower().isin(["regular", "special"])
-        if bad_offer.any():
-            errs.append(
-                "offer_type ima neveljavne vrednosti (dovoljeno: regular/special)")
-
-    if "source" in df.columns:
-        bad_source = ~df["source"].astype(
-            str).str.lower().isin(["pdf", "web", "api"])
-        if bad_source.any():
-            errs.append(
-                "source ima neveljavne vrednosti (dovoljeno: pdf/web/api)")
-
-    if source_file == "otp_depoziti.csv":
-        otp_months = df["term_unit"] == "months"
-        if otp_months.any() and (df.loc[otp_months, "amount_min"] < 500).any():
-            errs.append(
-                "OTP: dolgoročni depoziti morajo imeti amount_min >= 500")
-
-    if source_file == "gbkr_depoziti.csv":
-        gbkr_days = df["term_unit"] == "days"
-        gbkr_months = df["term_unit"] == "months"
-
-        if not gbkr_days.any():
-            errs.append("GBKR: manjkajo dnevne ročnosti (term_unit=days)")
-        else:
-            if (df.loc[gbkr_days, "min_term"] < 31).any() or (df.loc[gbkr_days, "max_term"] > 365).any():
-                warns.append(
-                    "GBKR: dnevne ročnosti izven pričakovanega območja (31–365)")
-
-        if not gbkr_months.any():
-            errs.append("GBKR: manjkajo mesečne ročnosti (term_unit=months)")
-        else:
-            if (df.loc[gbkr_months, "min_term"] < 13).any():
-                warns.append(
-                    "GBKR: mesečne ročnosti vsebujejo vrednosti < 13M")
-
-    days_mask = df["term_unit"] == "days"
-    if days_mask.any():
-        try:
-            day_rows = df.loc[days_mask].copy()
-            day_rows["min_term"] = pd.to_numeric(
-                day_rows["min_term"], errors="coerce")
-            day_rows["max_term"] = pd.to_numeric(
-                day_rows["max_term"], errors="coerce")
-
-            # If offers exist around 1M/2M (>=31 days) but there is no coverage for day 91,
-            # then 3M=91d mapping cannot be satisfied and should be reviewed.
-            covers_31 = ((day_rows["min_term"] <= 31) & (
-                day_rows["max_term"].fillna(day_rows["min_term"]) >= 31)).any()
-            covers_91 = ((day_rows["min_term"] <= 91) & (
-                day_rows["max_term"].fillna(day_rows["min_term"]) >= 91)).any()
-            if covers_31 and not covers_91:
-                warns.append(
-                    "day ročnosti pokrivajo ~1M (31d), ne pa 3M meje (91d); preveri, ali banka res nima 3M ali je scraper izpustil interval"
-                )
-
-            # If there is a band ending at 90 days but the next band does not start at 91 (or earlier), warn.
-            ends_90 = (day_rows["max_term"].fillna(
-                day_rows["min_term"]) == 90).any()
-            starts_le_91 = (day_rows["min_term"] <= 91).any()
-            if ends_90 and not starts_le_91:
-                warns.append(
-                    "zaznan interval do 90 dni, vendar ni intervala, ki bi se začel pri 91 dni ali prej; preveri prehod 2M->3M"
-                )
-        except Exception:
-            pass
-
-    return errs, warns
-
-
-def _diff_metrics(df_now, df_prev, source_file=None):
-    warns = []
-    if df_prev is None or df_prev.empty:
-        return warns
-
-    # GBKR je namerno prešel na segmentirane dneve + omejene mesece,
-    # zato row_count/added/removed niso več stabilne metrike.
-    if source_file == "gbkr_depoziti.csv":
-        return warns
-
-    # DH je namerno prešel iz Selenium 1-60M (veliko vrstic) na PDF intervale,
-    # zato row_count/added/removed niso več stabilne metrike.
-    if source_file == "dh_depoziti.csv":
-        return warns
-
-    if source_file == "otp_depoziti.csv":
-        return warns
-
-    now_rows = len(df_now)
-    prev_rows = len(df_prev)
-    if prev_rows > 0:
-        ratio = now_rows / prev_rows
-        if ratio < 0.7 or ratio > 1.3:
-            warns.append(
-                f"row_count odstopa (prej={prev_rows}, zdaj={now_rows})")
-
-    key_cols = ["product_name", "min_term", "max_term",
-                "term_unit", "amount_min", "amount_max"]
-    for c in key_cols:
-        if c not in df_now.columns or c not in df_prev.columns:
-            return warns
-
-    now_keys = set(tuple(x) for x in df_now[key_cols].fillna(-1).to_numpy())
-    prev_keys = set(tuple(x) for x in df_prev[key_cols].fillna(-1).to_numpy())
-
-    removed = prev_keys - now_keys
-    added = now_keys - prev_keys
-
-    if removed:
-        warns.append(f"odstranjeni produkti: {min(len(removed), 5)} primerov")
-    if added:
-        warns.append(f"novi produkti: {min(len(added), 5)} primerov")
-
-    try:
-        now = df_now.copy()
-        prev = df_prev.copy()
-
-        for c in ["rate_branch", "rate_klik_total", "amount_min", "amount_max", "min_term", "max_term"]:
-            if c in now.columns:
-                now[c] = pd.to_numeric(now[c], errors="coerce")
-            if c in prev.columns:
-                prev[c] = pd.to_numeric(prev[c], errors="coerce")
-
-        key_cols_rate = [
-            "product_name",
-            "min_term",
-            "max_term",
-            "term_unit",
-            "amount_min",
-            "amount_max",
-        ]
-        if all(c in now.columns for c in key_cols_rate) and all(c in prev.columns for c in key_cols_rate):
-            now_merge = now[key_cols_rate +
-                            ["rate_branch", "rate_klik_total"]].fillna(-1)
-            prev_merge = prev[key_cols_rate +
-                              ["rate_branch", "rate_klik_total"]].fillna(-1)
-
-            merged = now_merge.merge(
-                prev_merge,
-                on=key_cols_rate,
-                how="inner",
-                suffixes=("_now", "_prev"),
-            )
-
-            if not merged.empty:
-                merged["d_branch"] = (
-                    merged["rate_branch_now"] - merged["rate_branch_prev"]).abs()
-                merged["d_klik"] = (
-                    merged["rate_klik_total_now"] - merged["rate_klik_total_prev"]).abs()
-
-                threshold = 0.05
-                changed = merged[(merged["d_branch"] > threshold)
-                                 | (merged["d_klik"] > threshold)]
-                if len(changed) > 0:
-                    top = changed.sort_values(
-                        ["d_branch", "d_klik"], ascending=False).head(3)
-                    examples = []
-                    for _, r in top.iterrows():
-                        examples.append(
-                            f"{r['product_name']} {r['min_term']}-{r['max_term']}{r['term_unit']} {r['amount_min']}-{r['amount_max']}"
-                        )
-                    warns.append(
-                        f"spremenjene obrestne mere na obstoječih produktih (> {threshold}): {len(changed)} primerov; npr. {', '.join(examples)}"
-                    )
-    except Exception:
-        pass
-
-    return warns
-
-
-def _latest_archive_for(csv_filename, today_str):
-    stem = csv_filename.replace(".csv", "")
-    pattern = os.path.join("archive", f"{stem}_*.csv")
-    candidates = []
-    for path in glob.glob(pattern):
-        base = os.path.basename(path)
-        if not base.startswith(stem + "_"):
-            continue
-        date_part = base[len(stem) + 1: -4]
-        if date_part == today_str:
-            continue
-        candidates.append((date_part, path))
-    if not candidates:
-        return None
-    candidates.sort(key=lambda x: x[0])
-    return candidates[-1][1]
-
 
 # 8) Ustvarimo master CSV
 if dfs:

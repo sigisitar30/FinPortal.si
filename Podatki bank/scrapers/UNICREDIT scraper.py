@@ -372,6 +372,98 @@ def scrape_unicredit_from_pdf():
 
     txt_norm = re.sub(r"\s+", " ", txt).strip()
 
+    def _parse_rates_by_token_sequence() -> dict | None:
+        """Fallback when row labels exist but PDF extraction loses table row structure.
+
+        We match the expected 8 rate tokens (4 rows x 2 columns) inside the extracted
+        percent-token stream, allowing noise/duplicates and different column orders.
+        """
+
+        # Use a bounded window after A.3.2 to avoid unrelated % tokens later in the PDF,
+        # but do NOT cut too aggressively (table tokens may appear after the labels).
+        section = txt_norm[:8000]
+
+        raw = re.findall(r"(\d+(?:[\.,]\d+)?)\s*%", section)
+        if not raw:
+            return None
+
+        try:
+            tokens_all = [float(x.replace(",", ".")) for x in raw]
+        except Exception:
+            return None
+
+        # Keep only plausible interest rates; this removes noise like 80%, 20% etc.
+        tokens = [x for x in tokens_all if 0 <= x <= 5]
+        if len(tokens) < 8:
+            return None
+
+        def _match_pattern(pattern: list[float], max_span: int = 80):
+            best = None
+            for start in range(len(tokens)):
+                idx = start
+                used = []
+                for want in pattern:
+                    found = False
+                    limit = min(len(tokens), start + max_span)
+                    while idx < limit:
+                        if abs(tokens[idx] - want) <= 0.0009:
+                            used.append((idx, tokens[idx]))
+                            idx += 1
+                            found = True
+                            break
+                        idx += 1
+                    if not found:
+                        break
+                if len(used) == len(pattern):
+                    span = used[-1][0] - used[0][0]
+                    if best is None or span < best[0]:
+                        best = (span, used)
+            return best
+
+        expected_rowwise = [0.70, 0.80, 0.90, 1.00, 1.10, 1.20, 0.01, 0.01]
+        expected_colwise_base_then_online = [
+            0.70, 0.90, 1.10, 0.01, 0.80, 1.00, 1.20, 0.01]
+        expected_colwise_online_then_base = [
+            0.80, 1.00, 1.20, 0.01, 0.70, 0.90, 1.10, 0.01]
+
+        cands = [
+            ("row", expected_rowwise),
+            ("col_base", expected_colwise_base_then_online),
+            ("col_online", expected_colwise_online_then_base),
+        ]
+
+        best = None
+        best_kind = None
+        for kind, pat in cands:
+            m = _match_pattern(pat)
+            if m is None:
+                continue
+            if best is None or m[0] < best[0]:
+                best = m
+                best_kind = kind
+
+        if best is None or best_kind is None:
+            return None
+
+        seq = [v for _, v in best[1]]
+        if best_kind == "row":
+            base = [seq[0], seq[2], seq[4], seq[6]]
+            online = [seq[1], seq[3], seq[5], seq[7]]
+        elif best_kind == "col_base":
+            base = seq[:4]
+            online = seq[4:]
+        else:
+            online = seq[:4]
+            base = seq[4:]
+
+        return {
+            "31_90": (base[0], online[0]),
+            "91_365": (base[1], online[1]),
+            "12_36": (base[2], online[2]),
+            "36_60": (base[3], online[3]),
+            "_diag": {"kind": best_kind, "matched": seq, "token_count": len(tokens), "first_tokens": tokens[:20]},
+        }
+
     def _label_re(*parts: str) -> str:
         """Build a tolerant regex label matcher for PDF extracted text."""
         dash = r"(?:-|–|—)"
@@ -482,11 +574,38 @@ def scrape_unicredit_from_pdf():
             return None
 
     dash = r"(?:-|–|—)"
-    lab_31_90 = rf"(?:Od|od)\\s*31\\s*(?:do|{dash})\\s*90\\s*dni"
-    lab_91_365 = rf"(?:Od|od)\\s*91\\s*(?:do|{dash})\\s*365\\s*dni"
-    # PDF wording varies (nad/od, do/–); keep it tolerant. We still output 12–35M and 36–60M.
-    lab_12_36 = rf"(?:Nad|nad|Od|od)\\s*12\\s*(?:do|{dash})\\s*(?:35|36)\\s*mesecev"
-    lab_36_60 = rf"(?:Nad|nad|Od|od)\\s*36\\s*(?:do|{dash})\\s*60\\s*mesecev"
+
+    # PDF text extraction may split words aggressively ("d n i", "m e s e c e v"),
+    # so tolerate both syllable split and letter-by-letter split.
+    dni_re = r"d\s*n\s*i\s*\*?"
+    meseci_re = r"m\s*e\s*s\s*e\s*c\s*e\s*v\s*\*?"
+
+    lab_31_90_candidates = [
+        rf"(?:Od|od)?\\s*31\\s*(?:do|{dash})\\s*90\\s*{dni_re}",
+        rf"31\\s*(?:do|{dash})\\s*90\\s*{dni_re}",
+        rf"31\\s*{dash}\\s*90\\s*{dni_re}",
+    ]
+    lab_91_365_candidates = [
+        rf"(?:Od|od)?\\s*91\\s*(?:do|{dash})\\s*365\\s*{dni_re}",
+        rf"91\\s*(?:do|{dash})\\s*365\\s*{dni_re}",
+        rf"91\\s*{dash}\\s*365\\s*{dni_re}",
+    ]
+    lab_12_36_candidates = [
+        rf"(?:Nad|nad|Od|od)?\\s*12\\s*(?:do|{dash})\\s*(?:35|36)\\s*{meseci_re}",
+        rf"12\\s*(?:do|{dash})\\s*(?:35|36)\\s*{meseci_re}",
+        rf"12\\s*{dash}\\s*(?:35|36)\\s*{meseci_re}",
+    ]
+    lab_36_60_candidates = [
+        rf"(?:Nad|nad|Od|od)?\\s*36\\s*(?:do|{dash})\\s*60\\s*{meseci_re}",
+        rf"36\\s*(?:do|{dash})\\s*60\\s*{meseci_re}",
+        rf"36\\s*{dash}\\s*60\\s*{meseci_re}",
+    ]
+
+    # First candidate is used for the 8-token parser anchor.
+    lab_31_90 = lab_31_90_candidates[0]
+    lab_91_365 = lab_91_365_candidates[0]
+    lab_12_36 = lab_12_36_candidates[0]
+    lab_36_60 = lab_36_60_candidates[0]
 
     def _to_float_token(s: str):
         try:
@@ -529,27 +648,23 @@ def scrape_unicredit_from_pdf():
         r_36_60 = None
 
     if not (r_31_90 and r_91_365 and r_12_36 and r_36_60):
-        r_31_90 = (
-            _find_row_rates_between(
-                lab_31_90, [lab_91_365, lab_12_36, lab_36_60])
-            or _find_row_rates(lab_31_90)
-            or _find_rates_after(lab_31_90, window=800)
-        )
-        r_91_365 = (
-            _find_row_rates_between(lab_91_365, [lab_12_36, lab_36_60])
-            or _find_row_rates(lab_91_365)
-            or _find_rates_after(lab_91_365, window=800)
-        )
-        r_12_36 = (
-            _find_row_rates_between(lab_12_36, [lab_36_60])
-            or _find_row_rates(lab_12_36)
-            or _find_rates_after(lab_12_36, window=800)
-        )
-        r_36_60 = (
-            _find_row_rates_between(lab_36_60, [])
-            or _find_row_rates(lab_36_60)
-            or _find_rates_after(lab_36_60, window=800)
-        )
+        def _find_any(candidates, next_label_patterns):
+            for lab in candidates:
+                r = (
+                    _find_row_rates_between(lab, next_label_patterns)
+                    or _find_row_rates(lab)
+                    or _find_rates_after(lab, window=900)
+                )
+                if r:
+                    return r
+            return None
+
+        r_31_90 = _find_any(lab_31_90_candidates, lab_91_365_candidates +
+                            lab_12_36_candidates + lab_36_60_candidates)
+        r_91_365 = _find_any(lab_91_365_candidates,
+                             lab_12_36_candidates + lab_36_60_candidates)
+        r_12_36 = _find_any(lab_12_36_candidates, lab_36_60_candidates)
+        r_36_60 = _find_any(lab_36_60_candidates, [])
 
     def _diag(label_re: str, w: int = 700):
         m = re.search(label_re, txt_norm, flags=re.IGNORECASE)
@@ -594,6 +709,19 @@ def scrape_unicredit_from_pdf():
             raise RuntimeError("Sumljiv UniCredit PDF parse (OM segmenti)")
 
     if not (r_31_90 and r_91_365 and r_12_36 and r_36_60):
+        parsed_seq = _parse_rates_by_token_sequence()
+        if parsed_seq:
+            try:
+                print("WRN UniCredit PDF: uporabljam fallback parse (token sequence)")
+                print(f"  diag: {parsed_seq.get('_diag')}")
+            except Exception:
+                pass
+            r_31_90 = parsed_seq["31_90"]
+            r_91_365 = parsed_seq["91_365"]
+            r_12_36 = parsed_seq["12_36"]
+            r_36_60 = parsed_seq["36_60"]
+
+    if not (r_31_90 and r_91_365 and r_12_36 and r_36_60):
         print("ERR UniCredit PDF: ne najdem vseh OM segmentov")
         print(f"  PDF url={pdf_url}")
         print(f"  A.3.2 found={idx != -1}")
@@ -610,10 +738,29 @@ def scrape_unicredit_from_pdf():
             b = min(len(txt_norm), m.end() + 180)
             return txt_norm[a:b]
 
-        for lab in (lab_31_90, lab_91_365, lab_12_36, lab_36_60):
+        for lab in (
+            lab_31_90_candidates
+            + lab_91_365_candidates
+            + lab_12_36_candidates
+            + lab_36_60_candidates
+        ):
             sn = _snippet(lab)
             if sn:
                 print("  snippet:", sn)
+
+        # If label-based snippets don't show anything, try numeric-range snippets.
+        def _range_snippet(a: int, b: int):
+            m = re.search(rf"{a}[^0-9]{{0,40}}{b}", txt_norm)
+            if not m:
+                return None
+            aa = max(0, m.start() - 120)
+            bb = min(len(txt_norm), m.end() + 220)
+            return txt_norm[aa:bb]
+
+        for a, b in ((31, 90), (91, 365), (12, 36), (36, 60)):
+            rs = _range_snippet(a, b)
+            if rs:
+                print(f"  range_snippet {a}-{b}:", rs)
 
         try:
             perc_all = re.findall(r"(\d+(?:[\.,]\d+)?)\s*%", txt_norm)
@@ -665,8 +812,8 @@ def scrape_unicredit_from_pdf():
             "rate_klik_bonus": ro - rb,
             "rate_klik_total": ro,
             "offer_type": "regular",
-            # Use the product page as the user-facing link (PDF URLs change often).
-            "url": URL,
+            "source": "pdf",
+            "url": pdf_url,
             "last_updated": today,
             "notes": f"scraped from UniCredit PDF: {pdf_url}",
         })
