@@ -86,13 +86,51 @@ def discover_pdf_url(session: requests.Session) -> str:
                 seen.add(u)
                 uniq.append(u)
 
-        preferred = []
-        for u in uniq:
-            low = u.lower()
-            if "obrest" in low or "sklep" in low or "tarif" in low:
-                preferred.append(u)
+        def _parse_date_key(u: str):
+            # Prefer PDFs that encode a date like 01.03.2026 in the filename.
+            m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", u)
+            if not m:
+                return None
+            try:
+                dd, mm, yyyy = int(m.group(1)), int(
+                    m.group(2)), int(m.group(3))
+                return (yyyy, mm, dd)
+            except Exception:
+                return None
 
-        return (preferred[0] if preferred else (uniq[0] if uniq else ""))
+        def _score(u: str) -> tuple:
+            low = u.lower()
+            # Hard prefer the known tariff/interest folder if present.
+            score = 0
+            if "tarife_in_obrestne_mere" in low:
+                score += 100
+            if "izvlecek_iz_tarife" in low or "izvle" in low:
+                score += 60
+            if "obrest" in low:
+                score += 40
+            if "sklep" in low:
+                score += 20
+
+            # Strongly penalize unrelated PDFs we observed.
+            if "jamstvo" in low or "vloge" in low:
+                score -= 200
+            if "splosni-pogoji" in low or "splošni" in low or "pogoj" in low:
+                score -= 80
+
+            date_key = _parse_date_key(u)
+            # Sort by score first, then by date (newest first), then by URL.
+            return (score, date_key or (0, 0, 0), u)
+
+        scored = sorted(uniq, key=_score, reverse=True)
+        if not scored:
+            return ""
+
+        best = scored[0]
+        best_score = _score(best)[0]
+        # If the best candidate still looks unrelated, don't return it.
+        if best_score < 20:
+            return ""
+        return best
     except Exception:
         return ""
 
@@ -238,7 +276,12 @@ def _extract_pdf_text(pdf_bytes: bytes) -> str:
 def scrape_unicredit_from_pdf():
     print("INFO UniCredit: prenos PDF ...")
 
-    pdf_url = discover_pdf_url(SESSION) or PDF_URL
+    discovered = discover_pdf_url(SESSION)
+    pdf_url = discovered or PDF_URL
+    if discovered:
+        print(f"INFO UniCredit: discovered PDF url={discovered}")
+    else:
+        print("WRN UniCredit: PDF discovery ni uspela, uporabljam fallback PDF_URL")
 
     # Prime cookies / WAF checks from main page first.
     try:
