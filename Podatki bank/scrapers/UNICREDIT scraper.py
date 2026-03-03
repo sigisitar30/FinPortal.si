@@ -12,7 +12,7 @@ import requests
 URL = "https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html"
 PREVIOUS_FILE = "unicredit_previous.json"
 
-PDF_URL = "https://www.unicreditbank.si/content/dam/cee2020-pws-si/SI-DOK/Tarife_in_obrestne_mere/Izvlecek_iz_tarife_PI/Izvle%C4%8Dek%20Sklepa%20o%20obrestnih%20merah%20banke%2001.08.2025.pdf"
+PDF_URL = "https://www.unicreditbank.si/content/dam/cee2020-pws-si/SI-DOK/Tarife_in_obrestne_mere/Izvlecek_iz_tarife_PI/Izvle%C4%8Dek%20Sklepa%20o%20obrestnih%20merah%20banke%2001.03.2026.pdf"
 
 EXPECTED_MIN_AMOUNT = 500
 EXPECTED_MAX_AMOUNT = 100000
@@ -38,6 +38,62 @@ def _make_session():
 
 
 SESSION = _make_session()
+
+
+def _absolute_url(base: str, href: str) -> str:
+    href = str(href or "").strip()
+    if not href:
+        return ""
+    if href.startswith("http://") or href.startswith("https://"):
+        return href
+    if href.startswith("//"):
+        return "https:" + href
+    if href.startswith("/"):
+        m = re.match(r"^(https?://[^/]+)", base)
+        return (m.group(1) + href) if m else href
+    # relative
+    if base.endswith("/"):
+        return base + href
+    return base.rsplit("/", 1)[0] + "/" + href
+
+
+def discover_pdf_url(session: requests.Session) -> str:
+    """Try to find the current UniCredit interest-rate PDF linked from the product page."""
+    try:
+        r = session.get(URL, timeout=30)
+        r.raise_for_status()
+        html = r.text or ""
+
+        # Prefer a PDF that looks like the interest-rate decision/extract.
+        candidates = []
+
+        for m in re.finditer(r"href=\"([^\"]+\.pdf)\"", html, flags=re.IGNORECASE):
+            u = _absolute_url(URL, m.group(1))
+            if u:
+                candidates.append(u)
+
+        for m in re.finditer(r"(https?://[^\s'\"]+\.pdf)", html, flags=re.IGNORECASE):
+            u = m.group(1)
+            if u:
+                candidates.append(u)
+
+        # Keep order, de-dupe
+        seen = set()
+        uniq = []
+        for u in candidates:
+            if u not in seen:
+                seen.add(u)
+                uniq.append(u)
+
+        preferred = []
+        for u in uniq:
+            low = u.lower()
+            if "obrest" in low or "sklep" in low or "tarif" in low:
+                preferred.append(u)
+
+        return (preferred[0] if preferred else (uniq[0] if uniq else ""))
+    except Exception:
+        return ""
 
 
 # -----------------------------
@@ -181,13 +237,15 @@ def _extract_pdf_text(pdf_bytes: bytes) -> str:
 def scrape_unicredit_from_pdf():
     print("Prenos UniCredit PDF ...")
 
+    pdf_url = discover_pdf_url(SESSION) or PDF_URL
+
     # Prime cookies / WAF checks from main page first.
     try:
         SESSION.get(URL, timeout=30)
     except Exception:
         pass
 
-    def _download_pdf_via_playwright():
+    def _download_pdf_via_playwright(pdf_url_for_download: str):
         with sync_playwright() as p:
             browser = p.chromium.launch(
                 headless=True,
@@ -217,11 +275,11 @@ def scrape_unicredit_from_pdf():
             }
 
             resp = page.request.get(
-                PDF_URL, headers=pdf_headers, timeout=60000)
+                pdf_url_for_download, headers=pdf_headers, timeout=60000)
             if resp.status == 403:
                 # Retry through the context-level request API (sometimes behaves slightly differently).
                 resp = context.request.get(
-                    PDF_URL, headers=pdf_headers, timeout=60000)
+                    pdf_url_for_download, headers=pdf_headers, timeout=60000)
             if resp.status >= 400:
                 raise RuntimeError(
                     f"Playwright PDF request failed: status={resp.status} url={resp.url}")
@@ -237,7 +295,7 @@ def scrape_unicredit_from_pdf():
             return pdf_data
 
     r = SESSION.get(
-        PDF_URL,
+        pdf_url,
         headers={
             "Accept": "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
             "Accept-Language": "sl-SI,sl;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -251,7 +309,8 @@ def scrape_unicredit_from_pdf():
         timeout=30,
     )
     if r.status_code == 403:
-        pdf_bytes = _download_pdf_via_playwright()
+        # Playwright request uses the currently discovered URL as well.
+        pdf_bytes = _download_pdf_via_playwright(pdf_url)
     else:
         r.raise_for_status()
         pdf_bytes = r.content
@@ -519,8 +578,8 @@ def scrape_unicredit_from_pdf():
     segments = [
         ("days", 31, 90, r_31_90, "Depozit 31–90D"),
         ("days", 91, 365, r_91_365, "Depozit 91–365D"),
-        ("months", 12, 36, r_12_36, "Depozit 12–36M"),
-        ("months", 37, 60, r_36_60, "Depozit 37–60M"),
+        ("months", 12, 35, r_12_36, "Depozit 12–35M"),
+        ("months", 36, 60, r_36_60, "Depozit 36–60M"),
     ]
 
     for unit, a, b, rate, name in segments:
@@ -541,9 +600,10 @@ def scrape_unicredit_from_pdf():
             "rate_klik_bonus": ro - rb,
             "rate_klik_total": ro,
             "offer_type": "regular",
-            "url": PDF_URL,
+            # Use the product page as the user-facing link (PDF URLs change often).
+            "url": URL,
             "last_updated": today,
-            "notes": "scraped from UniCredit PDF",
+            "notes": f"scraped from UniCredit PDF: {pdf_url}",
         })
 
     print(f"OK UniCredit PDF: {len(results)} zapisov")
@@ -839,9 +899,7 @@ def scrape_unicredit():
                   "scraped via Playwright (amount tiers)")
     _append_tiers(24, 24, 24, "Depozit 24M",
                   "scraped via Playwright (amount tiers)")
-    _append_tiers(36, 36, 36, "Depozit 36M",
-                  "scraped via Playwright (amount tiers)")
-    _append_tiers(37, 60, 60, "Depozit 37–60M",
+    _append_tiers(36, 60, 60, "Depozit 36–60M",
                   "scraped via Playwright (amount tiers)")
 
     return results
