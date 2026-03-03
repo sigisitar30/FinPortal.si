@@ -235,7 +235,7 @@ def _extract_pdf_text(pdf_bytes: bytes) -> str:
 
 
 def scrape_unicredit_from_pdf():
-    print("Prenos UniCredit PDF ...")
+    print("INFO UniCredit: prenos PDF ...")
 
     pdf_url = discover_pdf_url(SESSION) or PDF_URL
 
@@ -606,7 +606,7 @@ def scrape_unicredit_from_pdf():
             "notes": f"scraped from UniCredit PDF: {pdf_url}",
         })
 
-    print(f"OK UniCredit PDF: {len(results)} zapisov")
+    print(f"[OK] UniCredit: PDF vir uporabljen ({len(results)} zapisov)")
     return results
 
 
@@ -966,7 +966,7 @@ def save_to_csv(rows, filename="unicredit_depoziti.csv"):
             row = {k: v for k, v in row.items() if k != "key"}
             writer.writerow(row)
 
-    print(f"OK CSV zapisan v: {filename}")
+    print(f"[OK] CSV zapisan v: {filename}")
 
 
 # -----------------------------
