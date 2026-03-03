@@ -3523,7 +3523,7 @@ function getDepositCompareTermMonths() {
         const days = Math.round(Number(term));
         if (!Number.isFinite(days) || days <= 0) return null;
         if (days < 30) return null;
-        return Math.max(1, Math.floor(days / 30));
+        return Math.max(1, Math.floor(days / 30.4167));
     }
     return term;
 }
@@ -4077,6 +4077,82 @@ function pickDepositOffer(offers, opts) {
         return Number.isFinite(o.termMonths) ? Number(o.termMonths) === m : false;
     };
 
+    const monthMin = (o) => {
+        const v = o && o.termMonthsMin !== null && o.termMonthsMin !== undefined ? Number(o.termMonthsMin) : NaN;
+        return Number.isFinite(v) ? v : Number(o.termMonths);
+    };
+
+    const pickMonthThreshold = (pool, targetMonths) => {
+        const withTerms = pool.filter(o => Number.isFinite(monthMin(o)));
+        if (withTerms.length === 0) return null;
+
+        const minAvailable = withTerms.reduce((m, o) => {
+            const mm = monthMin(o);
+            return Number.isFinite(mm) && mm < m ? mm : m;
+        }, monthMin(withTerms[0]));
+
+        if (Number.isFinite(minAvailable) && targetMonths < minAvailable) {
+            const minOffer = withTerms.find(o => monthMin(o) === minAvailable) || withTerms[0];
+            return {
+                ...minOffer,
+                rateBase: NaN,
+                rateSpecial: null,
+                termMonths: null,
+                term: ""
+            };
+        }
+
+        const eligible = withTerms.filter(o => monthMin(o) <= targetMonths);
+        if (eligible.length === 0) {
+            const minOffer = withTerms.find(o => monthMin(o) === minAvailable) || withTerms[0];
+            return {
+                ...minOffer,
+                rateBase: NaN,
+                rateSpecial: null,
+                termMonths: null,
+                term: ""
+            };
+        }
+
+        return eligible.reduce((best, cur) => {
+            const bestMin = monthMin(best);
+            const curMin = monthMin(cur);
+            if (curMin !== bestMin) return curMin > bestMin ? cur : best;
+            return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
+        }, eligible[0]);
+    };
+
+    const pickDaysThreshold = (pool, targetDays) => {
+        const withRanges = pool
+            .map(o => ({ o, r: toDaysRange(o) }))
+            .filter(x => x.o && x.r.a !== null && Number.isFinite(x.r.a));
+
+        if (!Number.isFinite(targetDays) || targetDays <= 0) return null;
+        if (withRanges.length === 0) return null;
+
+        const byRange = withRanges.find(x => x.r.a !== null && x.r.b !== null && targetDays >= x.r.a && targetDays <= x.r.b);
+        if (byRange) return byRange.o;
+
+        const eligible = withRanges.filter(x => x.r.a !== null && x.r.a <= targetDays);
+        if (eligible.length === 0) return null;
+
+        return eligible.reduce((best, cur) => {
+            const bestA = best.r.a;
+            const curA = cur.r.a;
+            if (curA !== bestA) return curA > bestA ? cur : best;
+            return (effRate(cur.o) ?? 0) > (effRate(best.o) ?? 0) ? cur : best;
+        }, eligible[0]).o;
+    };
+
+    const monthsToDayBucketStart = (months) => {
+        const m = Number(months);
+        if (!Number.isFinite(m) || m <= 0) return NaN;
+        const whole = Math.floor(m);
+        if (whole <= 0) return NaN;
+        // Map 1M -> 31 days, 2M -> 61 days, 3M -> 91 days, ...
+        return 30 * (whole - 1) + 31;
+    };
+
     const toDaysRange = (o) => {
         if (!o) return { a: null, b: null };
         const a = o.termDaysMin === null || o.termDaysMin === undefined ? null : Number(o.termDaysMin);
@@ -4106,10 +4182,6 @@ function pickDepositOffer(offers, opts) {
         let valid = validAll;
         if (targetTermUnit === "months") {
             if (monthsOffers.length > 0) {
-                const monthMin = (o) => {
-                    const v = o && o.termMonthsMin !== null && o.termMonthsMin !== undefined ? Number(o.termMonthsMin) : NaN;
-                    return Number.isFinite(v) ? v : Number(o.termMonths);
-                };
                 const minMonthTerm = monthsOffers.reduce((m, o) => {
                     const mm = monthMin(o);
                     return Number.isFinite(mm) && mm < m ? mm : m;
@@ -4120,7 +4192,7 @@ function pickDepositOffer(offers, opts) {
                     .reduce((m, n) => (m === null || n < m ? n : m), null);
 
                 const targetDaysFromMonths = Number.isFinite(targetTermMonths)
-                    ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
+                    ? Math.max(31, monthsToDayBucketStart(targetTermMonths))
                     : NaN;
 
                 const allowMonthsToDaysFallback =
@@ -4136,33 +4208,24 @@ function pickDepositOffer(offers, opts) {
                     if (Number.isFinite(minDayMin) && Number.isFinite(targetDays) && targetDays < minDayMin) {
                         targetDays = minDayMin;
                     }
-                    const byRange = daysOffers.find(o => {
-                        const r = toDaysRange(o);
-                        return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
-                    });
-                    if (byRange) return byRange;
+                    const byThreshold = pickDaysThreshold(daysOffers, targetDays);
+                    if (byThreshold) return byThreshold;
                     return null;
                 }
                 valid = monthsOffers;
             } else if (daysOffers.length > 0) {
                 const targetDays = Number.isFinite(targetTermMonths)
-                    ? Math.max(31, Math.floor(Number(targetTermMonths) * 30.4167))
+                    ? Math.max(31, monthsToDayBucketStart(targetTermMonths))
                     : NaN;
-                const byRange = daysOffers.find(o => {
-                    const r = toDaysRange(o);
-                    return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
-                });
-                if (byRange) return byRange;
+                const byThreshold = pickDaysThreshold(daysOffers, targetDays);
+                if (byThreshold) return byThreshold;
                 return null;
             }
         } else if (targetTermUnit === "days") {
             if (daysOffers.length > 0) {
                 const targetDays = Math.round(Number(selectedTerm));
-                const byRange = daysOffers.find(o => {
-                    const r = toDaysRange(o);
-                    return Number.isFinite(targetDays) && r.a !== null && r.b !== null && targetDays >= r.a && targetDays <= r.b;
-                });
-                if (byRange) return byRange;
+                const byThreshold = pickDaysThreshold(daysOffers, targetDays);
+                if (byThreshold) return byThreshold;
                 return null;
             }
 
@@ -4171,7 +4234,7 @@ function pickDepositOffer(offers, opts) {
             if (monthsOffers.length === 0) return null;
 
             const targetMonths = Number.isFinite(targetDays) && targetDays > 0
-                ? Math.max(1, Math.floor((targetDays - 1) / 30))
+                ? Math.max(1, Math.floor(targetDays / 30.4167))
                 : NaN;
             if (!Number.isFinite(targetMonths) || targetMonths <= 0) return null;
 
@@ -4193,12 +4256,7 @@ function pickDepositOffer(offers, opts) {
                 return exactMatches.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), exactMatches[0]);
             }
 
-            const higherOrEqual = withTerms.filter(o => o.termMonths >= targetMonths);
-            if (higherOrEqual.length === 0) {
-                const maxTerm = withTerms.reduce((m, o) => (o.termMonths > m ? o.termMonths : m), withTerms[0].termMonths);
-                return withTerms.find(o => o.termMonths === maxTerm) || withTerms[0];
-            }
-            return higherOrEqual.reduce((best, cur) => (cur.termMonths < best.termMonths ? cur : best), higherOrEqual[0]);
+            return pickMonthThreshold(withTerms, targetMonths);
         }
 
         if (valid.length === 0) return poolOffers[0] || null;
@@ -4216,71 +4274,7 @@ function pickDepositOffer(offers, opts) {
                 return exactMatches.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), exactMatches[0]);
             }
 
-            const bankName = String(valid[0]?.bank ?? offers[0]?.bank ?? "").trim();
-            const useFloor = bankName === "BKS Bank AG";
-            const useCeiling = bankName === "Addiko Bank d.d.";
-
-            const minAvailableTerm = valid.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), valid[0].termMonths);
-            if (Number.isFinite(minAvailableTerm) && targetTermMonths < minAvailableTerm) {
-                const minOffer = valid.find(o => o.termMonths === minAvailableTerm) || valid[0];
-                return {
-                    ...minOffer,
-                    rateBase: NaN,
-                    rateSpecial: null,
-                    termMonths: null,
-                    term: ""
-                };
-            }
-
-            if (useCeiling) {
-                const higherOrEqual = valid.filter(o => o.termMonths >= targetTermMonths);
-                if (higherOrEqual.length === 0) {
-                    const maxTerm = valid.reduce((m, o) => (o.termMonths > m ? o.termMonths : m), valid[0].termMonths);
-                    return valid.find(o => o.termMonths === maxTerm) || valid[0];
-                }
-                return higherOrEqual.reduce((best, cur) => (cur.termMonths < best.termMonths ? cur : best), higherOrEqual[0]);
-            }
-
-            const category = termTypeLabel(targetTermMonths);
-            const sameCategory = valid.filter(o => termTypeLabel(o.termMonths) === category);
-            const pool2 = useFloor ? valid : (sameCategory.length > 0 ? sameCategory : valid);
-
-            const minTerm = pool2.reduce((m, o) => (o.termMonths < m ? o.termMonths : m), pool2[0].termMonths);
-            if (Number.isFinite(minTerm) && targetTermMonths < minTerm) {
-                const minOffer = pool2.find(o => o.termMonths === minTerm) || pool2[0];
-                return {
-                    ...minOffer,
-                    rateBase: NaN,
-                    rateSpecial: null,
-                    termMonths: null,
-                    term: ""
-                };
-            }
-
-            if (useFloor) {
-                const lowerOrEqual = pool2.filter(o => o.termMonths <= targetTermMonths);
-                if (lowerOrEqual.length === 0) {
-                    const minOffer = pool2.find(o => o.termMonths === minTerm) || pool2[0];
-                    return {
-                        ...minOffer,
-                        rateBase: NaN,
-                        rateSpecial: null,
-                        termMonths: null,
-                        term: ""
-                    };
-                }
-                return lowerOrEqual.reduce((best, cur) => {
-                    if (cur.termMonths !== best.termMonths) return cur.termMonths > best.termMonths ? cur : best;
-                    return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
-                }, lowerOrEqual[0]);
-            }
-
-            return pool2.reduce((best, cur) => {
-                const bestDiff = Math.abs(best.termMonths - targetTermMonths);
-                const curDiff = Math.abs(cur.termMonths - targetTermMonths);
-                if (curDiff !== bestDiff) return curDiff < bestDiff ? cur : best;
-                return (effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best;
-            }, pool2[0]);
+            return pickMonthThreshold(valid, targetTermMonths);
         }
 
         return valid.reduce((best, cur) => ((effRate(cur) ?? 0) > (effRate(best) ?? 0) ? cur : best), valid[0]);

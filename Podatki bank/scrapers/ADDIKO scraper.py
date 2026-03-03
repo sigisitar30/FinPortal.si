@@ -351,7 +351,7 @@ def scrape_addiko_from_pdf(bank_id, bank_name):
         # promotional/special
         _row(
             "Dolgoročni akcijski evrski depozit >1,5–2 leti",
-            19,
+            18,
             23,
             "months",
             rate_long_1_2 if rate_long_1_2 is not None else rate_promo_1_5_2,
