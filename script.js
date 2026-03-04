@@ -4505,6 +4505,10 @@ function renderDepositTable() {
     html += `
             </tbody>
         </table>
+        <div class="mt-3 text-sm text-gray-600 leading-snug">
+            <div>Opomba: prikazane obrestne mere so iz <strong>redne ponudbe</strong> bank (posebnih/akcijskih ponudb ta kalkulator privzeto ne upošteva). Pogoji se lahko spremenijo in lahko odstopajo od dejanske ponudbe banke.</div>
+            <div class="mt-1">Če je prikazano <strong>—</strong>, banka za izbrano ročnost (ali znesek) nima ustrezne ponudbe.</div>
+        </div>
     `;
 
     container.innerHTML = html;
@@ -4679,8 +4683,33 @@ function updateInterestRate() {
 
     const bank = value.trim();
     const bankOffers = depositOffers.filter(o => String(o.bank ?? "").trim() === bank);
+
+    // Link do ponudbe naj bo vedno viden, ko je izbrana banka.
+    // Tudi če za izbrano ročnost ni ponudbe, naj uporabnik lahko odpre ponudbo banke.
+    if (offerLink) {
+        offerLink.classList.remove("hidden");
+    }
+
+    const fallbackUrl = bankOffers
+        .map(o => String(o?.url ?? "").trim())
+        .find(u => !!u);
+
+    if (offerLink) {
+        const href = String(fallbackUrl ?? "").trim();
+        if (href) {
+            offerLink.href = href;
+            offerLink.setAttribute("aria-disabled", "false");
+            offerLink.classList.remove("opacity-50", "pointer-events-none");
+        } else {
+            offerLink.href = "#";
+            offerLink.setAttribute("aria-disabled", "true");
+            offerLink.classList.add("opacity-50", "pointer-events-none");
+        }
+    }
+
     if (bankOffers.length === 0) {
-        if (offerLink) offerLink.classList.add("hidden");
+        rateInput.value = "-";
+        delete rateInput.dataset.autoRate;
         return;
     }
 
@@ -4693,9 +4722,8 @@ function updateInterestRate() {
     });
 
     if (Number.isFinite(targetTermMonths) && (!offerToUse || !Number.isFinite(offerToUse.termMonths))) {
-        rateInput.value = "";
+        rateInput.value = "-";
         delete rateInput.dataset.autoRate;
-        if (offerLink) offerLink.classList.add("hidden");
         return;
     }
 
@@ -4709,10 +4737,9 @@ function updateInterestRate() {
 
     if (offerLink) {
         if (!offerToUse) {
-            offerLink.classList.add("hidden");
+            // Keep the link visible and rely on the fallback URL set earlier.
         } else {
             const href = String(offerToUse.url ?? "").trim();
-            offerLink.classList.remove("hidden");
             if (href) {
                 offerLink.href = href;
                 offerLink.setAttribute("aria-disabled", "false");
@@ -4720,7 +4747,7 @@ function updateInterestRate() {
             } else {
                 offerLink.href = "#";
                 offerLink.setAttribute("aria-disabled", "true");
-                offerLink.classList.remove("opacity-50", "pointer-events-none");
+                offerLink.classList.add("opacity-50", "pointer-events-none");
             }
         }
     }
