@@ -2605,32 +2605,44 @@ function initNumberFormatting() {
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
 
-    initCookieBanner();
-    initMobileMenu();
+    const safeInit = (name, fn) => {
+        try {
+            if (typeof fn === "function") fn();
+        } catch (e) {
+            console.warn(`${name} init failed`, e);
+        }
+    };
+
+    safeInit("initShareUi", initShareUi);
+
+    safeInit("initCookieBanner", initCookieBanner);
+    safeInit("initMobileMenu", initMobileMenu);
 
     // Initialize tabs
-    initTabs();
+    safeInit("initTabs", initTabs);
 
     // Header dropdown: direct links to calculator tabs
-    document.querySelectorAll('a[data-calc-tab]').forEach((link) => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
+    safeInit("headerDropdownLinks", () => {
+        document.querySelectorAll('a[data-calc-tab]').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
 
-            const tabName = link.getAttribute('data-calc-tab');
-            const target = document.getElementById('kalkulatorji');
+                const tabName = link.getAttribute('data-calc-tab');
+                const target = document.getElementById('kalkulatorji');
 
-            if (target) {
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
 
-            if (tabName) {
-                switchToTab(tabName);
-            }
+                if (tabName) {
+                    switchToTab(tabName);
+                }
 
-            const details = link.closest('details');
-            if (details) {
-                details.removeAttribute('open');
-            }
+                const details = link.closest('details');
+                if (details) {
+                    details.removeAttribute('open');
+                }
+            });
         });
     });
 
@@ -2652,21 +2664,21 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Setup special button effects
-    setupButtonEffects();
+    safeInit("setupButtonEffects", setupButtonEffects);
 
     // Initialize deposit table + dropdown (fallback data), then try to load from latest.csv
-    renderDepositTable();
-    renderBankDropdown();
-    initDepositUiBindings();
-    initLoanUiBindings();
-    initEomUiBindings();
-    initCreditworthinessBindings();
-    initLostInterestBindings();
-    initFxBindings();
-    loadDepositOffersFromCsv();
+    safeInit("renderDepositTable", renderDepositTable);
+    safeInit("renderBankDropdown", renderBankDropdown);
+    safeInit("initDepositUiBindings", initDepositUiBindings);
+    safeInit("initLoanUiBindings", initLoanUiBindings);
+    safeInit("initEomUiBindings", initEomUiBindings);
+    safeInit("initCreditworthinessBindings", initCreditworthinessBindings);
+    safeInit("initLostInterestBindings", initLostInterestBindings);
+    safeInit("initFxBindings", initFxBindings);
+    safeInit("loadDepositOffersFromCsv", loadDepositOffersFromCsv);
 
     // Initialize formatting for numeric inputs
-    initNumberFormatting();
+    safeInit("initNumberFormatting", initNumberFormatting);
 
     // Normalize rate inputs to two decimals + decimal comma
     normalizeRateInput("loan-rate");
@@ -2683,7 +2695,7 @@ document.addEventListener('DOMContentLoaded', function () {
     normalizeRateInput("lost-etf-fee");
     normalizeRateInput("fx-spread");
 
-    initShareUi();
+    safeInit("initShareUi", initShareUi);
 
     const csRateEl = document.getElementById("cs-rate");
     if (csRateEl) {
