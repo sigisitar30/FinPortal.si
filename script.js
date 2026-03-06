@@ -44,7 +44,13 @@ async function loadFpLogoImg() {
 }
 
 function getShareConfig() {
-    const file = String(window.location.pathname ?? "").split("/").pop() || "";
+    const path = String(window.location.pathname ?? "");
+    let file = path.split("/").filter(Boolean).pop() || "";
+
+    // Cloudflare Pages can serve pretty URLs (e.g., /depozitni-kalkulator) for a file
+    // depozitni-kalkulator.html. Normalize so config lookup still works.
+    if (!file) file = "index.html";
+    if (!file.includes(".")) file = `${file}.html`;
 
     const cfgs = {
         "investicijski-kalkulator.html": {
