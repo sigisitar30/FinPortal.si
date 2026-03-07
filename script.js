@@ -1158,6 +1158,34 @@ function formatPercentSI(num) {
     return `${n.toFixed(2).replace(".", ",")}%`;
 }
 
+function enableGa4Analytics() {
+    const measurementId = "G-1G82TV8KFZ";
+    if (window.__fpGa4Enabled) return;
+    window.__fpGa4Enabled = true;
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    window.gtag('js', new Date());
+    window.gtag('config', measurementId);
+
+    const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${measurementId}"]`);
+    if (existing) return;
+
+    const s = document.createElement('script');
+    s.async = true;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    document.head.appendChild(s);
+}
+
+function disableGa4Analytics() {
+    window.__fpGa4Enabled = false;
+    if (typeof window.gtag === 'function') {
+        try {
+            window.gtag('consent', 'update', { analytics_storage: 'denied' });
+        } catch (e) { }
+    }
+}
+
 function initCookieBanner() {
     const key = "finportal_cookie_consent";
     let existing = null;
@@ -1208,12 +1236,15 @@ function initCookieBanner() {
     const setConsent = (value) => {
         try { localStorage.setItem(key, value); } catch (e) { }
         document.documentElement.dataset.cookieConsent = value;
+        if (value === "accepted") enableGa4Analytics();
+        if (value === "rejected") disableGa4Analytics();
         hide();
     };
 
     if (existing === "accepted" || existing === "rejected") {
         document.documentElement.dataset.cookieConsent = existing;
         hide();
+        if (existing === "accepted") enableGa4Analytics();
     } else {
         show();
     }
