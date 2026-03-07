@@ -2617,6 +2617,7 @@ function calculateLoan() {
 
         fpTrack("calculator_used", {
             calculator: "loan",
+            currency: "EUR",
             amount_eur: Math.round(amount),
             years: Number(years),
             rate_percent: Math.round(rate * 10000) / 100,
@@ -2988,6 +2989,7 @@ function calculateDeposit() {
 
     fpTrack("calculator_used", {
         calculator: "deposit",
+        currency: "EUR",
         amount_eur: Math.round(P),
         months: Number(months),
         rate_percent: Math.round((rate * 100) * 100) / 100,
@@ -3107,6 +3109,7 @@ function calculateInvestment() {
 
     fpTrack("calculator_used", {
         calculator: "investment",
+        currency: "EUR",
         initial_eur: Math.round(initial),
         monthly_eur: Math.round(monthly),
         years: Number(years),
