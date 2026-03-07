@@ -882,6 +882,10 @@ function initShareUi() {
     if (shareX) {
         shareX.addEventListener("click", () => {
             pressAnimate(shareX);
+            fpTrack("share_click", {
+                method: "x",
+                calculator: cfg.id || undefined,
+            });
             const shareUrl = buildShareUrl(cfg);
             const intent = new URL("https://twitter.com/intent/tweet");
             intent.searchParams.set("text", getShareText());
@@ -893,6 +897,10 @@ function initShareUi() {
     if (shareFb) {
         shareFb.addEventListener("click", () => {
             pressAnimate(shareFb);
+            fpTrack("share_click", {
+                method: "facebook",
+                calculator: cfg.id || undefined,
+            });
             const shareUrl = buildShareUrl(cfg);
             const intent = new URL("https://www.facebook.com/sharer/sharer.php");
             intent.searchParams.set("u", shareUrl);
@@ -903,6 +911,10 @@ function initShareUi() {
     if (shareCopy) {
         shareCopy.addEventListener("click", async () => {
             const shareUrl = buildShareUrl(cfg);
+            fpTrack("share_click", {
+                method: "copy",
+                calculator: cfg.id || undefined,
+            });
             await withTempButtonText(
                 shareCopy,
                 null,
@@ -927,6 +939,10 @@ function initShareUi() {
     if (shareImg) {
         shareImg.addEventListener("click", async () => {
             const shareUrl = buildShareUrl(cfg);
+            fpTrack("share_click", {
+                method: "image",
+                calculator: cfg.id || undefined,
+            });
             await withTempButtonText(
                 shareImg,
                 "Pripravljam...",
@@ -1184,6 +1200,22 @@ function disableGa4Analytics() {
             window.gtag('consent', 'update', { analytics_storage: 'denied' });
         } catch (e) { }
     }
+}
+
+function fpHasAnalyticsConsent() {
+    return document?.documentElement?.dataset?.cookieConsent === "accepted";
+}
+
+function fpTrack(eventName, params, opts) {
+    if (!fpHasAnalyticsConsent()) return;
+    if (!window.__fpGa4Enabled) return;
+    if (typeof window.gtag !== "function") return;
+
+    try {
+        const p = params && typeof params === "object" ? params : {};
+        const o = opts && typeof opts === "object" ? opts : {};
+        window.gtag("event", eventName, { ...p, ...o });
+    } catch (e) { }
 }
 
 function initCookieBanner() {
@@ -2583,6 +2615,14 @@ function calculateLoan() {
             buildLoanAmortizationSchedule(amount, months, rate, safeMoratorium)
         );
 
+        fpTrack("calculator_used", {
+            calculator: "loan",
+            amount_eur: Math.round(amount),
+            years: Number(years),
+            rate_percent: Math.round(rate * 10000) / 100,
+            purpose: purpose || undefined,
+        });
+
     } catch (error) {
         console.error("Error in calculateLoan:", error);
         showError("Napaka pri izračunu kredita");
@@ -2848,6 +2888,29 @@ function initLoanUiBindings() {
             const href = String(offerLink.getAttribute("href") ?? "").trim();
             if (disabled || href === "" || href === "#") {
                 e.preventDefault();
+                return;
+            }
+
+            if (fpHasAnalyticsConsent() && window.__fpGa4Enabled && typeof window.gtag === "function") {
+                e.preventDefault();
+
+                let navigated = false;
+                const navigate = () => {
+                    if (navigated) return;
+                    navigated = true;
+                    window.location.href = href;
+                };
+
+                fpTrack(
+                    "bank_offer_click",
+                    { calculator: "loan", url: href },
+                    {
+                        transport_type: "beacon",
+                        event_callback: navigate,
+                    }
+                );
+
+                setTimeout(navigate, 450);
             }
         });
     }
@@ -2922,6 +2985,13 @@ function calculateDeposit() {
 
     const interestNetEl = document.getElementById("interest-interest");
     if (interestNetEl) interestNetEl.textContent = formatSI(netInterest);
+
+    fpTrack("calculator_used", {
+        calculator: "deposit",
+        amount_eur: Math.round(P),
+        months: Number(months),
+        rate_percent: Math.round((rate * 100) * 100) / 100,
+    });
 }
 
 /* ============================
@@ -3034,6 +3104,14 @@ function calculateInvestment() {
     const series = buildInvestmentSeries(initial, monthly, months, monthlyRate);
     invLastSeries = series;
     drawInvestmentChart(series, invSavedSeries);
+
+    fpTrack("calculator_used", {
+        calculator: "investment",
+        initial_eur: Math.round(initial),
+        monthly_eur: Math.round(monthly),
+        years: Number(years),
+        rate_percent: Math.round((rate * 100) * 100) / 100,
+    });
 }
 
 function buildInvestmentSeries(initial, monthly, months, monthlyRate) {
@@ -4534,8 +4612,8 @@ function renderDepositTable() {
         if (notesTxt) tipParts.push(notesTxt);
         const tooltip = tipParts.join(" | ");
         const bankCell = url
-            ? `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900 hover:underline" data-url="${url}" title="${escapeHtml(tooltip)}">${d.bank}</button>`
-            : `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900" data-url="" aria-disabled="true" title="${escapeHtml(tooltip)}">${d.bank}</button>`;
+            ? `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900 hover:underline" data-url="${url}" data-bank="${escapeHtml(d.bank)}" title="${escapeHtml(tooltip)}">${d.bank}</button>`
+            : `<button type="button" class="bank-offer-btn block w-full text-left font-semibold text-gray-900" data-url="" data-bank="${escapeHtml(d.bank)}" aria-disabled="true" title="${escapeHtml(tooltip)}">${d.bank}</button>`;
 
         const rateText = hasRate ? `${formatRateSI(rateVal)}%` : "—";
 
@@ -4572,6 +4650,11 @@ function renderDepositTable() {
                 depositTableSortKey = key;
                 depositTableSortDir = key === "bank" ? "asc" : "desc";
             }
+            fpTrack("compare_sort", {
+                compare: "deposit",
+                sort_key: depositTableSortKey,
+                sort_dir: depositTableSortDir,
+            });
             renderDepositTable();
         });
     });
@@ -4584,9 +4667,35 @@ function renderDepositTable() {
             btn.style.color = "#0B6B3A";
 
             const href = String(btn.dataset.url ?? "").trim();
-            if (href) {
+            if (!href) return;
+
+            const openOffer = () => {
                 window.open(href, "_blank", "noopener,noreferrer");
+            };
+
+            if (fpHasAnalyticsConsent() && window.__fpGa4Enabled && typeof window.gtag === "function") {
+                let opened = false;
+                const safeOpen = () => {
+                    if (opened) return;
+                    opened = true;
+                    openOffer();
+                };
+
+                const bank = String(btn.dataset.bank ?? "").trim();
+                fpTrack(
+                    "bank_offer_click",
+                    { calculator: "deposit_compare", bank: bank || undefined, url: href },
+                    {
+                        transport_type: "beacon",
+                        event_callback: safeOpen,
+                    }
+                );
+
+                setTimeout(safeOpen, 450);
+                return;
             }
+
+            openOffer();
         });
     });
 }
@@ -4843,6 +4952,32 @@ function initDepositUiBindings() {
             const href = String(offerLink.getAttribute("href") ?? "").trim();
             if (disabled || href === "" || href === "#") {
                 e.preventDefault();
+                return;
+            }
+
+            if (fpHasAnalyticsConsent() && window.__fpGa4Enabled && typeof window.gtag === "function") {
+                e.preventDefault();
+
+                let opened = false;
+                const openOffer = () => {
+                    if (opened) return;
+                    opened = true;
+                    window.open(href, "_blank", "noopener,noreferrer");
+                };
+
+                const bankSelect = document.getElementById("bank-select");
+                const bank = bankSelect ? String(bankSelect.value ?? "").trim() : "";
+
+                fpTrack(
+                    "bank_offer_click",
+                    { calculator: "deposit", bank: bank || undefined, url: href },
+                    {
+                        transport_type: "beacon",
+                        event_callback: openOffer,
+                    }
+                );
+
+                setTimeout(openOffer, 450);
             }
         });
     }
