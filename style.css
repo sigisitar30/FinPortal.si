@@ -52,6 +52,10 @@ details[open] .fp-details-caret {
     transform: rotate(180deg);
 }
 
+.lvk-advanced-grid label {
+    min-height: 4.5rem;
+}
+
 /* Inputs */
 .input {
     width: 100%;
