@@ -53,7 +53,8 @@ details[open] .fp-details-caret {
 }
 
 .lvk-advanced-grid label {
-    min-height: 4.5rem;
+    min-height: 2.75rem;
+    margin-bottom: 0.25rem !important;
 }
 
 /* Inputs */
