@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si - Primerjava financiranja vozila: leasing vs bančni kredit (skupni strošek + EOM).">
+    <title>Leasing vs bančni kredit (vozila) | FinPortal.si</title>
+
+    <link rel="canonical" href="https://finportal-si.pages.dev/leasing-vs-kredit.html">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Domov</a>
+
+                <details class="relative">
+                    <summary
+                        class="list-none cursor-pointer hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded px-1 py-1">
+                        <a href="index.html#kalkulatorji" class="inline-block"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Izgubljene
+                            obresti</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Menjalniški
+                            kalkulator</a>
+                        <a href="primerjava-depozitov.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Investicijski kalkulator</a>
+                    </div>
+                </details>
+
+                <a href="index.html#onas"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">O
+                    nas</a>
+                <a href="index.html#kontakt"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Kontakt</a>
+
+                <a href="primerjava-depozitov.html"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] focus:bg-[#095a32] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="bg-gray-50 border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="text-sm font-semibold text-gray-900 mb-3">Kalkulatorji</div>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a href="kreditna-sposobnost.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditna
+                    sposobnost</a>
+                <a href="kreditni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditni</a>
+                <a href="eom-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">EOM</a>
+                <a href="depozitni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Depozitni</a>
+                <a href="izgubljene-obresti.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Izgubljene
+                    obresti</a>
+                <a href="menjalniski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Menjalniški</a>
+                <a href="primerjava-depozitov.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Primerjava
+                    depozitov</a>
+                <a href="investicijski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Investicijski</a>
+                <a href="leasing-vs-kredit.html"
+                    class="px-3 py-1 rounded-full border border-[#0B6B3A] bg-green-50 text-[#0B6B3A] hover:bg-green-100">Leasing vs kredit</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="sm:flex sm:gap-10">
+
+                <aside class="hidden sm:block sm:w-64">
+                    <div class="sticky top-28">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
+                            <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
+                                loading="lazy">
+                            <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="flex-1">
+                    <h1 class="text-3xl font-bold text-center mb-10">Leasing vs bančni kredit (financiranje vozila)</h1>
+
+                    <div class="calc-panel grid md:grid-cols-2 gap-12 items-start">
+
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="md:col-span-2">
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Cena vozila (€) <span
+                                            class="text-red-600">*</span></label>
+                                    <input type="text" id="lvk-price" value="25.000" class="input w-full format-number" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Polog / akontacija (€)
+                                        <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lvk-down" value="5.000" class="input w-full format-number" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Doba (meseci) <span
+                                            class="text-red-600">*</span></label>
+                                    <input type="number" id="lvk-months" value="60" min="6" max="120" step="1"
+                                        class="input w-full" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Kredit: obrestna mera (%
+                                        letno) <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lvk-loan-rate" value="6,50" class="input w-full no-format"
+                                        inputmode="decimal" />
+                                </div>
+
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Leasing: obrestna mera
+                                        (% letno) <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lvk-leasing-rate" value="6,90" class="input w-full no-format"
+                                        inputmode="decimal" />
+                                </div>
+                            </div>
+
+                            <div class="mt-4 flex flex-col gap-3">
+                                <button id="lvk-calc-btn"
+                                    class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">Izračunaj
+                                    primerjavo</button>
+                            </div>
+
+                            <details class="mt-4">
+                                <summary class="cursor-pointer text-sm font-semibold text-gray-900">Napredne nastavitve
+                                </summary>
+
+                                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kredit: strošek
+                                            odobritve (€)</label>
+                                        <input type="text" id="lvk-loan-upfront" value="0" class="input w-full no-format"
+                                            inputmode="decimal" />
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Kredit: mesečni
+                                            stroški (€)</label>
+                                        <input type="text" id="lvk-loan-monthly-fee" value="0"
+                                            class="input w-full no-format" inputmode="decimal" />
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Leasing: strošek
+                                            odobritve (€)</label>
+                                        <input type="text" id="lvk-leasing-upfront" value="0"
+                                            class="input w-full no-format" inputmode="decimal" />
+                                    </div>
+
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Leasing: mesečni
+                                            stroški (€)</label>
+                                        <input type="text" id="lvk-leasing-monthly-fee" value="0"
+                                            class="input w-full no-format" inputmode="decimal" />
+                                    </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Leasing: odkupna
+                                            vrednost na koncu (€)</label>
+                                        <input type="text" id="lvk-residual" value="0" class="input w-full no-format"
+                                            inputmode="decimal" />
+                                        <div class="mt-2 text-xs text-gray-600">Če vozilo na koncu odkupiš (balon /
+                                            odkup), ga vpiši tukaj. Če odkupa ni, pusti 0.</div>
+                                    </div>
+                                </div>
+                            </details>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                                <h3 class="text-xl font-semibold mb-6">Rezultat primerjave</h3>
+
+                                <div class="flex justify-between items-center py-4 border-b border-gray-200">
+                                    <span class="fp-result-label">Cenejša opcija (ocena)</span>
+                                    <span id="lvk-winner" class="fp-result-value fp-result-value--primary">–</span>
+                                </div>
+
+                                <div class="mt-4 grid md:grid-cols-2 gap-6">
+                                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                        <div class="text-sm font-extrabold text-gray-900">Bančni kredit</div>
+
+                                        <div class="mt-3 flex justify-between">
+                                            <div class="text-sm text-gray-600">Mesečni obrok (z vključenimi stroški)</div>
+                                            <div id="lvk-loan-monthly" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+
+                                        <div class="mt-2 flex justify-between">
+                                            <div class="text-sm text-gray-600">Skupaj plačaš</div>
+                                            <div id="lvk-loan-total" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+
+                                        <div class="mt-2 flex justify-between">
+                                            <div class="text-sm text-gray-600">EOM (ocena)</div>
+                                            <div id="lvk-loan-eom" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4">
+                                        <div class="text-sm font-extrabold text-gray-900">Leasing</div>
+
+                                        <div class="mt-3 flex justify-between">
+                                            <div class="text-sm text-gray-600">Mesečni obrok (z vključenimi stroški)</div>
+                                            <div id="lvk-leasing-monthly" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+
+                                        <div class="mt-2 flex justify-between">
+                                            <div class="text-sm text-gray-600">Skupaj plačaš</div>
+                                            <div id="lvk-leasing-total" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+
+                                        <div class="mt-2 flex justify-between">
+                                            <div class="text-sm text-gray-600">EOM (ocena)</div>
+                                            <div id="lvk-leasing-eom" class="text-sm font-bold text-gray-900">–</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 flex flex-wrap justify-end gap-2">
+                                    <button id="fp-share-x" type="button"
+                                        class="px-3 py-2 bg-gray-900 text-white rounded-xl font-semibold hover:bg-gray-800 transition">Deli
+                                        na X</button>
+                                    <button id="fp-share-fb" type="button"
+                                        class="px-3 py-2 bg-[#1877F2] text-white rounded-xl font-semibold hover:opacity-90 transition">Deli
+                                        na Facebook</button>
+                                    <button id="fp-share-copy" type="button"
+                                        class="px-3 py-2 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">Kopiraj
+                                        povezavo</button>
+                                    <button id="fp-share-img" type="button"
+                                        class="px-3 py-2 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">Prenesi
+                                        sliko</button>
+                                </div>
+                            </div>
+
+                            <div
+                                class="max-w-4xl mx-auto p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
+                                <p class="font-semibold text-base mb-3">Pojasnilo in omejitve</p>
+                                <p>
+                                    Rezultati so <strong>informativna ocena</strong> na podlagi vnesenih predpostavk.
+                                    Leasing pogoji se med ponudniki razlikujejo (stroški, obvezna zavarovanja, odkupna
+                                    vrednost, pogoji predčasnega poplačila ipd.).
+                                </p>
+                                <p class="mt-2">
+                                    EOM je izračunana kot približek iz denarnih tokov (vključno z vnesenimi stroški).
+                                    Pred odločitvijo obvezno preveri <strong>uradno informativno izračunano EOM</strong>
+                                    in ostale pogoje pri ponudniku.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <section class="bg-gray-50 border-t border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-6">
+            <div class="text-sm font-semibold text-gray-900 mb-3">Kalkulatorji</div>
+            <div class="flex flex-wrap gap-2 text-sm">
+                <a href="kreditna-sposobnost.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditna
+                    sposobnost</a>
+                <a href="kreditni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditni</a>
+                <a href="eom-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">EOM</a>
+                <a href="depozitni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Depozitni</a>
+                <a href="izgubljene-obresti.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Izgubljene
+                    obresti</a>
+                <a href="menjalniski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Menjalniški</a>
+                <a href="primerjava-depozitov.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Primerjava
+                    depozitov</a>
+                <a href="investicijski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Investicijski</a>
+                <a href="leasing-vs-kredit.html"
+                    class="px-3 py-1 rounded-full border border-[#0B6B3A] bg-green-50 text-[#0B6B3A] hover:bg-green-100">Leasing vs kredit</a>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne ter druge odločitve.
+        </div>
+    </footer>
+
+    <script src="script.js?v=2026-02-20" type="text/javascript"></script>
+</body>
+
+</html>

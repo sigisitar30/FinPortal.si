@@ -1811,6 +1811,137 @@ function initEomUiBindings() {
     });
 }
 
+/* ============================
+   LEASING VS KREDIT (VOZILA)
+============================ */
+
+function calculateLeasingVsLoan() {
+    const price = getElementValue("lvk-price");
+    const down = getElementValue("lvk-down");
+    const months = getElementValue("lvk-months");
+
+    const loanRate = getElementValue("lvk-loan-rate") / 100;
+    const leasingRate = getElementValue("lvk-leasing-rate") / 100;
+
+    const loanUpfront = getElementValue("lvk-loan-upfront");
+    const loanMonthlyFee = getElementValue("lvk-loan-monthly-fee");
+    const leasingUpfront = getElementValue("lvk-leasing-upfront");
+    const leasingMonthlyFee = getElementValue("lvk-leasing-monthly-fee");
+    const residual = getElementValue("lvk-residual");
+
+    const winnerEl = document.getElementById("lvk-winner");
+    const setDash = () => {
+        setElementText("lvk-winner", "–");
+        setElementText("lvk-loan-monthly", "–");
+        setElementText("lvk-loan-total", "–");
+        setElementText("lvk-loan-eom", "–");
+        setElementText("lvk-leasing-monthly", "–");
+        setElementText("lvk-leasing-total", "–");
+        setElementText("lvk-leasing-eom", "–");
+    };
+
+    if (
+        !Number.isFinite(price) || price <= 0 ||
+        !Number.isFinite(down) || down < 0 || down >= price ||
+        !Number.isFinite(months) || months <= 0 ||
+        !Number.isFinite(loanRate) || loanRate < 0 ||
+        !Number.isFinite(leasingRate) || leasingRate < 0
+    ) {
+        setDash();
+        return;
+    }
+
+    const financed = price - down;
+
+    // Loan: classic annuity + optional fees.
+    const loanPayment = calcAnnuityPayment(financed, months, loanRate);
+    const safeLoanMonthlyFee = Number.isFinite(loanMonthlyFee) ? loanMonthlyFee : 0;
+    const loanMonthlyOutflow = Number.isFinite(loanPayment) ? (loanPayment + safeLoanMonthlyFee) : NaN;
+
+    // Leasing: financed part is treated as annuity, and residual is paid at the end.
+    // This is a simplification but works well for comparison.
+    const leasingPayment = calcAnnuityPayment(financed, months, leasingRate);
+    const safeLeasingMonthlyFee = Number.isFinite(leasingMonthlyFee) ? leasingMonthlyFee : 0;
+    const leasingMonthlyOutflow = Number.isFinite(leasingPayment) ? (leasingPayment + safeLeasingMonthlyFee) : NaN;
+
+    const safeLoanUpfront = Number.isFinite(loanUpfront) ? loanUpfront : 0;
+    const safeLeasingUpfront = Number.isFinite(leasingUpfront) ? leasingUpfront : 0;
+    const safeResidual = Number.isFinite(residual) ? residual : 0;
+
+    if (!Number.isFinite(loanMonthlyOutflow) || !Number.isFinite(leasingMonthlyOutflow)) {
+        setDash();
+        return;
+    }
+
+    // Totals (include downpayment so user sees total cash spent)
+    const loanTotal = down + safeLoanUpfront + loanMonthlyOutflow * months;
+    const leasingTotal = down + safeLeasingUpfront + leasingMonthlyOutflow * months + safeResidual;
+
+    setElementText("lvk-loan-monthly", formatSIWholeEuro(loanMonthlyOutflow));
+    setElementText("lvk-loan-total", formatSIWholeEuro(loanTotal));
+
+    setElementText("lvk-leasing-monthly", formatSIWholeEuro(leasingMonthlyOutflow));
+    setElementText("lvk-leasing-total", formatSIWholeEuro(leasingTotal));
+
+    // EOM approximation via APR solver:
+    // Treat financed as net disbursed; fees reduce net; monthly outflow includes monthly fees.
+    // For leasing, we include residual as an equivalent monthly spread to keep solver simple.
+    const loanNet = financed - safeLoanUpfront;
+    const loanRateM = solveAprMonthlyRate(loanNet, loanMonthlyOutflow, months);
+    const loanApr = Number.isFinite(loanRateM) ? (Math.pow(1 + loanRateM, 12) - 1) : NaN;
+    setElementText("lvk-loan-eom", Number.isFinite(loanApr) ? formatPercentSI(loanApr * 100) : "–");
+
+    const leasingNet = financed - safeLeasingUpfront;
+    const residualMonthly = safeResidual / months;
+    const leasingRateM = solveAprMonthlyRate(leasingNet, leasingMonthlyOutflow + residualMonthly, months);
+    const leasingApr = Number.isFinite(leasingRateM) ? (Math.pow(1 + leasingRateM, 12) - 1) : NaN;
+    setElementText("lvk-leasing-eom", Number.isFinite(leasingApr) ? formatPercentSI(leasingApr * 100) : "–");
+
+    // Winner
+    const diff = leasingTotal - loanTotal;
+    if (Number.isFinite(diff)) {
+        if (Math.abs(diff) < 0.5) {
+            setElementText("lvk-winner", "Izenačeno (≈)");
+        } else if (diff > 0) {
+            setElementText("lvk-winner", `Bančni kredit (≈ ${formatSIWholeEuro(diff)} ceneje)`);
+        } else {
+            setElementText("lvk-winner", `Leasing (≈ ${formatSIWholeEuro(Math.abs(diff))} ceneje)`);
+        }
+    } else {
+        setElementText("lvk-winner", "–");
+    }
+
+    if (winnerEl) {
+        winnerEl.classList.remove("text-red-600");
+        winnerEl.classList.add("fp-result-value--primary");
+    }
+
+    fpTrack("calculator_used", {
+        calculator: "leasing_vs_loan",
+        currency: "EUR",
+        price_eur: Math.round(price),
+        down_eur: Math.round(down),
+        months: Number(months),
+        loan_rate_percent: Math.round((loanRate * 100) * 100) / 100,
+        leasing_rate_percent: Math.round((leasingRate * 100) * 100) / 100,
+    });
+}
+
+function initLeasingVsLoanBindings() {
+    const btn = document.getElementById("lvk-calc-btn");
+    if (btn) {
+        btn.addEventListener("click", calculateLeasingVsLoan);
+    }
+
+    // Normalize percent inputs on change
+    const rateIds = ["lvk-loan-rate", "lvk-leasing-rate"];
+    rateIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", () => normalizeRateInput(id));
+    });
+}
+
 function formatPercentInputSI(val, decimals = 2) {
     const n = Number(val);
     if (!Number.isFinite(n)) return "";
@@ -2749,6 +2880,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("renderBankDropdown", renderBankDropdown);
     safeInit("initDepositUiBindings", initDepositUiBindings);
     safeInit("initLoanUiBindings", initLoanUiBindings);
+    safeInit("initLeasingVsLoanBindings", initLeasingVsLoanBindings);
     safeInit("initEomUiBindings", initEomUiBindings);
     safeInit("initCreditworthinessBindings", initCreditworthinessBindings);
     safeInit("initLostInterestBindings", initLostInterestBindings);
