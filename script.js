@@ -1820,6 +1820,12 @@ function calculateLeasingVsLoan() {
     const down = getElementValue("lvk-down");
     const months = getElementValue("lvk-months");
 
+    const loanMonthsRaw = getElementValue("lvk-loan-months");
+    const leasingMonthsRaw = getElementValue("lvk-leasing-months");
+
+    const loanMonths = Number.isFinite(loanMonthsRaw) && loanMonthsRaw > 0 ? loanMonthsRaw : months;
+    const leasingMonths = Number.isFinite(leasingMonthsRaw) && leasingMonthsRaw > 0 ? leasingMonthsRaw : months;
+
     const loanRate = getElementValue("lvk-loan-rate") / 100;
     const leasingRate = getElementValue("lvk-leasing-rate") / 100;
 
@@ -1844,6 +1850,8 @@ function calculateLeasingVsLoan() {
         !Number.isFinite(price) || price <= 0 ||
         !Number.isFinite(down) || down < 0 || down >= price ||
         !Number.isFinite(months) || months <= 0 ||
+        !Number.isFinite(loanMonths) || loanMonths <= 0 ||
+        !Number.isFinite(leasingMonths) || leasingMonths <= 0 ||
         !Number.isFinite(loanRate) || loanRate < 0 ||
         !Number.isFinite(leasingRate) || leasingRate < 0
     ) {
@@ -1854,13 +1862,13 @@ function calculateLeasingVsLoan() {
     const financed = price - down;
 
     // Loan: classic annuity + optional fees.
-    const loanPayment = calcAnnuityPayment(financed, months, loanRate);
+    const loanPayment = calcAnnuityPayment(financed, loanMonths, loanRate);
     const safeLoanMonthlyFee = Number.isFinite(loanMonthlyFee) ? loanMonthlyFee : 0;
     const loanMonthlyOutflow = Number.isFinite(loanPayment) ? (loanPayment + safeLoanMonthlyFee) : NaN;
 
     // Leasing: financed part is treated as annuity, and residual is paid at the end.
     // This is a simplification but works well for comparison.
-    const leasingPayment = calcAnnuityPayment(financed, months, leasingRate);
+    const leasingPayment = calcAnnuityPayment(financed, leasingMonths, leasingRate);
     const safeLeasingMonthlyFee = Number.isFinite(leasingMonthlyFee) ? leasingMonthlyFee : 0;
     const leasingMonthlyOutflow = Number.isFinite(leasingPayment) ? (leasingPayment + safeLeasingMonthlyFee) : NaN;
 
@@ -1874,8 +1882,8 @@ function calculateLeasingVsLoan() {
     }
 
     // Totals (include downpayment so user sees total cash spent)
-    const loanTotal = down + safeLoanUpfront + loanMonthlyOutflow * months;
-    const leasingTotal = down + safeLeasingUpfront + leasingMonthlyOutflow * months + safeResidual;
+    const loanTotal = down + safeLoanUpfront + loanMonthlyOutflow * loanMonths;
+    const leasingTotal = down + safeLeasingUpfront + leasingMonthlyOutflow * leasingMonths + safeResidual;
 
     setElementText("lvk-loan-monthly", formatSIWholeEuro(loanMonthlyOutflow));
     setElementText("lvk-loan-total", formatSIWholeEuro(loanTotal));
@@ -1887,13 +1895,13 @@ function calculateLeasingVsLoan() {
     // Treat financed as net disbursed; fees reduce net; monthly outflow includes monthly fees.
     // For leasing, we include residual as an equivalent monthly spread to keep solver simple.
     const loanNet = financed - safeLoanUpfront;
-    const loanRateM = solveAprMonthlyRate(loanNet, loanMonthlyOutflow, months);
+    const loanRateM = solveAprMonthlyRate(loanNet, loanMonthlyOutflow, loanMonths);
     const loanApr = Number.isFinite(loanRateM) ? (Math.pow(1 + loanRateM, 12) - 1) : NaN;
     setElementText("lvk-loan-eom", Number.isFinite(loanApr) ? formatPercentSI(loanApr * 100) : "–");
 
     const leasingNet = financed - safeLeasingUpfront;
-    const residualMonthly = safeResidual / months;
-    const leasingRateM = solveAprMonthlyRate(leasingNet, leasingMonthlyOutflow + residualMonthly, months);
+    const residualMonthly = safeResidual / leasingMonths;
+    const leasingRateM = solveAprMonthlyRate(leasingNet, leasingMonthlyOutflow + residualMonthly, leasingMonths);
     const leasingApr = Number.isFinite(leasingRateM) ? (Math.pow(1 + leasingRateM, 12) - 1) : NaN;
     setElementText("lvk-leasing-eom", Number.isFinite(leasingApr) ? formatPercentSI(leasingApr * 100) : "–");
 
