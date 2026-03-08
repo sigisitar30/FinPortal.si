@@ -28,6 +28,30 @@ body {
     margin: 0;
 }
 
+.fp-details-summary {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.fp-details-summary::-webkit-details-marker {
+    display: none;
+}
+
+.fp-details-summary::marker {
+    content: "";
+}
+
+.fp-details-caret {
+    margin-left: 0.25rem;
+    user-select: none;
+    transition: transform 0.15s ease;
+}
+
+details[open] .fp-details-caret {
+    transform: rotate(180deg);
+}
+
 /* Inputs */
 .input {
     width: 100%;

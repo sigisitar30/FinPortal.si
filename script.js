@@ -1941,6 +1941,29 @@ function initLeasingVsLoanBindings() {
         btn.addEventListener("click", calculateLeasingVsLoan);
     }
 
+    const monthsEl = document.getElementById("lvk-months");
+    const loanMonthsEl = document.getElementById("lvk-loan-months");
+    const leasingMonthsEl = document.getElementById("lvk-leasing-months");
+
+    const updateMonthsMode = () => {
+        if (!monthsEl) return;
+        const loanRaw = loanMonthsEl ? String(loanMonthsEl.value ?? "").trim() : "";
+        const leasingRaw = leasingMonthsEl ? String(leasingMonthsEl.value ?? "").trim() : "";
+
+        const usingAdvanced = loanRaw !== "" || leasingRaw !== "";
+        monthsEl.disabled = usingAdvanced;
+    };
+
+    if (loanMonthsEl) {
+        loanMonthsEl.addEventListener("input", updateMonthsMode);
+        loanMonthsEl.addEventListener("change", updateMonthsMode);
+    }
+    if (leasingMonthsEl) {
+        leasingMonthsEl.addEventListener("input", updateMonthsMode);
+        leasingMonthsEl.addEventListener("change", updateMonthsMode);
+    }
+    updateMonthsMode();
+
     // Normalize percent inputs on change
     const rateIds = ["lvk-loan-rate", "lvk-leasing-rate"];
     rateIds.forEach((id) => {
