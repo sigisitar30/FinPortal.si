@@ -36,7 +36,7 @@ async function loadFpLogoImg() {
     fpLogoImgPromise = new Promise((resolve) => {
         const img = new Image();
         img.decoding = "async";
-        img.src = "images/scit8.png";
+        img.src = "images/maliscit.webp";
         img.onload = () => resolve(img);
         img.onerror = () => resolve(null);
     });
@@ -164,6 +164,34 @@ function getShareConfig() {
             primaryMetricId: "fx-result",
             primaryMetricLabel: "Prejmeš",
             title: "Menjalniški izračun"
+        },
+        "leasing-vs-kredit.html": {
+            fields: [
+                "lvk-price",
+                "lvk-down",
+                "lvk-months",
+                "lvk-loan-rate",
+                "lvk-leasing-rate",
+                "lvk-loan-months",
+                "lvk-leasing-months",
+                "lvk-loan-upfront",
+                "lvk-loan-monthly-fee",
+                "lvk-leasing-upfront",
+                "lvk-leasing-monthly-fee",
+                "lvk-residual"
+            ],
+            calcButtonId: "lvk-calc-btn",
+            primaryMetricId: "lvk-winner",
+            primaryMetricLabel: "Cenejša opcija (ocena)",
+            secondaryMetrics: [
+                { id: "lvk-loan-monthly", label: "Kredit: mesečno" },
+                { id: "lvk-loan-total", label: "Kredit: skupaj" },
+                { id: "lvk-loan-eom", label: "Kredit: EOM" },
+                { id: "lvk-leasing-monthly", label: "Leasing: mesečno" },
+                { id: "lvk-leasing-total", label: "Leasing: skupaj" },
+                { id: "lvk-leasing-eom", label: "Leasing: EOM" }
+            ],
+            title: "Leasing vs bančni kredit"
         },
         "primerjava-depozitov.html": {
             fields: ["deposit-compare-amount", "deposit-compare-term", "deposit-compare-unit", "deposit-compare-special"],
@@ -707,6 +735,7 @@ async function buildShareImageDataUrl(cfg) {
     ctx.fillText(metricValue || "–", pad, 190);
 
     const chartId = cfg.chartCanvasId;
+    const gutter = 32;
     if (chartId) {
         const chartCanvas = document.getElementById(chartId);
         if (chartCanvas && typeof chartCanvas.getContext === "function") {
@@ -723,7 +752,7 @@ async function buildShareImageDataUrl(cfg) {
             ctx.stroke();
 
             try {
-                ctx.drawImage(chartCanvas, chartX + 16, chartY + 16, chartW - 32, chartH - 32);
+                ctx.drawImage(chartCanvas, chartX + 20, chartY + 20, chartW - 40, chartH - 40);
             } catch {
                 // ignore
             }
@@ -732,7 +761,7 @@ async function buildShareImageDataUrl(cfg) {
 
     const footerTop = H - 140;
     const leftX = pad;
-    const leftW = (chartId ? (W - pad - (520 + pad)) : (W - pad - pad));
+    const leftW = (chartId ? (W - pad - (520 + pad + gutter)) : (W - pad - pad));
     const cardY = 290;
     const cardH = footerTop - cardY - 16;
 
