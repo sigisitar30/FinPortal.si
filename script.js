@@ -36,7 +36,7 @@ async function loadFpLogoImg() {
     fpLogoImgPromise = new Promise((resolve) => {
         const img = new Image();
         img.decoding = "async";
-        img.src = "images/maliscit.webp";
+        img.src = "images/scit8.png";
         img.onload = () => resolve(img);
         img.onerror = () => resolve(null);
     });
@@ -596,8 +596,8 @@ async function buildShareTableImageDataUrl(cfg) {
     ctx.restore();
 
     const logo = await loadFpLogoImg();
-    const brandLogoY = H - 116;
-    const logoSize = 56;
+    const logoSize = 72;
+    const brandLogoY = H - pad - logoSize;
     if (logo) ctx.drawImage(logo, pad, brandLogoY, logoSize, logoSize);
     ctx.fillStyle = "#111827";
     ctx.font = "800 26px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
@@ -847,8 +847,8 @@ async function buildShareImageDataUrl(cfg) {
         ctx.textAlign = "left";
     }
 
-    const brandLogoY = H - 116;
-    const logoSize = 56;
+    const logoSize = 72;
+    const brandLogoY = H - pad - logoSize;
     if (logo) ctx.drawImage(logo, pad, brandLogoY, logoSize, logoSize);
     ctx.fillStyle = "#111827";
     ctx.font = "800 26px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
