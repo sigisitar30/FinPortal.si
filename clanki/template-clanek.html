@@ -122,21 +122,32 @@
         </article>
     </main>
 
-    <footer class="border-t border-gray-200 bg-white">
-        <div class="max-w-7xl mx-auto px-6 py-8 text-sm text-gray-600 flex flex-col md:flex-row gap-3 justify-between">
-            <div>© <span id="fp-year"></span> FinPortal.si</div>
-            <div class="flex flex-wrap gap-4">
-                <a class="hover:text-[#0B6B3A]" href="../pravno-obvestilo.html">Pravno obvestilo</a>
-                <a class="hover:text-[#0B6B3A]" href="../pogoji-uporabe.html">Pogoji uporabe</a>
-                <a class="hover:text-[#0B6B3A]" href="../politika-zasebnosti.html">Politika zasebnosti</a>
-                <a class="hover:text-[#0B6B3A]" href="../piskotki.html">Piškotki</a>
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <div class="flex items-center gap-3">
+                <img src="../images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
             </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="../pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="../pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="../politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="../piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="../index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne ter druge odločitve.
         </div>
     </footer>
-
-    <script>
-        document.getElementById('fp-year').textContent = new Date().getFullYear();
-    </script>
 </body>
 
 </html>
