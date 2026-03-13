@@ -97,6 +97,45 @@
         </div>
     </header>
 
+    <!-- SIMPLE NAVIGATION -->
+    <nav class="sticky top-16 z-40 bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4">
+            <!-- Desktop navigation -->
+            <div class="hidden md:flex items-center justify-center py-3 gap-8 text-sm font-medium">
+                <a href="../index.html" class="text-[#0B6B3A] hover:text-[#095a32] transition">Domov</a>
+                <a href="../kreditni-kalkulator.html" class="text-gray-700 hover:text-[#0B6B3A] transition">Krediti</a>
+                <a href="../primerjava-depozitov.html"
+                    class="text-gray-700 hover:text-[#0B6B3A] transition">Depoziti</a>
+                <a href="../clanki/" class="text-gray-700 hover:text-[#0B6B3A] transition">Članki</a>
+                <a href="../index.html#kontakt" class="text-gray-700 hover:text-[#0B6B3A] transition">Kontakt</a>
+            </div>
+            <!-- Mobile hamburger -->
+            <div class="md:hidden flex items-center justify-between py-3">
+                <span class="text-sm font-medium text-gray-700">Meni</span>
+                <button type="button" id="mobile-menu-button" class="p-2 rounded-lg hover:bg-gray-100 transition"
+                    aria-label="Odpri meni">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- Mobile menu (hidden by default) -->
+            <div id="mobile-menu" class="hidden md:hidden pb-3">
+                <div class="flex flex-col gap-2 text-sm font-medium">
+                    <a href="../index.html" class="block px-3 py-2 text-[#0B6B3A] hover:bg-gray-50 rounded">Domov</a>
+                    <a href="../kreditni-kalkulator.html"
+                        class="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded">Krediti</a>
+                    <a href="../primerjava-depozitov.html"
+                        class="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded">Depoziti</a>
+                    <a href="../clanki/" class="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded">Članki</a>
+                    <a href="../index.html#kontakt"
+                        class="block px-3 py-2 text-gray-700 hover:bg-gray-50 rounded">Kontakt</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
     <main class="max-w-7xl mx-auto px-6 py-10">
         <div class="max-w-3xl">
             <h1 class="text-3xl font-bold tracking-tight">Članki</h1>
@@ -189,6 +228,13 @@
             nepravilne finančne ter druge odločitve.
         </div>
     </footer>
+    <!-- Mobile menu toggle script -->
+    <script>
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
 </body>
 
 </html>
