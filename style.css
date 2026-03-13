@@ -191,6 +191,19 @@ button[id$="-calc-btn"]:hover,
     transition: all 0.3s ease;
 }
 
+/* Category filter buttons */
+.category-filter {
+    transition: all 0.3s ease;
+}
+
+.category-filter.active {
+    background: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary) !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 /* Step cards – bolj dramatičen hover */
 .step-card {
     background: white;
