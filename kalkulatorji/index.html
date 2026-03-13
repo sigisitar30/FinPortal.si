@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Vsi finančni kalkulatorji na enem mestu: krediti, depoziti, investicije, EOM, leasing, menjalniški tečaji. Hitro in brezplačno izračunajte.">
+    <title>Finančni kalkulatorji | FinPortal.si</title>
+
+    <link rel="canonical" href="https://finportal-si.pages.dev/kalkulatorji/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FinPortal.si">
+    <meta property="og:title" content="Finančni kalkulatorji | FinPortal.si">
+    <meta property="og:description"
+        content="Vsi finančni kalkulatorji na enem mestu: krediti, depoziti, investicije, EOM, leasing, menjalniški tečaji. Hitro in brezplačno izračunajte.">
+    <meta property="og:url" content="https://finportal-si.pages.dev/kalkulatorji/">
+    <meta property="og:image" content="https://finportal-si.pages.dev/images/scitmali.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Finančni kalkulatorji | FinPortal.si">
+    <meta name="twitter:description"
+        content="Vsi finančni kalkulatorji na enem mestu: krediti, depoziti, investicije, EOM, leasing, menjalniški tečaji. Hitro in brezplačno izračunajte.">
+    <meta name="twitter:image" content="https://finportal-si.pages.dev/images/scitmali.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Domov</a>
+
+                <details class="relative">
+                    <summary
+                        class="list-none cursor-pointer hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded px-1 py-1">
+                        <a href="kalkulatorji/" class="inline-block font-semibold text-[#0B6B3A]"
+                            onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kalkulatorji/"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50 font-semibold text-[#0B6B3A]">Vsi kalkulatorji</a>
+                        <a href="kreditna-sposobnost.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditna sposobnost</a>
+                        <a href="kreditni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditni kalkulator</a>
+                        <a href="eom-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">EOM kalkulator</a>
+                        <a href="depozitni-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Depozitni kalkulator</a>
+                        <a href="izgubljene-obresti.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Izgubljene obresti</a>
+                        <a href="primerjava-depozitov.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Primerjava depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Investicijski kalkulator</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Menjalniški kalkulator</a>
+                        <a href="leasing-vs-kredit.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Leasing vs kredit</a>
+                    </div>
+                </details>
+                <a href="clanki/"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Članki</a>
+                <a href="#onas"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">O
+                    nas</a>
+                <a href="#kontakt"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Kontakt</a>
+
+                <a href="primerjava-depozitov.html"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] focus:bg-[#095a32] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-10">
+        <div class="max-w-3xl">
+            <h1 class="text-3xl font-bold tracking-tight">Finančni kalkulatorji</h1>
+            <p class="mt-3 text-gray-700 leading-relaxed">
+                Vsi finančni kalkulatorji na enem mestu. Izračunajte kredite, depozite, investicije in več – hitro, brezplačno in brez obveznosti.
+            </p>
+        </div>
+
+        <!-- Glavni disclaimer – zelo viden in pomemben -->
+        <div
+            class="max-w-7xl mx-auto mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
+            <p class="font-semibold text-base mb-3">Pomembno pravno obvestilo</p>
+            <p>
+                Vsi izračuni in primerjave na tej strani so <strong>strogo informativne narave</strong> in ne
+                predstavljajo zavezujoče ponudbe, finančnega nasveta ali garancije.
+            </p>
+            <p class="mt-2">
+                Dejanske obrestne mere, efektivna obrestna mera (EOM), stroški in pogoji se lahko kadarkoli
+                spremenijo. Pred sklenitvijo kateregakoli finančnega produkta <strong>obvezno preverite
+                    aktualne
+                    pogoje pri ponudniku</strong>.
+            </p>
+            <p class="mt-2 font-medium">
+                FinPortal.si <strong>ni banka, posrednik, zavarovalnica ali finančni svetovalec</strong>.
+                Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno
+                škodo
+                ali slabe odločitve.
+            </p>
+            <p class="mt-2">
+                FinPortal.si je <strong>neodvisen informativni agregator</strong> na podlagi javno dostopnih
+                podatkov. Ne posredujemo pri sklenitvi finančnih produktov. Izbira banke ali finančnega
+                produkta je izključno odločitev uporabnika.
+            </p>
+        </div>
+
+        <!-- Filter kategorij -->
+        <div class="mb-8 flex flex-wrap gap-2">
+            <button class="category-filter px-4 py-2 rounded-lg bg-[#0B6B3A] text-white text-sm font-medium" data-category="all">
+                Vsi kalkulatorji
+            </button>
+            <button class="category-filter px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-sm font-medium" data-category="kreditni">
+                Kreditni
+            </button>
+            <button class="category-filter px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-sm font-medium" data-category="varcevalni">
+                Varčevalni
+            </button>
+            <button class="category-filter px-4 py-2 rounded-lg border border-gray-300 bg-white hover:bg-gray-100 text-sm font-medium" data-category="ostali">
+                Ostali
+            </button>
+        </div>
+
+        <section class="grid md:grid-cols-3 gap-6 text-left mb-10">
+            <!-- KREDITNI -->
+            <div class="calculator-category" data-category="kreditni">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <div class="text-xs font-semibold tracking-wide text-gray-600">KREDITNI</div>
+                    <div class="mt-2 space-y-3">
+                        <a href="kreditna-sposobnost.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Kreditna sposobnost</div>
+                            <div class="mt-1 text-sm text-gray-600">Oceni, kolikšen kredit si lahko privoščiš.
+                            </div>
+                        </a>
+                        <a href="kreditni-kalkulator.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Kreditni kalkulator</div>
+                            <div class="mt-1 text-sm text-gray-600">Izračun obroka, obresti in skupnega stroška.
+                            </div>
+                        </a>
+                        <a href="eom-kalkulator.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                EOM kalkulator</div>
+                            <div class="mt-1 text-sm text-gray-600">Primerjaj kredite po efektivni obrestni meri.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VARČEVALNI -->
+            <div class="calculator-category" data-category="varcevalni">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <div class="text-xs font-semibold tracking-wide text-gray-600">VARČEVALNI</div>
+                    <div class="mt-2 space-y-3">
+                        <a href="depozitni-kalkulator.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Depozitni kalkulator</div>
+                            <div class="mt-1 text-sm text-gray-600">Izračun obresti in končnega zneska depozita.
+                            </div>
+                        </a>
+                        <a href="primerjava-depozitov.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Primerjava depozitov</div>
+                            <div class="mt-1 text-sm text-gray-600">Najdi najboljšo ponudbo glede na znesek in dobo.
+                            </div>
+                        </a>
+                        <a href="izgubljene-obresti.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Izgubljene obresti</div>
+                            <div class="mt-1 text-sm text-gray-600">Poglej, koliko izgubiš, če denar stoji.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OSTALI -->
+            <div class="calculator-category" data-category="ostali">
+                <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                    <div class="text-xs font-semibold tracking-wide text-gray-600">OSTALI</div>
+                    <div class="mt-2 space-y-3">
+                        <a href="investicijski-kalkulator.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Investicijski kalkulator</div>
+                            <div class="mt-1 text-sm text-gray-600">Simulacija rasti vložka in mesečnih vplačil.
+                            </div>
+                        </a>
+                        <a href="leasing-vs-kredit.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Leasing vs bančni kredit</div>
+                            <div class="mt-1 text-sm text-gray-600">Primerjava financiranja vozila: skupni strošek in EOM.
+                            </div>
+                        </a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="group block border border-gray-200 rounded-xl p-4 hover:bg-gray-50 hover:text-[#0B6B3A] transition">
+                            <div class="font-semibold text-gray-900 group-hover:text-[#0B6B3A] active:text-[#0B6B3A]">
+                                Menjalniški kalkulator</div>
+                            <div class="mt-1 text-sm text-gray-600">Primerjava stroškov menjave valut in tečajev.
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hitri skoki -->
+        <section class="mt-12 rounded-2xl border border-gray-200 bg-gray-50 p-6">
+            <div class="text-sm font-semibold text-gray-900">Hitri skoki</div>
+            <div class="mt-3 flex flex-wrap gap-2 text-sm">
+                <a href="eom-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">EOM
+                    kalkulator</a>
+                <a href="primerjava-depozitov.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Primerjava
+                    depozitov</a>
+                <a href="kreditna-sposobnost.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Kreditna
+                    sposobnost</a>
+                <a href="depozitni-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Depozitni
+                    kalkulator</a>
+                <a href="investicijski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Investicijski
+                    kalkulator</a>
+                <a href="leasing-vs-kredit.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Leasing vs
+                    kredit</a>
+                <a href="menjalniski-kalkulator.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Menjalniški
+                    kalkulator</a>
+                <a href="izgubljene-obresti.html"
+                    class="px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100">Izgubljene
+                    obresti</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+
+            <!-- Logo + Copyright -->
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <!-- Navigation links -->
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+
+        </div>
+
+        <!-- Disclaimer -->
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne ter druge odločitve.
+        </div>
+    </footer>
+
+    <!-- JavaScript za filter -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterButtons = document.querySelectorAll('.category-filter');
+            const calculatorCategories = document.querySelectorAll('.calculator-category');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const category = this.dataset.category;
+
+                    // Posodobi gumbe
+                    filterButtons.forEach(btn => {
+                        btn.classList.remove('bg-[#0B6B3A]', 'text-white');
+                        btn.classList.add('border', 'border-gray-300', 'bg-white');
+                    });
+                    this.classList.remove('border', 'border-gray-300', 'bg-white');
+                    this.classList.add('bg-[#0B6B3A]', 'text-white');
+
+                    // Prikaži/skrij kategorije
+                    calculatorCategories.forEach(calcCategory => {
+                        if (category === 'all' || calcCategory.dataset.category === category) {
+                            calcCategory.style.display = 'block';
+                        } else {
+                            calcCategory.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
