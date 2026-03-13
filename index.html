@@ -231,7 +231,7 @@
 
                     <!-- Glavni disclaimer – zelo viden in pomemben -->
                     <div
-                        class="max-w-7xl mx-auto mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
+                        class="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
                         <p class="font-semibold text-base mb-3">Pomembno pravno obvestilo</p>
                         <p>
                             Vsi izračuni in primerjave na tej strani so <strong>strogo informativne narave</strong> in
@@ -257,28 +257,57 @@
                         </p>
                     </div>
 
-                    <!-- Vizualna ločnica -->
-                    <div class="max-w-7xl mx-auto mb-8 border-t border-gray-200"></div>
-
-                    <!-- CTA Sekcija -->
+                    <!-- Mini pregled kalkulatorjev -->
                     <div class="text-center mb-12">
-                        <h2 class="text-3xl font-bold mb-4">Pripravljen na izračune?</h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto mb-6">
-                            Vsi finančni kalkulatorji na enem mestu. Izračunajte kredite, depozite, investicije in
-                            več – hitro, brezplačno in brez obveznosti.
+                        <h2 class="text-3xl font-bold mb-4">Hitri dostop do kalkulatorjev</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto mb-8">
+                            Najbolj uporabni finančni kalkulatorji za hitre izračune.
                         </p>
-                        <div class="flex flex-wrap gap-4 justify-center">
+                        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                            <!-- Kreditni kalkulator -->
+                            <div
+                                class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center mb-4">
+                                    <div
+                                        class="w-12 h-12 bg-[#0B6B3A] rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4">
+                                        💰
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-lg">Kreditni kalkulator</h3>
+                                        <p class="text-sm text-gray-600">Izračun obrokov in obresti</p>
+                                    </div>
+                                </div>
+                                <a href="kreditni-kalkulator.html"
+                                    class="w-full block py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center glow-hover">
+                                    Izračunaj kredit
+                                </a>
+                            </div>
+
+                            <!-- Primerjava depozitov -->
+                            <div
+                                class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center mb-4">
+                                    <div
+                                        class="w-12 h-12 bg-[#0B6B3A] rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4">
+                                        🏦
+                                    </div>
+                                    <div>
+                                        <h3 class="font-semibold text-lg">Primerjava depozitov</h3>
+                                        <p class="text-sm text-gray-600">Najdi najboljšo obrestno mero</p>
+                                    </div>
+                                </div>
+                                <a href="primerjava-depozitov.html"
+                                    class="w-full block py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center glow-hover">
+                                    Primerjaj depozite
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- CTA za vse kalkulatorje -->
+                        <div class="mt-8">
                             <a href="kalkulatorji/"
-                                class="px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold glow-hover">
+                                class="inline-block px-6 py-3 border border-gray-300 bg-white rounded-xl font-semibold glow-hover">
                                 Vsi kalkulatorji →
-                            </a>
-                            <a href="primerjava-depozitov.html"
-                                class="px-6 py-3 border border-gray-300 bg-white rounded-xl font-semibold glow-hover pridobi-btn">
-                                Depoziti →
-                            </a>
-                            <a href="kreditni-kalkulator.html"
-                                class="px-6 py-3 border border-gray-300 bg-white rounded-xl font-semibold glow-hover">
-                                Krediti →
                             </a>
                         </div>
                     </div>
