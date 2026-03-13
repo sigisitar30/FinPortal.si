@@ -305,290 +305,69 @@
 
                         <!-- CTA za vse kalkulatorje -->
                         <div class="mt-8">
-                            <a href="kalkulatorji/"
-                                class="inline-block px-6 py-3 border border-gray-300 bg-white rounded-xl font-semibold glow-hover">
-                                Vsi kalkulatorji →
-                            </a>
                         </div>
                     </div>
-
-                    <button id="tab-kredit"
-                        class="calc-tab active px-5 py-2.5 rounded-full text-sm font-semibold border border-gray-300">
-                        Kreditni kalkulator
-                    </button>
-
-                    <button id="tab-depozit"
-                        class="calc-tab px-5 py-2.5 rounded-full text-sm font-semibold border border-gray-300">
-                        Depozitni kalkulator
-                    </button>
-                </div>
-
-                <!-- KREDITNI KALKULATOR -->
-
-                <div id="panel-kredit" class="calc-panel grid md:grid-cols-2 gap-12 items-start">
-
-                    <!-- LEVI DEL -->
-                    <div class="space-y-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Znesek kredita (€)
-                                <span class="text-red-600">*</span></label>
-                            <input type="text" id="loan-amount" value="50.000" min="1" max="999999999" step="500"
-                                class="input w-full format-number" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Namen kredita <span
-                                    class="text-red-600">*</span></label>
-                            <select id="loan-purpose" class="input w-full">
-                                <option value="">— Izberi namen —</option>
-                                <option value="gotovinski">Gotovinski kredit</option>
-                                <option value="stanovanjski">Stanovanjski kredit</option>
-                                <option value="avto">Avto kredit</option>
-                                <option value="prenova">Prenova / energetska sanacija</option>
-                                <option value="konsolidacija">Konsolidacija dolgov</option>
-                                <option value="izobrazevanje">Izobraževanje</option>
-                                <option value="drugo">Drugo</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Izberite
-                                banko:</label>
-                            <select id="loan-bank" class="input w-full">
-                                <option value="">— Izberi banko (neobvezno) —</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Doba odplačevanja
-                                (leta) <span class="text-red-600">*</span></label>
-                            <input type="number" id="loan-years" value="10" min="1" max="30" step="1"
-                                class="input w-full" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Moratorij
-                                (meseci)</label>
-                            <input type="number" id="loan-moratorium" value="0" min="0" max="60" step="1"
-                                class="input w-full" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Interkalarne obresti
-                                (dni)</label>
-                            <input type="number" id="loan-intercalary-days" value="0" min="0" max="365" step="1"
-                                class="input w-full" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Vrsta obrestne mere
-                                <span class="text-red-600">*</span></label>
-                            <select id="loan-rate-type" class="input w-full">
-                                <option value="fixed" selected>Fiksna obrestna mera</option>
-                                <option value="euribor">EURIBOR + pribitek</option>
-                            </select>
-                        </div>
-
-                        <div id="loan-euribor-wrapper" class="hidden">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">EURIBOR <span
-                                    class="text-red-600">*</span></label>
-                            <div class="grid grid-cols-2 gap-4">
-                                <select id="loan-euribor-tenor" class="input w-full">
-                                    <option value="3m" selected>EURIBOR 3M</option>
-                                    <option value="6m">EURIBOR 6M</option>
-                                </select>
-                                <input type="text" id="loan-margin" value="1,50" class="input w-full"
-                                    inputmode="decimal" />
-                            </div>
-                            <div id="loan-euribor-info" class="mt-2 text-xs text-gray-600"></div>
-                        </div>
-
-                        <div id="loan-fixed-wrapper">
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Obrestna mera (%
-                                letno) <span class="text-red-600">*</span></label>
-                            <input type="text" id="loan-rate" value="5,50" class="input w-full no-format"
-                                inputmode="decimal" />
-                        </div>
-
-                        <div class="flex flex-col gap-4">
-                            <button id="loan-calc-btn"
-                                class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
-                                Izračunaj kredit
-                            </button>
-
-                            <a id="loan-offer-link" href="#" target="_blank" rel="noopener noreferrer"
-                                class="w-full block py-3 text-center border border-gray-300 rounded-xl font-semibold hover:bg-gray-100 transition hidden pridobi-btn">
-                                Pridobi ponudbo pri banki
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- DESNI DEL – REZULTATI -->
-                    <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <h3 class="text-xl font-semibold mb-6">Rezultat izračuna</h3>
-
-                        <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                            <span class="fp-result-label">Mesečni obrok</span>
-                            <span id="loan-monthly" class="fp-result-value fp-result-value--primary">–</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                            <span class="fp-result-label">Skupaj obresti</span>
-                            <span id="loan-interest" class="fp-result-value">–</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                            <span class="fp-result-label">Interkalarne obresti</span>
-                            <span id="loan-intercalary" class="fp-result-value">–</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-4">
-                            <span class="fp-result-label">Glavnica po moratoriju</span>
-                            <span id="loan-principal-after" class="fp-result-value">–</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-4">
-                            <span class="fp-result-label">Skupaj za plačilo</span>
-                            <span id="loan-total" class="fp-result-value">–</span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- DEPOZITNI KALKULATOR -->
-                <div id="panel-depozit" class="calc-panel hidden grid md:grid-cols-2 gap-12 items-start">
-
-                    <!-- LEVI DEL -->
-                    <div class="space-y-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Znesek depozita (€)
-                                <span class="text-red-600">*</span></label>
-                            <input type="text" id="interest-amount" value="10.000" min="100" step="100"
-                                class="input w-full format-number" />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Izberite
-                                banko:</label>
-                            <!-- PUSTI PRAZEN SELECT – polni ga JS -->
-                            <select id="bank-select" class="input w-full" onchange="updateInterestRate()"></select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Obrestna mera (%
-                                letno) <span class="text-red-600">*</span></label>
-                            <input type="text" id="interest-rate" value="3,00" class="input w-full" inputmode="decimal"
-                                readonly />
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Doba (meseci) <span
-                                    class="text-red-600">*</span></label>
-                            <input type="number" id="interest-months" value="12" min="1" max="360" step="1"
-                                class="input w-full" />
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <input type="checkbox" id="interest-special" class="h-4 w-4">
-                            <label for="interest-special" class="text-sm text-gray-700">
-                                Uporabi tudi posebne / akcijske ponudbe (če obstajajo)
-                            </label>
-                        </div>
-
-                        <div class="flex flex-col gap-4">
-                            <button id="interest-calc-btn"
-                                class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
-                                Izračunaj depozit
-                            </button>
-
-                            <a id="deposit-offer-link" href="#" target="_blank" rel="noopener noreferrer"
-                                class="w-full block py-3 text-center border border-gray-300 rounded-xl font-semibold hover:bg-gray-100 transition hidden pridobi-btn">
-                                Pridobi ponudbo pri banki
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- DESNI DEL – REZULTATI -->
-                    <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                        <h3 class="text-xl font-semibold mb-6">Rezultat izračuna</h3>
-
-                        <div class="flex justify-between items-center py-4 border-b border-gray-200">
-                            <span class="fp-result-label">Skupaj obresti</span>
-                            <span id="interest-interest" class="fp-result-value">–</span>
-                        </div>
-
-                        <div class="flex justify-between items-center py-4">
-                            <span class="fp-result-label">Končni znesek</span>
-                            <span id="interest-total" class="fp-result-value fp-result-value--primary">–</span>
-                        </div>
-                    </div>
-
-                </div>
-
-            </div>
-
-    </section>
-
-    <!-- PRIMERJAVA DEPOZITOV -->
-    <section id="primerjava-depozitov" class="scroll-mt-12 py-20 bg-gray-100">
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="sm:flex sm:gap-10">
-                <aside class="hidden sm:block sm:w-64 relative z-0 mb-8 sm:mb-0">
-                    <div class="sticky top-28">
-                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
-                            <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
-                                loading="lazy">
-                            <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
-                        </div>
-                    </div>
-                </aside>
-
-                <div class="flex-1 relative z-10">
-                    <h2 class="text-3xl font-bold text-center mb-12">Primerjava
-                        vezanih depozitov</h2>
-
-                    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
-
-                        <!-- Znesek -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Znesek depozita (€) <span class="text-red-600">*</span>
-                            </label>
-                            <input type="text" id="deposit-compare-amount" value="10.000"
-                                class="input w-full format-number" />
-                        </div>
-
-                        <!-- Rocnost + enota -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Doba vezave <span class="text-red-600">*</span>
-                            </label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <input type="number" id="deposit-compare-term" value="12" min="1" max="360" step="1"
-                                    class="input w-full" />
-                                <select id="deposit-compare-unit" class="input w-full">
-                                    <option value="months" selected>meseci</option>
-                                    <option value="days">dnevi</option>
-                                </select>
-                            </div>
-
-                            <!-- Checkbox posebne ponudbe -->
-                            <div class="flex items-center gap-2 mt-3">
-                                <input type="checkbox" id="deposit-compare-special" class="h-4 w-4">
-                                <label for="deposit-compare-special" class="text-sm text-gray-700">
-                                    Prikaži tudi posebne / akcijske ponudbe
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabela rezultatov -->
-                    <div id="deposit-table-container" class="overflow-x-auto overflow-y-visible w-full"></div>
-
-                    <div id="deposit-data-date" class="mt-3 text-sm text-gray-600"></div>
                 </div>
             </div>
+
+        </div>
+
+        <div class="sm:flex sm:gap-10">
+            <aside class="hidden sm:block sm:w-64 relative z-0 mb-8 sm:mb-0">
+                <div class="sticky top-28">
+                    <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
+                        <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
+                            loading="lazy">
+                        <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
+                    </div>
+                </div>
+            </aside>
+
+            <div class="flex-1 relative z-10">
+                <h2 class="text-3xl font-bold text-center mb-12">Primerjava
+                    vezanih depozitov</h2>
+
+                <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
+
+                    <!-- Znesek -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Znesek depozita (€) <span class="text-red-600">*</span>
+                        </label>
+                        <input type="text" id="deposit-compare-amount" value="10.000"
+                            class="input w-full format-number" />
+                    </div>
+
+                    <!-- Rocnost + enota -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Doba vezave <span class="text-red-600">*</span>
+                        </label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="number" id="deposit-compare-term" value="12" min="1" max="360" step="1"
+                                class="input w-full" />
+                            <select id="deposit-compare-unit" class="input w-full">
+                                <option value="months" selected>meseci</option>
+                                <option value="days">dnevi</option>
+                            </select>
+                        </div>
+
+                        <!-- Checkbox posebne ponudbe -->
+                        <div class="flex items-center gap-2 mt-3">
+                            <input type="checkbox" id="deposit-compare-special" class="h-4 w-4">
+                            <label for="deposit-compare-special" class="text-sm text-gray-700">
+                                Prikaži tudi posebne / akcijske ponudbe
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabela rezultatov -->
+                <div id="deposit-table-container" class="overflow-x-auto overflow-y-visible w-full"></div>
+
+                <div id="deposit-data-date" class="mt-3 text-sm text-gray-600"></div>
+            </div>
+        </div>
         </div>
 
     </section>
