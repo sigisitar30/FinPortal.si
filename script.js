@@ -1310,6 +1310,49 @@ function initSessionDurationTracking() {
     });
 }
 
+function initBetaLeadTracking() {
+    const root = document.getElementById("beta-lead-root");
+    if (root && !window.__fpBetaLeadViewFired) {
+        window.__fpBetaLeadViewFired = true;
+        fpTrack("view_beta_lead_page", { page: "povprasevanje_beta" });
+    }
+
+    document.querySelectorAll(".lead-beta-btn").forEach((btn) => {
+        if (btn.dataset.fpBound === "1") return;
+        btn.dataset.fpBound = "1";
+
+        btn.addEventListener("click", (e) => {
+            const href = btn.getAttribute("href");
+            const source = String(btn.dataset.leadSource ?? "").trim();
+
+            if (fpHasAnalyticsConsent() && window.__fpGa4Enabled && typeof window.gtag === "function" && href) {
+                e.preventDefault();
+
+                let navigated = false;
+                const navigate = () => {
+                    if (navigated) return;
+                    navigated = true;
+                    window.location.href = href;
+                };
+
+                fpTrack(
+                    "lead_interest_click",
+                    {
+                        source: source || undefined,
+                        href: href || undefined,
+                    },
+                    {
+                        transport_type: "beacon",
+                        event_callback: navigate,
+                    }
+                );
+
+                setTimeout(navigate, 450);
+            }
+        });
+    });
+}
+
 function initCookieBanner() {
     const key = "finportal_cookie_consent";
     let existing = null;
@@ -2936,6 +2979,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     safeInit("initScrollDepthTracking", initScrollDepthTracking);
     safeInit("initSessionDurationTracking", initSessionDurationTracking);
+    safeInit("initBetaLeadTracking", initBetaLeadTracking);
 
     // Initialize tabs
     safeInit("initTabs", initTabs);
