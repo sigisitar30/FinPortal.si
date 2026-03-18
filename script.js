@@ -5141,7 +5141,6 @@ function updateInterestRate() {
 
     const value = String(bankSelect.value ?? "");
     const rateInput = document.getElementById("interest-rate");
-    const offerLink = document.getElementById("deposit-offer-link");
 
     if (!rateInput) return;
 
@@ -5159,7 +5158,6 @@ function updateInterestRate() {
     if (value === "") {
         rateInput.removeAttribute("readonly");
         delete rateInput.dataset.autoRate;
-        if (offerLink) offerLink.classList.add("hidden");
         return;
     }
 
@@ -5168,7 +5166,6 @@ function updateInterestRate() {
         rateInput.removeAttribute("readonly");
         rateInput.value = "";
         delete rateInput.dataset.autoRate;
-        if (offerLink) offerLink.classList.add("hidden");
         return;
     }
 
@@ -5177,29 +5174,6 @@ function updateInterestRate() {
 
     const bank = value.trim();
     const bankOffers = depositOffers.filter(o => String(o.bank ?? "").trim() === bank);
-
-    // Link do ponudbe naj bo vedno viden, ko je izbrana banka.
-    // Tudi če za izbrano ročnost ni ponudbe, naj uporabnik lahko odpre ponudbo banke.
-    if (offerLink) {
-        offerLink.classList.remove("hidden");
-    }
-
-    const fallbackUrl = bankOffers
-        .map(o => String(o?.url ?? "").trim())
-        .find(u => !!u);
-
-    if (offerLink) {
-        const href = String(fallbackUrl ?? "").trim();
-        if (href) {
-            offerLink.href = href;
-            offerLink.setAttribute("aria-disabled", "false");
-            offerLink.classList.remove("opacity-50", "pointer-events-none");
-        } else {
-            offerLink.href = "#";
-            offerLink.setAttribute("aria-disabled", "true");
-            offerLink.classList.add("opacity-50", "pointer-events-none");
-        }
-    }
 
     if (bankOffers.length === 0) {
         rateInput.value = "-";
@@ -5279,43 +5253,6 @@ function initDepositUiBindings() {
     if (specialEl) {
         specialEl.addEventListener("change", updateInterestRate);
         specialEl.addEventListener("input", updateInterestRate);
-    }
-
-    const offerLink = document.getElementById("deposit-offer-link");
-    if (offerLink) {
-        offerLink.addEventListener("click", (e) => {
-            const disabled = offerLink.getAttribute("aria-disabled") === "true";
-            const href = String(offerLink.getAttribute("href") ?? "").trim();
-            if (disabled || href === "" || href === "#") {
-                e.preventDefault();
-                return;
-            }
-
-            if (fpHasAnalyticsConsent() && window.__fpGa4Enabled && typeof window.gtag === "function") {
-                e.preventDefault();
-
-                let opened = false;
-                const openOffer = () => {
-                    if (opened) return;
-                    opened = true;
-                    window.open(href, "_blank", "noopener,noreferrer");
-                };
-
-                const bankSelect = document.getElementById("bank-select");
-                const bank = bankSelect ? String(bankSelect.value ?? "").trim() : "";
-
-                fpTrack(
-                    "bank_offer_click",
-                    { calculator: "deposit", bank: bank || undefined, url: href },
-                    {
-                        transport_type: "beacon",
-                        event_callback: openOffer,
-                    }
-                );
-
-                setTimeout(openOffer, 450);
-            }
-        });
     }
 }
 
