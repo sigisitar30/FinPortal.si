@@ -28,6 +28,16 @@ body {
     margin: 0;
 }
 
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible,
+.fp-help__icon:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
 .fp-details-summary {
     display: flex;
     align-items: center;
