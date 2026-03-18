@@ -150,10 +150,20 @@
             </div>
 
             <div class="mt-10 md:mt-0">
-                <a id="hero-image-link" href="#kontakt" class="category-link block relative">
+                <a id="hero-image-link" href="#kontakt" class="category-link block relative group">
                     <img id="hero-image" src="images/HERO/HERO1.webp" alt="FinPortal.si – spletna stran v izdelavi"
                         loading="lazy"
                         class="w-full max-w-2xl mx-auto opacity-95 rounded-3xl shadow-2xl border border-gray-200/70 transition-opacity duration-500" />
+
+                    <button type="button" data-hero-nav="prev" aria-label="Prejšnja HERO slika"
+                        class="absolute left-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/30 hover:bg-black/45 text-white rounded-full h-11 w-11 flex items-center justify-center backdrop-blur-sm">
+                        <span class="text-2xl leading-none" aria-hidden="true">‹</span>
+                    </button>
+
+                    <button type="button" data-hero-nav="next" aria-label="Naslednja HERO slika"
+                        class="absolute right-2 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-200 bg-black/30 hover:bg-black/45 text-white rounded-full h-11 w-11 flex items-center justify-center backdrop-blur-sm">
+                        <span class="text-2xl leading-none" aria-hidden="true">›</span>
+                    </button>
                 </a>
                 <div class="mt-4 flex items-center justify-center gap-2" aria-label="Hero navigacija">
                     <button type="button" id="hero-dot-0" class="h-2.5 w-2.5 rounded-full transition-colors"
@@ -776,6 +786,7 @@
         (function () {
             var linkEl = document.getElementById("hero-image-link");
             var imgEl = document.getElementById("hero-image");
+            var navButtons = Array.prototype.slice.call(document.querySelectorAll("#hero-image-link [data-hero-nav]"));
             var dots = [
                 document.getElementById("hero-dot-0"),
                 document.getElementById("hero-dot-1"),
@@ -851,6 +862,26 @@
             dots.forEach(function (dotEl, idx) {
                 dotEl.addEventListener("click", function () {
                     applyStateByIndex(idx);
+                    startInterval();
+                });
+            });
+
+            navButtons.forEach(function (btn) {
+                btn.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var dir = String(btn.getAttribute("data-hero-nav") || "").toLowerCase();
+                    var nextIdx = current;
+                    if (dir === "prev") {
+                        nextIdx = (current - 1 + states.length) % states.length;
+                    } else if (dir === "next") {
+                        nextIdx = (current + 1) % states.length;
+                    } else {
+                        return;
+                    }
+
+                    applyStateByIndex(nextIdx);
                     startInterval();
                 });
             });
