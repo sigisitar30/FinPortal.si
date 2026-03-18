@@ -1247,6 +1247,69 @@ function fpTrack(eventName, params, opts) {
     } catch (e) { }
 }
 
+function fpDebounce(fn, waitMs) {
+    let t = null;
+    return (...args) => {
+        if (t) clearTimeout(t);
+        t = setTimeout(() => fn(...args), waitMs);
+    };
+}
+
+function initScrollDepthTracking() {
+    if (window.__fpScrollDepthInit) return;
+    window.__fpScrollDepthInit = true;
+
+    const thresholds = [25, 50, 75, 100];
+    const fired = new Set();
+
+    const fire = (p) => {
+        if (fired.has(p)) return;
+        fired.add(p);
+        fpTrack("scroll_depth", { percent: p });
+    };
+
+    const onScroll = () => {
+        const doc = document.documentElement;
+        const scrollTop = window.scrollY || doc.scrollTop || 0;
+        const viewH = window.innerHeight || doc.clientHeight || 0;
+        const scrollH = Math.max(doc.scrollHeight || 0, document.body?.scrollHeight || 0);
+        const maxScrollable = Math.max(1, scrollH - viewH);
+        const pct = Math.min(100, Math.max(0, Math.round((scrollTop / maxScrollable) * 100)));
+        thresholds.forEach(t => { if (pct >= t) fire(t); });
+        if (fired.size === thresholds.length) {
+            window.removeEventListener("scroll", onScroll);
+        }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+}
+
+function initSessionDurationTracking() {
+    if (window.__fpSessionDurationInit) return;
+    window.__fpSessionDurationInit = true;
+
+    const startedAt = Date.now();
+    let sent = false;
+
+    const send = (reason) => {
+        if (sent) return;
+        sent = true;
+        const durationSec = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+        fpTrack("session_duration", {
+            duration_sec: durationSec,
+            reason: reason || undefined,
+        }, {
+            transport_type: "beacon",
+        });
+    };
+
+    window.addEventListener("pagehide", () => send("pagehide"));
+    document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") send("hidden");
+    });
+}
+
 function initCookieBanner() {
     const key = "finportal_cookie_consent";
     let existing = null;
@@ -1845,24 +1908,15 @@ function initEomUiBindings() {
 ============================ */
 
 function calculateLeasingVsLoan() {
+    fpTrack("calculate", { calculator: "leasing_vs_loan" });
     const price = getElementValue("lvk-price");
     const down = getElementValue("lvk-down");
     const months = getElementValue("lvk-months");
-
-    const loanMonthsRaw = getElementValue("lvk-loan-months");
+    const loanRate = getElementValue("lvk-loan-rate") / 100;
     const leasingMonthsRaw = getElementValue("lvk-leasing-months");
 
     const loanMonths = Number.isFinite(loanMonthsRaw) && loanMonthsRaw > 0 ? loanMonthsRaw : months;
     const leasingMonths = Number.isFinite(leasingMonthsRaw) && leasingMonthsRaw > 0 ? leasingMonthsRaw : months;
-
-    const loanRate = getElementValue("lvk-loan-rate") / 100;
-    const leasingRate = getElementValue("lvk-leasing-rate") / 100;
-
-    const loanUpfront = getElementValue("lvk-loan-upfront");
-    const loanMonthlyFee = getElementValue("lvk-loan-monthly-fee");
-    const leasingUpfront = getElementValue("lvk-leasing-upfront");
-    const leasingMonthlyFee = getElementValue("lvk-leasing-monthly-fee");
-    const residual = getElementValue("lvk-residual");
 
     const winnerEl = document.getElementById("lvk-winner");
     const setDash = () => {
@@ -1881,8 +1935,7 @@ function calculateLeasingVsLoan() {
         !Number.isFinite(months) || months <= 0 ||
         !Number.isFinite(loanMonths) || loanMonths <= 0 ||
         !Number.isFinite(leasingMonths) || leasingMonths <= 0 ||
-        !Number.isFinite(loanRate) || loanRate < 0 ||
-        !Number.isFinite(leasingRate) || leasingRate < 0
+        !Number.isFinite(loanRate) || loanRate < 0
     ) {
         setDash();
         return;
@@ -1892,18 +1945,18 @@ function calculateLeasingVsLoan() {
 
     // Loan: classic annuity + optional fees.
     const loanPayment = calcAnnuityPayment(financed, loanMonths, loanRate);
-    const safeLoanMonthlyFee = Number.isFinite(loanMonthlyFee) ? loanMonthlyFee : 0;
+    const safeLoanMonthlyFee = Number.isFinite(getElementValue("lvk-loan-monthly-fee")) ? getElementValue("lvk-loan-monthly-fee") : 0;
     const loanMonthlyOutflow = Number.isFinite(loanPayment) ? (loanPayment + safeLoanMonthlyFee) : NaN;
 
     // Leasing: financed part is treated as annuity, and residual is paid at the end.
     // This is a simplification but works well for comparison.
-    const leasingPayment = calcAnnuityPayment(financed, leasingMonths, leasingRate);
-    const safeLeasingMonthlyFee = Number.isFinite(leasingMonthlyFee) ? leasingMonthlyFee : 0;
+    const leasingPayment = calcAnnuityPayment(financed, leasingMonths, loanRate);
+    const safeLeasingMonthlyFee = Number.isFinite(getElementValue("lvk-leasing-monthly-fee")) ? getElementValue("lvk-leasing-monthly-fee") : 0;
     const leasingMonthlyOutflow = Number.isFinite(leasingPayment) ? (leasingPayment + safeLeasingMonthlyFee) : NaN;
 
-    const safeLoanUpfront = Number.isFinite(loanUpfront) ? loanUpfront : 0;
-    const safeLeasingUpfront = Number.isFinite(leasingUpfront) ? leasingUpfront : 0;
-    const safeResidual = Number.isFinite(residual) ? residual : 0;
+    const safeLoanUpfront = Number.isFinite(getElementValue("lvk-loan-upfront")) ? getElementValue("lvk-loan-upfront") : 0;
+    const safeLeasingUpfront = Number.isFinite(getElementValue("lvk-leasing-upfront")) ? getElementValue("lvk-leasing-upfront") : 0;
+    const safeResidual = Number.isFinite(getElementValue("lvk-residual")) ? getElementValue("lvk-residual") : 0;
 
     if (!Number.isFinite(loanMonthlyOutflow) || !Number.isFinite(leasingMonthlyOutflow)) {
         setDash();
@@ -1960,7 +2013,7 @@ function calculateLeasingVsLoan() {
         down_eur: Math.round(down),
         months: Number(months),
         loan_rate_percent: Math.round((loanRate * 100) * 100) / 100,
-        leasing_rate_percent: Math.round((leasingRate * 100) * 100) / 100,
+        leasing_rate_percent: Math.round((loanRate * 100) * 100) / 100,
     });
 }
 
@@ -2000,12 +2053,6 @@ function initLeasingVsLoanBindings() {
         if (!el) return;
         el.addEventListener("change", () => normalizeRateInput(id));
     });
-}
-
-function formatPercentInputSI(val, decimals = 2) {
-    const n = Number(val);
-    if (!Number.isFinite(n)) return "";
-    return n.toFixed(decimals).replace(".", ",");
 }
 
 function initLostInterestBenchmarkBindings() {
@@ -2259,6 +2306,7 @@ function initFxBindings() {
 ============================ */
 
 function calculateLostInterest() {
+    fpTrack("calculate", { calculator: "lost_interest" });
     const amount = getElementValue("lost-amount");
     const time = getElementValue("lost-time");
     const unit = String(document.getElementById("lost-unit")?.value ?? "months");
@@ -2752,6 +2800,7 @@ function drawLoanAmortizationChart(schedule) {
 
 function calculateLoan() {
     try {
+        fpTrack("calculate", { calculator: "loan" });
         const amount = getElementValue("loan-amount");
         const years = getElementValue("loan-years");
         const rate = getLoanEffectiveAnnualRate();
@@ -2821,8 +2870,6 @@ function calculateLoan() {
     }
 }
 
-
-
 function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercalaryInterest, newPrincipal) {
     setElementText("loan-monthly", formatSI(monthlyPayment));
     setElementText("loan-interest", formatSI(totalInterest));
@@ -2886,6 +2933,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     safeInit("initCookieBanner", initCookieBanner);
     safeInit("initMobileMenu", initMobileMenu);
+
+    safeInit("initScrollDepthTracking", initScrollDepthTracking);
+    safeInit("initSessionDurationTracking", initSessionDurationTracking);
 
     // Initialize tabs
     safeInit("initTabs", initTabs);
@@ -3139,11 +3189,13 @@ function setupButtonEffects() {
 ============================ */
 
 function calculateDeposit() {
-    console.log("calculateDeposit called");
+    fpTrack("calculate", { calculator: "deposit" });
     const P = getElementValue("interest-amount");
     const monthsEl = document.getElementById("interest-months");
     const months = monthsEl ? parseFloat(monthsEl.value) : NaN;
     const years = Number.isFinite(months) ? months / 12 : NaN;
+    const rateInput = document.getElementById("interest-rate");
+    const rateStr = rateInput ? rateInput.value.replace(",", ".") : "0";
     const rate = getElementValue("interest-rate") / 100;
 
     console.log("Deposit inputs:", { P, months, years, rate });
@@ -3250,7 +3302,7 @@ function updateInvestmentDiff(currentMetrics) {
 }
 
 function calculateInvestment() {
-    console.log("calculateInvestment called");
+    fpTrack("calculate", { calculator: "investment" });
     const initial = getElementValue("inv-initial");
     const monthly = getElementValue("inv-monthly");
     const years = parseFloat(document.getElementById("inv-years").value);
@@ -4897,21 +4949,66 @@ function renderDepositTable() {
 
 function initDepositCompareBindings() {
     const amountInput = document.getElementById("deposit-compare-amount");
+    const container = document.getElementById("deposit-table-container");
+
+    if (container && !window.__fpDepositCompareViewTracked) {
+        window.__fpDepositCompareViewTracked = true;
+        const trackView = () => {
+            if (window.__fpDepositCompareViewFired) return;
+            window.__fpDepositCompareViewFired = true;
+            fpTrack("view_comparator", { comparator: "deposit" });
+        };
+
+        if (typeof IntersectionObserver === "function") {
+            const obs = new IntersectionObserver((entries) => {
+                entries.forEach((e) => {
+                    if (e.isIntersecting) {
+                        trackView();
+                        obs.disconnect();
+                    }
+                });
+            }, { threshold: 0.25 });
+            obs.observe(container);
+        } else {
+            trackView();
+        }
+    }
+
+    const trackAmount = fpDebounce(() => {
+        const val = getElementValue("deposit-compare-amount");
+        if (!Number.isFinite(val)) return;
+        if (window.__fpDepositCompareLastAmount === val) return;
+        window.__fpDepositCompareLastAmount = val;
+        fpTrack("change_amount", { comparator: "deposit", amount_eur: Math.round(val) });
+    }, 450);
+
+    const trackTerm = fpDebounce(() => {
+        const termEl = document.getElementById("deposit-compare-term");
+        const unitEl = document.getElementById("deposit-compare-unit");
+        const term = termEl ? Number(termEl.value) : NaN;
+        const unit = unitEl ? String(unitEl.value ?? "") : "";
+        if (!Number.isFinite(term)) return;
+        const key = `${term}|${unit}`;
+        if (window.__fpDepositCompareLastTermKey === key) return;
+        window.__fpDepositCompareLastTermKey = key;
+        fpTrack("change_term", { comparator: "deposit", term: term, unit: unit || undefined });
+    }, 450);
+
     if (amountInput) {
-        amountInput.addEventListener("input", () => { renderDepositTable(); });
-        amountInput.addEventListener("change", () => { renderDepositTable(); });
+        amountInput.addEventListener("input", () => { trackAmount(); renderDepositTable(); });
+        amountInput.addEventListener("change", () => { trackAmount(); renderDepositTable(); });
     }
 
     const termInput = document.getElementById("deposit-compare-term");
     if (termInput) {
-        termInput.addEventListener("input", () => { renderDepositTable(); });
-        termInput.addEventListener("change", () => { renderDepositTable(); });
+        termInput.addEventListener("input", () => { trackTerm(); renderDepositTable(); });
+        termInput.addEventListener("change", () => { trackTerm(); renderDepositTable(); });
     }
 
     const unitSelect = document.getElementById("deposit-compare-unit");
     if (unitSelect) {
-        unitSelect.addEventListener("input", () => { syncDepositCompareTermBounds(); renderDepositTable(); });
-        unitSelect.addEventListener("change", () => { syncDepositCompareTermBounds(); renderDepositTable(); });
+        unitSelect.addEventListener("input", () => { trackTerm(); syncDepositCompareTermBounds(); renderDepositTable(); });
+        unitSelect.addEventListener("change", () => { trackTerm(); syncDepositCompareTermBounds(); renderDepositTable(); });
     }
 
     syncDepositCompareTermBounds();
