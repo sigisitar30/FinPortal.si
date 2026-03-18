@@ -1667,6 +1667,7 @@ function maxPrincipalFromPayment(payment, months, annualNominalRate) {
 }
 
 function calculateCreditworthiness() {
+    fpTrack("calculate", { calculator: "creditworthiness" });
     const income = getElementValue("cs-income");
     const adults = Math.max(1, Math.floor(getElementValue("cs-adults")));
     const children = Math.max(0, Math.floor(getElementValue("cs-children")));
@@ -1726,6 +1727,18 @@ function calculateCreditworthiness() {
         reasons.push("Uporabljena varnostna rezerva");
     }
     setElementText("cs-limit-reason", reasons.join(". ") + ".");
+
+    fpTrack("calculator_used", {
+        calculator: "creditworthiness",
+        currency: "EUR",
+        income_eur: Number.isFinite(income) ? Math.round(income) : undefined,
+        adults: Number.isFinite(adults) ? Number(adults) : undefined,
+        children: Number.isFinite(children) ? Number(children) : undefined,
+        years: Number.isFinite(years) ? Number(years) : undefined,
+        rate_percent: Number.isFinite(rateAnnual) ? Math.round((rateAnnual * 100) * 100) / 100 : undefined,
+        max_payment_eur: Math.round(maxPayment),
+        max_loan_eur: Math.round(principal),
+    });
 }
 
 function initCreditworthinessBindings() {
@@ -1737,6 +1750,34 @@ function initCreditworthinessBindings() {
         if (!el) return;
         el.addEventListener("blur", () => normalizeRateInput(id));
     });
+
+    const trackIncome = fpDebounce(() => {
+        const income = getElementValue("cs-income");
+        if (!Number.isFinite(income)) return;
+        if (window.__fpCsLastIncome === income) return;
+        window.__fpCsLastIncome = income;
+        fpTrack("change_amount", { calculator: "creditworthiness", field: "income", amount_eur: Math.round(income) });
+    }, 450);
+
+    const trackTerm = fpDebounce(() => {
+        const years = getElementValue("cs-years");
+        if (!Number.isFinite(years)) return;
+        if (window.__fpCsLastYears === years) return;
+        window.__fpCsLastYears = years;
+        fpTrack("change_term", { calculator: "creditworthiness", field: "years", term: years, unit: "years" });
+    }, 450);
+
+    const incomeEl = document.getElementById("cs-income");
+    if (incomeEl) {
+        incomeEl.addEventListener("input", trackIncome);
+        incomeEl.addEventListener("change", trackIncome);
+    }
+
+    const yearsEl = document.getElementById("cs-years");
+    if (yearsEl) {
+        yearsEl.addEventListener("input", trackTerm);
+        yearsEl.addEventListener("change", trackTerm);
+    }
 }
 
 // Initialize tabs
@@ -1890,6 +1931,7 @@ function solveAprMonthlyRate(netDisbursed, monthlyOutflow, months) {
 }
 
 function calculateEom() {
+    fpTrack("calculate", { calculator: "eom" });
     const amount = getElementValue("eom-amount");
     const months = getElementValue("eom-months");
     const nominalAnnual = getElementValue("eom-nominal-rate") / 100;
@@ -1918,6 +1960,18 @@ function calculateEom() {
 
     const apr = Math.pow(1 + rateM, 12) - 1;
     setElementText("eom-apr", formatPercentSI(apr * 100));
+
+    fpTrack("calculator_used", {
+        calculator: "eom",
+        currency: "EUR",
+        amount_eur: Math.round(amount),
+        months: Number(months),
+        nominal_rate_percent: Math.round((nominalAnnual * 100) * 100) / 100,
+        upfront_percent: Math.round((upfrontPercent * 100) * 100) / 100,
+        upfront_eur: Number.isFinite(upfrontEur) ? Math.round(upfrontEur) : 0,
+        monthly_fee_eur: Number.isFinite(monthlyFee) ? Math.round(monthlyFee) : 0,
+        apr_percent: Math.round((apr * 100) * 100) / 100,
+    });
 }
 
 function initEomUiBindings() {
@@ -1944,6 +1998,33 @@ function initEomUiBindings() {
             }
         });
     });
+
+    const trackAmount = fpDebounce(() => {
+        const amount = getElementValue("eom-amount");
+        if (!Number.isFinite(amount)) return;
+        if (window.__fpEomLastAmount === amount) return;
+        window.__fpEomLastAmount = amount;
+        fpTrack("change_amount", { calculator: "eom", field: "amount", amount_eur: Math.round(amount) });
+    }, 450);
+
+    const trackMonths = fpDebounce(() => {
+        const months = getElementValue("eom-months");
+        if (!Number.isFinite(months)) return;
+        if (window.__fpEomLastMonths === months) return;
+        window.__fpEomLastMonths = months;
+        fpTrack("change_term", { calculator: "eom", field: "months", term: months, unit: "months" });
+    }, 450);
+
+    const amountEl = document.getElementById("eom-amount");
+    if (amountEl) {
+        amountEl.addEventListener("input", trackAmount);
+        amountEl.addEventListener("change", trackAmount);
+    }
+    const monthsEl = document.getElementById("eom-months");
+    if (monthsEl) {
+        monthsEl.addEventListener("input", trackMonths);
+        monthsEl.addEventListener("change", trackMonths);
+    }
 }
 
 /* ============================
@@ -2096,6 +2177,33 @@ function initLeasingVsLoanBindings() {
         if (!el) return;
         el.addEventListener("change", () => normalizeRateInput(id));
     });
+
+    const trackPrice = fpDebounce(() => {
+        const price = getElementValue("lvk-price");
+        if (!Number.isFinite(price)) return;
+        if (window.__fpLvkLastPrice === price) return;
+        window.__fpLvkLastPrice = price;
+        fpTrack("change_amount", { calculator: "leasing_vs_loan", field: "price", amount_eur: Math.round(price) });
+    }, 450);
+
+    const trackMonths = fpDebounce(() => {
+        const months = getElementValue("lvk-months");
+        if (!Number.isFinite(months)) return;
+        if (window.__fpLvkLastMonths === months) return;
+        window.__fpLvkLastMonths = months;
+        fpTrack("change_term", { calculator: "leasing_vs_loan", field: "months", term: months, unit: "months" });
+    }, 450);
+
+    const priceEl = document.getElementById("lvk-price");
+    if (priceEl) {
+        priceEl.addEventListener("input", trackPrice);
+        priceEl.addEventListener("change", trackPrice);
+    }
+
+    if (monthsEl) {
+        monthsEl.addEventListener("input", trackMonths);
+        monthsEl.addEventListener("change", trackMonths);
+    }
 }
 
 function initLostInterestBenchmarkBindings() {
@@ -2198,6 +2306,7 @@ async function fetchLatestEcbFxVsEur(currency) {
 }
 
 async function calculateFx() {
+    fpTrack("calculate", { calculator: "fx" });
     const amount = getElementValue("fx-amount");
     const from = String(document.getElementById("fx-from")?.value ?? "EUR").trim().toUpperCase();
     const to = String(document.getElementById("fx-to")?.value ?? "EUR").trim().toUpperCase();
@@ -2232,6 +2341,17 @@ async function calculateFx() {
         setElementText("fx-result", formatMoney(amount * effectiveRate, to));
         setElementText("fx-rate-used", `${baseRate.toFixed(4).replace(".", ",")} (ročno)`);
         setElementText("fx-cost", "–");
+
+        fpTrack("calculator_used", {
+            calculator: "fx",
+            mode: "manual",
+            amount: Math.round(amount),
+            from,
+            to,
+            spread_percent: Math.round((spread * 100) * 100) / 100,
+            fee_eur: Math.round(feeEur),
+            manual_rate: Math.round(baseRate * 10000) / 10000,
+        });
         return;
     }
 
@@ -2268,6 +2388,18 @@ async function calculateFx() {
     setElementText("fx-result", formatMoney(received, to));
     setElementText("fx-rate-used", usedText);
     setElementText("fx-cost", formatSI(costEur));
+
+    fpTrack("calculator_used", {
+        calculator: "fx",
+        mode: "ecb",
+        amount: Math.round(amount),
+        from,
+        to,
+        spread_percent: Math.round((spread * 100) * 100) / 100,
+        fee_eur: Math.round(feeEur),
+        base_cross_rate: Math.round(baseCrossRate * 10000) / 10000,
+        cost_eur: Math.round(costEur * 100) / 100,
+    });
 }
 
 async function updateFxEcbInfo() {
@@ -2339,6 +2471,37 @@ function initFxBindings() {
     const spreadEl = document.getElementById("fx-spread");
     if (spreadEl) {
         spreadEl.addEventListener("blur", () => normalizeRateInput("fx-spread"));
+    }
+
+    const trackAmount = fpDebounce(() => {
+        const amount = getElementValue("fx-amount");
+        if (!Number.isFinite(amount)) return;
+        if (window.__fpFxLastAmount === amount) return;
+        window.__fpFxLastAmount = amount;
+        fpTrack("change_amount", { calculator: "fx", field: "amount", amount: Math.round(amount) });
+    }, 450);
+
+    const trackPair = fpDebounce(() => {
+        const from = String(document.getElementById("fx-from")?.value ?? "EUR").trim().toUpperCase();
+        const to = String(document.getElementById("fx-to")?.value ?? "EUR").trim().toUpperCase();
+        const key = `${from}|${to}`;
+        if (window.__fpFxLastPairKey === key) return;
+        window.__fpFxLastPairKey = key;
+        fpTrack("change_pair", { calculator: "fx", from: from || undefined, to: to || undefined });
+    }, 450);
+
+    const amountEl = document.getElementById("fx-amount");
+    if (amountEl) {
+        amountEl.addEventListener("input", trackAmount);
+        amountEl.addEventListener("change", trackAmount);
+    }
+    if (fromEl) {
+        fromEl.addEventListener("input", trackPair);
+        fromEl.addEventListener("change", trackPair);
+    }
+    if (toEl) {
+        toEl.addEventListener("input", trackPair);
+        toEl.addEventListener("change", trackPair);
     }
 
     updateFxEcbInfo();
@@ -2591,6 +2754,41 @@ function initLostInterestBindings() {
             }
         });
     });
+
+    const trackAmount = fpDebounce(() => {
+        const amount = getElementValue("lost-amount");
+        if (!Number.isFinite(amount)) return;
+        if (window.__fpLostLastAmount === amount) return;
+        window.__fpLostLastAmount = amount;
+        fpTrack("change_amount", { calculator: "lost_interest", field: "amount", amount_eur: Math.round(amount) });
+    }, 450);
+
+    const trackTerm = fpDebounce(() => {
+        const time = getElementValue("lost-time");
+        const unit = String(document.getElementById("lost-unit")?.value ?? "months");
+        if (!Number.isFinite(time)) return;
+        const key = `${time}|${unit}`;
+        if (window.__fpLostLastTermKey === key) return;
+        window.__fpLostLastTermKey = key;
+        fpTrack("change_term", { calculator: "lost_interest", field: "time", term: time, unit: unit || undefined });
+    }, 450);
+
+    const amountEl = document.getElementById("lost-amount");
+    if (amountEl) {
+        amountEl.addEventListener("input", trackAmount);
+        amountEl.addEventListener("change", trackAmount);
+    }
+
+    const timeEl = document.getElementById("lost-time");
+    if (timeEl) {
+        timeEl.addEventListener("input", trackTerm);
+        timeEl.addEventListener("change", trackTerm);
+    }
+    const unitEl = document.getElementById("lost-unit");
+    if (unitEl) {
+        unitEl.addEventListener("input", trackTerm);
+        unitEl.addEventListener("change", trackTerm);
+    }
 
     initLostInterestBenchmarkBindings();
 }
@@ -3190,7 +3388,11 @@ function initLoanUiBindings() {
 
                 fpTrack(
                     "bank_offer_click",
-                    { calculator: "loan", url: href },
+                    {
+                        calculator: "loan",
+                        bank: bankSelect ? (String(bankSelect.value ?? "").trim() || undefined) : undefined,
+                        url: href,
+                    },
                     {
                         transport_type: "beacon",
                         event_callback: navigate,
@@ -3203,6 +3405,34 @@ function initLoanUiBindings() {
     }
 
     updateLoanOfferLink();
+
+    const trackAmount = fpDebounce(() => {
+        const amount = getElementValue("loan-amount");
+        if (!Number.isFinite(amount)) return;
+        if (window.__fpLoanLastAmount === amount) return;
+        window.__fpLoanLastAmount = amount;
+        fpTrack("change_amount", { calculator: "loan", field: "amount", amount_eur: Math.round(amount) });
+    }, 450);
+
+    const trackTerm = fpDebounce(() => {
+        const years = getElementValue("loan-years");
+        if (!Number.isFinite(years)) return;
+        if (window.__fpLoanLastYears === years) return;
+        window.__fpLoanLastYears = years;
+        fpTrack("change_term", { calculator: "loan", field: "years", term: years, unit: "years" });
+    }, 450);
+
+    const amountEl = document.getElementById("loan-amount");
+    if (amountEl) {
+        amountEl.addEventListener("input", trackAmount);
+        amountEl.addEventListener("change", trackAmount);
+    }
+
+    const yearsEl = document.getElementById("loan-years");
+    if (yearsEl) {
+        yearsEl.addEventListener("input", trackTerm);
+        yearsEl.addEventListener("change", trackTerm);
+    }
 }
 
 // Button effects setup
@@ -5059,8 +5289,15 @@ function initDepositCompareBindings() {
 
     const specialCheckbox = document.getElementById("deposit-compare-special");
     if (specialCheckbox) {
-        specialCheckbox.addEventListener("input", () => { renderDepositTable(); });
-        specialCheckbox.addEventListener("change", () => { renderDepositTable(); });
+        const trackSpecial = () => {
+            fpTrack("change_filter", {
+                comparator: "deposit",
+                filter: "special_offers",
+                enabled: !!specialCheckbox.checked,
+            });
+        };
+        specialCheckbox.addEventListener("input", () => { trackSpecial(); renderDepositTable(); });
+        specialCheckbox.addEventListener("change", () => { trackSpecial(); renderDepositTable(); });
     }
 }
 
@@ -5228,12 +5465,31 @@ function initDepositUiBindings() {
         bankSelect.addEventListener("input", updateInterestRate);
     }
 
+    const trackAmount = fpDebounce(() => {
+        const amount = getElementValue("interest-amount");
+        if (!Number.isFinite(amount)) return;
+        if (window.__fpDepositLastAmount === amount) return;
+        window.__fpDepositLastAmount = amount;
+        fpTrack("change_amount", { calculator: "deposit", field: "amount", amount_eur: Math.round(amount) });
+    }, 450);
+
+    const trackMonths = fpDebounce(() => {
+        const months = getElementValue("interest-months");
+        if (!Number.isFinite(months)) return;
+        if (window.__fpDepositLastMonths === months) return;
+        window.__fpDepositLastMonths = months;
+        fpTrack("change_term", { calculator: "deposit", field: "months", term: months, unit: "months" });
+    }, 450);
+
     const amountEl = document.getElementById("interest-amount");
     if (amountEl) {
         amountEl.addEventListener("change", updateInterestRate);
         amountEl.addEventListener("input", updateInterestRate);
         amountEl.addEventListener("keyup", updateInterestRate);
         amountEl.addEventListener("blur", updateInterestRate);
+
+        amountEl.addEventListener("input", trackAmount);
+        amountEl.addEventListener("change", trackAmount);
     }
 
     const monthsEl = document.getElementById("interest-months");
@@ -5242,6 +5498,9 @@ function initDepositUiBindings() {
         monthsEl.addEventListener("input", updateInterestRate);
         monthsEl.addEventListener("keyup", updateInterestRate);
         monthsEl.addEventListener("blur", updateInterestRate);
+
+        monthsEl.addEventListener("input", trackMonths);
+        monthsEl.addEventListener("change", trackMonths);
     }
 
     const rateEl = document.getElementById("interest-rate");
