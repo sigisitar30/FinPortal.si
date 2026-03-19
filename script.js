@@ -1401,7 +1401,7 @@ function initCookieBanner() {
                     </div>
 
                     <div style="margin-top: 0.9rem; font-size: 0.85rem; color:#6b7280;">
-                        Več informacij najdeš na <a href="piskotki.html" style="text-decoration: underline; font-weight: 800; color:#0B6B3A;">strani o piškotkih</a>.
+                        Več informacij najdeš na <a href="/piskotki.html" style="text-decoration: underline; font-weight: 800; color:#0B6B3A;">strani o piškotkih</a>.
                     </div>
                 </div>
             </div>
@@ -1493,7 +1493,7 @@ function initCookieBanner() {
                         <div style="font-weight: 800; color: #78350F;">Piškotki</div>
                         <div>
                             Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
-                            <a href="piskotki.html" style="text-decoration: underline; font-weight: 700; color: #78350F;">Več o piškotkih</a>.
+                            <a href="/piskotki.html" style="text-decoration: underline; font-weight: 700; color: #78350F;">Več o piškotkih</a>.
                         </div>
                     </div>
                     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
@@ -1545,15 +1545,18 @@ function initCookieBanner() {
         });
     }
 
-    document.querySelectorAll('[data-cookie-settings="open"], .cookie-settings-open').forEach((el) => {
-        if (el.dataset.fpBound === "1") return;
-        el.dataset.fpBound = "1";
-        el.addEventListener("click", (e) => {
+    if (!window.__fpCookieSettingsDelegatedBound) {
+        window.__fpCookieSettingsDelegatedBound = true;
+        document.addEventListener("click", (e) => {
+            const t = e.target && typeof e.target.closest === "function"
+                ? e.target.closest('[data-cookie-settings="open"], .cookie-settings-open')
+                : null;
+            if (!t) return;
             e.preventDefault();
             try { existing = localStorage.getItem(key); } catch (e2) { }
             openSettings();
         });
-    });
+    }
 }
 
 function initMobileMenu() {
