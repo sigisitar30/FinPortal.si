@@ -1358,6 +1358,121 @@ function initCookieBanner() {
     let existing = null;
     try { existing = localStorage.getItem(key); } catch (e) { }
 
+    const ensureSettingsModal = () => {
+        let modal = document.getElementById("cookie-settings-modal");
+        if (modal) return modal;
+
+        modal = document.createElement("div");
+        modal.id = "cookie-settings-modal";
+        modal.className = "hidden";
+        modal.style.position = "fixed";
+        modal.style.inset = "0";
+        modal.style.zIndex = "9999";
+
+        modal.innerHTML = `
+            <div id="cookie-settings-backdrop" style="position:absolute; inset:0; background: rgba(0,0,0,0.45);"></div>
+            <div style="position:relative; max-width: 42rem; margin: 8vh auto 0; padding: 0 1.5rem;">
+                <div style="background:#fff; border-radius: 1rem; border: 1px solid #e5e7eb; box-shadow: 0 20px 45px rgba(0,0,0,0.2); padding: 1.25rem;">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap: 1rem;">
+                        <div>
+                            <div style="font-weight: 900; font-size: 1.05rem; color:#111111;">Nastavitve piškotkov</div>
+                            <div style="margin-top: 0.25rem; font-size: 0.875rem; color:#374151;">Tukaj lahko spremeniš svojo izbiro.</div>
+                        </div>
+                        <button id="cookie-settings-close" type="button" aria-label="Zapri" style="border: 1px solid #e5e7eb; background:#fff; border-radius: 0.75rem; padding: 0.35rem 0.6rem; font-weight: 800; cursor:pointer;">×</button>
+                    </div>
+
+                    <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e5e7eb;">
+                        <div style="font-weight: 800; color:#111111; font-size: 0.95rem;">Analitika</div>
+                        <div style="margin-top: 0.35rem; font-size: 0.875rem; color:#374151;">Dovoli anonimizirano merjenje obiska (GA4), da lahko izboljšamo vsebino.</div>
+
+                        <div style="margin-top: 0.75rem; display:flex; gap: 1rem; flex-wrap:wrap;">
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size: 0.9rem; color:#111111; cursor:pointer;">
+                                <input type="radio" name="cookie-analytics" value="accepted" /> Dovoli
+                            </label>
+                            <label style="display:flex; align-items:center; gap:0.5rem; font-size: 0.9rem; color:#111111; cursor:pointer;">
+                                <input type="radio" name="cookie-analytics" value="rejected" /> Ne dovoli
+                            </label>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 1.25rem; display:flex; justify-content:flex-end; gap: 0.75rem; flex-wrap:wrap;">
+                        <button id="cookie-settings-reset" type="button" style="padding: 0.55rem 0.9rem; border-radius: 0.75rem; border: 1px solid #e5e7eb; background: #fff; font-weight: 800; color:#111111; cursor:pointer;">Prekliči izbiro</button>
+                        <button id="cookie-settings-save" type="button" style="padding: 0.55rem 0.9rem; border-radius: 0.75rem; border: 1px solid #0B6B3A; background: #0B6B3A; color: #ffffff; font-weight: 900; cursor:pointer;">Shrani</button>
+                    </div>
+
+                    <div style="margin-top: 0.9rem; font-size: 0.85rem; color:#6b7280;">
+                        Več informacij najdeš na <a href="piskotki.html" style="text-decoration: underline; font-weight: 800; color:#0B6B3A;">strani o piškotkih</a>.
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+        return modal;
+    };
+
+    const openSettings = () => {
+        const modal = ensureSettingsModal();
+        if (!modal) return;
+
+        const current = (document?.documentElement?.dataset?.cookieConsent === "accepted" || document?.documentElement?.dataset?.cookieConsent === "rejected")
+            ? document.documentElement.dataset.cookieConsent
+            : (existing === "accepted" || existing === "rejected" ? existing : "rejected");
+
+        const radios = modal.querySelectorAll('input[name="cookie-analytics"]');
+        radios.forEach((r) => { r.checked = r.value === current; });
+
+        const show = () => { modal.classList.remove("hidden"); modal.removeAttribute("aria-hidden"); };
+        show();
+    };
+
+    const closeSettings = () => {
+        const modal = document.getElementById("cookie-settings-modal");
+        if (!modal) return;
+        modal.classList.add("hidden");
+        modal.setAttribute("aria-hidden", "true");
+    };
+
+    const bindSettingsModalEventsOnce = () => {
+        const modal = ensureSettingsModal();
+        if (!modal || modal.dataset.fpBound === "1") return;
+        modal.dataset.fpBound = "1";
+
+        const backdrop = modal.querySelector("#cookie-settings-backdrop");
+        const closeBtn = modal.querySelector("#cookie-settings-close");
+        const saveBtn = modal.querySelector("#cookie-settings-save");
+        const resetBtn = modal.querySelector("#cookie-settings-reset");
+
+        if (backdrop) backdrop.addEventListener("click", closeSettings);
+        if (closeBtn) closeBtn.addEventListener("click", closeSettings);
+
+        if (saveBtn) {
+            saveBtn.addEventListener("click", () => {
+                const selected = modal.querySelector('input[name="cookie-analytics"]:checked');
+                const value = selected && (selected.value === "accepted" || selected.value === "rejected") ? selected.value : "rejected";
+                try { localStorage.setItem(key, value); } catch (e) { }
+                document.documentElement.dataset.cookieConsent = value;
+                if (value === "accepted") enableGa4Analytics();
+                if (value === "rejected") disableGa4Analytics();
+                closeSettings();
+            });
+        }
+
+        if (resetBtn) {
+            resetBtn.addEventListener("click", () => {
+                try { localStorage.removeItem(key); } catch (e) { }
+                delete document.documentElement.dataset.cookieConsent;
+                disableGa4Analytics();
+                closeSettings();
+                const banner = document.getElementById("cookie-banner");
+                if (banner) {
+                    banner.classList.remove("hidden");
+                    banner.removeAttribute("aria-hidden");
+                }
+            });
+        }
+    };
+
     const ensureBanner = () => {
         let banner = document.getElementById("cookie-banner");
         if (banner) return banner;
@@ -1382,6 +1497,7 @@ function initCookieBanner() {
                         </div>
                     </div>
                     <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: flex-end;">
+                        <button id="cookie-settings-open" type="button" style="padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid #FCD34D; background: transparent; font-weight: 800; color: #78350F; cursor: pointer;">Nastavitve</button>
                         <button id="cookie-reject" type="button" style="padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid #FCD34D; background: transparent; font-weight: 800; color: #78350F; cursor: pointer;">Zavrni</button>
                         <button id="cookie-accept" type="button" style="padding: 0.5rem 1rem; border-radius: 0.75rem; border: 1px solid #D97706; background: #D97706; color: #ffffff; font-weight: 800; cursor: pointer;">Sprejmi</button>
                     </div>
@@ -1396,7 +1512,10 @@ function initCookieBanner() {
     const banner = ensureBanner();
     const acceptBtn = document.getElementById("cookie-accept");
     const rejectBtn = document.getElementById("cookie-reject");
+    const settingsBtn = document.getElementById("cookie-settings-open");
     if (!banner || !acceptBtn || !rejectBtn) return;
+
+    bindSettingsModalEventsOnce();
 
     const hide = () => { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); };
     const show = () => { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); };
@@ -1418,6 +1537,23 @@ function initCookieBanner() {
 
     acceptBtn.addEventListener("click", () => setConsent("accepted"));
     rejectBtn.addEventListener("click", () => setConsent("rejected"));
+
+    if (settingsBtn) {
+        settingsBtn.addEventListener("click", () => {
+            try { existing = localStorage.getItem(key); } catch (e) { }
+            openSettings();
+        });
+    }
+
+    document.querySelectorAll('[data-cookie-settings="open"], .cookie-settings-open').forEach((el) => {
+        if (el.dataset.fpBound === "1") return;
+        el.dataset.fpBound = "1";
+        el.addEventListener("click", (e) => {
+            e.preventDefault();
+            try { existing = localStorage.getItem(key); } catch (e2) { }
+            openSettings();
+        });
+    });
 }
 
 function initMobileMenu() {

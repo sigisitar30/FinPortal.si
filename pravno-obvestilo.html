@@ -236,6 +236,8 @@
                 <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
                 <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
                 <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="#" class="hover:underline cookie-settings-open" data-cookie-settings="open">Nastavitve
+                    piškotkov</a>
                 <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
             </div>
 
@@ -248,59 +250,6 @@
             nepravilne finančne odločitve.
         </div>
     </footer>
-
-    <div id="cookie-banner" class="hidden fixed bottom-0 inset-x-0 z-[60]">
-        <div class="max-w-7xl mx-auto px-6 pb-6">
-            <div
-                class="bg-amber-50 border border-amber-200 rounded-2xl shadow-lg p-4 md:p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div class="text-sm text-amber-900">
-                    <div class="font-semibold text-amber-900">Piškotki</div>
-                    <div>
-                        Stran uporablja piškotke za pravilno delovanje in izboljšanje uporabniške izkušnje.
-                        <a href="piskotki.html" class="underline">Več o piškotkih</a>.
-                    </div>
-                </div>
-
-                <div class="flex gap-3">
-                    <button id="cookie-reject" type="button"
-                        class="px-4 py-2 rounded-xl border border-amber-300 font-semibold text-amber-900 hover:bg-amber-100 transition">Zavrni</button>
-                    <button id="cookie-accept" type="button"
-                        class="px-4 py-2 rounded-xl bg-amber-600 text-white font-semibold hover:bg-amber-700 transition">Sprejmi</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
-        (function () {
-            var banner = document.getElementById("cookie-banner");
-            var acceptBtn = document.getElementById("cookie-accept");
-            var rejectBtn = document.getElementById("cookie-reject");
-            if (!banner || !acceptBtn || !rejectBtn) return;
-
-            var key = "finportal_cookie_consent";
-            var existing = null;
-            try { existing = localStorage.getItem(key); } catch (e) { }
-
-            function hide() { banner.classList.add("hidden"); banner.setAttribute("aria-hidden", "true"); }
-            function show() { banner.classList.remove("hidden"); banner.removeAttribute("aria-hidden"); }
-            function setConsent(value) {
-                try { localStorage.setItem(key, value); } catch (e) { }
-                document.documentElement.dataset.cookieConsent = value;
-                hide();
-            }
-
-            if (existing === "accepted" || existing === "rejected") {
-                document.documentElement.dataset.cookieConsent = existing;
-                hide();
-            } else {
-                show();
-            }
-
-            acceptBtn.addEventListener("click", function () { setConsent("accepted"); });
-            rejectBtn.addEventListener("click", function () { setConsent("rejected"); });
-        })();
-    </script>
 
 </body>
 
