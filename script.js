@@ -1443,19 +1443,25 @@ function fpLeadComposeOtpTemplate(state) {
     const lines = [];
     lines.push("Pozdravljeni,");
     lines.push("");
-    lines.push("posredujemo povpraševanje uporabnika prek FinPortal.si za informativno ponudbo.");
+    lines.push("na FinPortal.si smo prejeli povpraševanje uporabnika za pripravo informativne ponudbe.");
     lines.push("");
+
+    const formatEur = (n) => {
+        if (!Number.isFinite(n)) return "";
+        const amount = fpLeadFormatThousandsSiNumber(n);
+        return amount ? `${amount} EUR` : "";
+    };
 
     const product = String(state.product ?? "").trim();
     if (product === "deposit") {
         lines.push("Produkt: Depozit / vezava");
-        if (Number.isFinite(state.deposit_amount_eur)) lines.push(`Znesek: ${Math.round(state.deposit_amount_eur)} EUR`);
+        if (Number.isFinite(state.deposit_amount_eur)) lines.push(`Znesek: ${formatEur(state.deposit_amount_eur)}`);
         if (Number.isFinite(state.deposit_months)) lines.push(`Doba: ${Math.round(state.deposit_months)} mesecev`);
         if (state.deposit_notes) lines.push(`Opombe: ${state.deposit_notes}`);
     } else if (product === "loan") {
         lines.push("Produkt: Kredit");
         if (state.loan_type) lines.push(`Vrsta: ${state.loan_type}`);
-        if (Number.isFinite(state.loan_amount_eur)) lines.push(`Znesek: ${Math.round(state.loan_amount_eur)} EUR`);
+        if (Number.isFinite(state.loan_amount_eur)) lines.push(`Znesek: ${formatEur(state.loan_amount_eur)}`);
         if (Number.isFinite(state.loan_years)) lines.push(`Doba: ${Math.round(state.loan_years)} let`);
         if (state.loan_rate_type) lines.push(`Obrestna mera: ${state.loan_rate_type}`);
         if (state.loan_income) lines.push(`Okvirni neto dohodek: ${state.loan_income}`);
