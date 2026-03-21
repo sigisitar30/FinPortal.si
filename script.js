@@ -1528,18 +1528,43 @@ function initLeadFormUi() {
     const productEl = document.getElementById("lead-product");
     const templateEl = document.getElementById("lead-email-template");
     const copyBtn = document.getElementById("lead-copy-btn");
+    const consentEl = document.getElementById("lead-consent");
+
+    const enforceConsent = () => {
+        if (!consentEl) return true;
+        if (consentEl.checked) return true;
+
+        try {
+            consentEl.setCustomValidity(
+                "Za nadaljevanje moraš potrditi soglasje za posredovanje podatkov OTP banki."
+            );
+            if (typeof consentEl.reportValidity === "function") {
+                consentEl.reportValidity();
+            }
+        } finally {
+            try {
+                consentEl.setCustomValidity("");
+            } catch { }
+        }
+
+        try {
+            consentEl.focus();
+        } catch { }
+        return false;
+    };
 
     const setTemplate = () => {
         if (!templateEl) return;
-        const consentChecked = !!document.getElementById("lead-consent")?.checked;
+        const consentChecked = !!consentEl?.checked;
         const product = productEl ? String(productEl.value ?? "").trim() : "";
         fpLeadToggleProductSections(product);
 
         const contactValidation = fpLeadValidateContact();
         if (copyBtn) {
-            copyBtn.disabled = !contactValidation.ok;
-            copyBtn.classList.toggle("opacity-60", !contactValidation.ok);
-            copyBtn.classList.toggle("cursor-not-allowed", !contactValidation.ok);
+            const canCopy = contactValidation.ok && consentChecked;
+            copyBtn.disabled = !canCopy;
+            copyBtn.classList.toggle("opacity-60", !canCopy);
+            copyBtn.classList.toggle("cursor-not-allowed", !canCopy);
         }
 
         const consentTime = new Date().toISOString().slice(0, 16).replace("T", " ");
@@ -1596,6 +1621,7 @@ function initLeadFormUi() {
 
     if (copyBtn) {
         copyBtn.addEventListener("click", async () => {
+            if (!enforceConsent()) return;
             const text = String(templateEl ? templateEl.value : "");
             if (!text) return;
             try {
@@ -1616,6 +1642,8 @@ function initLeadFormUi() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
+        if (!enforceConsent()) return;
+        fpLeadValidateContact();
     });
 
     setTemplate();
