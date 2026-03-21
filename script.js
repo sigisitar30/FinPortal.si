@@ -1476,10 +1476,14 @@ function fpLeadComposeOtpTemplate(state) {
 
     lines.push("");
     lines.push("Soglasje:");
-    lines.push("Uporabnik je izrecno soglašal, da FinPortal.si posreduje navedene podatke OTP banki izključno za namen priprave informativne ponudbe in kontaktiranja.");
-    if (state.consent_id) lines.push(`CONSENT_ID: ${state.consent_id}`);
-    if (state.consent_time) lines.push(`Čas soglasja: ${state.consent_time}`);
-    if (state.consent_version) lines.push(`Verzija besedila soglasja: ${state.consent_version}`);
+    if (state.consent_id) {
+        lines.push("Uporabnik je izrecno soglašal, da FinPortal.si posreduje navedene podatke OTP banki izključno za namen priprave informativne ponudbe in kontaktiranja.");
+        lines.push(`CONSENT_ID: ${state.consent_id}`);
+        if (state.consent_time) lines.push(`Čas soglasja: ${state.consent_time}`);
+        if (state.consent_version) lines.push(`Verzija besedila soglasja: ${state.consent_version}`);
+    } else {
+        lines.push("Soglasje uporabnika še ni potrjeno (pred pošiljanjem obvezno označi checkbox za soglasje).");
+    }
     if (state.source) lines.push(`Vir: ${state.source}`);
 
     lines.push("");
@@ -1533,7 +1537,6 @@ function initLeadFormUi() {
 
     const productEl = document.getElementById("lead-product");
     const templateEl = document.getElementById("lead-email-template");
-    const copyBtn = document.getElementById("lead-copy-btn");
     const consentEl = document.getElementById("lead-consent");
 
     const enforceConsent = () => {
@@ -1566,12 +1569,7 @@ function initLeadFormUi() {
         fpLeadToggleProductSections(product);
 
         const contactValidation = fpLeadValidateContact();
-        if (copyBtn) {
-            const canCopy = contactValidation.ok && consentChecked;
-            copyBtn.disabled = !canCopy;
-            copyBtn.classList.toggle("opacity-60", !canCopy);
-            copyBtn.classList.toggle("cursor-not-allowed", !canCopy);
-        }
+        void contactValidation;
 
         const consentTime = new Date().toISOString().slice(0, 16).replace("T", " ");
         const state = {
@@ -1624,27 +1622,6 @@ function initLeadFormUi() {
         "lead-contact-time",
         "lead-consent",
     ].forEach(bind);
-
-    if (copyBtn) {
-        copyBtn.addEventListener("click", async () => {
-            if (!enforceConsent()) return;
-            const text = String(templateEl ? templateEl.value : "");
-            if (!text) return;
-            try {
-                await navigator.clipboard.writeText(text);
-                copyBtn.textContent = "Kopirano";
-                setTimeout(() => {
-                    copyBtn.textContent = "Kopiraj osnutek";
-                }, 1200);
-            } catch (e) {
-                if (templateEl) {
-                    templateEl.focus();
-                    templateEl.select();
-                }
-                document.execCommand("copy");
-            }
-        });
-    }
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
