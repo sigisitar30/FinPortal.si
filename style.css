@@ -5,6 +5,8 @@
 :root {
     --primary: #0B6B3A;
     --primary-dark: #095a32;
+    --lead-cta: #2563eb;
+    --lead-cta-dark: #1d4ed8;
     --highlight: #F2C94C;
     --highlight-glow: rgba(242, 201, 76, 0.65);
     --highlight-glow-soft: rgba(242, 201, 76, 0.35);
@@ -36,6 +38,21 @@ summary:focus-visible,
 .fp-help__icon:focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 2px;
+}
+
+/* Lead CTA – naj izstopa (Pošlji povpraševanje banki) */
+a.lead-beta-btn[href="povprasevanje.html"] {
+    background: var(--lead-cta) !important;
+    border-color: var(--lead-cta) !important;
+    color: #ffffff !important;
+}
+
+a.lead-beta-btn[href="povprasevanje.html"]:hover,
+a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
+    background: var(--lead-cta-dark) !important;
+    border-color: var(--lead-cta-dark) !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.22) !important;
+    outline: none !important;
 }
 
 .fp-details-summary {
