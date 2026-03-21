@@ -1310,6 +1310,282 @@ function initSessionDurationTracking() {
     });
 }
 
+function fpLeadParseNumber(raw) {
+    const v = String(raw ?? "").trim();
+    if (!v) return null;
+    const cleaned = v.replace(/\./g, "").replace(/\s+/g, "").replace(/,/g, ".");
+    const n = Number(cleaned);
+    return Number.isFinite(n) ? n : null;
+}
+
+function fpLeadReadText(id) {
+    const el = document.getElementById(id);
+    if (!el) return "";
+    return String(el.value ?? "").trim();
+}
+
+function fpLeadReadNumber(id) {
+    const el = document.getElementById(id);
+    if (!el) return null;
+    return fpLeadParseNumber(el.value);
+}
+
+function fpLeadWriteText(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return false;
+    if (value === undefined || value === null || String(value).trim() === "") return false;
+    el.value = String(value);
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+    el.dispatchEvent(new Event("change", { bubbles: true }));
+    return true;
+}
+
+function fpLeadFormatThousandsSiNumber(n) {
+    if (!Number.isFinite(n)) return "";
+    return formatThousandsSI(String(Math.round(n)));
+}
+
+function fpLeadSafeLocalStorageSet(key, value) {
+    try {
+        localStorage.setItem(key, JSON.stringify(value));
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function fpLeadSafeLocalStorageGet(key) {
+    try {
+        const raw = localStorage.getItem(key);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch (e) {
+        return null;
+    }
+}
+
+function fpLeadBuildPrefillPayload(source) {
+    const payload = {
+        source: source || undefined,
+        captured_at: new Date().toISOString(),
+        loan: null,
+        deposit: null,
+    };
+
+    const hasLoan = !!document.getElementById("loan-amount") || !!document.getElementById("loan-years");
+    if (hasLoan) {
+        const amount = fpLeadReadNumber("loan-amount");
+        const years = fpLeadReadNumber("loan-years");
+        const rateTypeEl = document.getElementById("loan-rate-type");
+        const rateType = rateTypeEl ? String(rateTypeEl.value ?? "").trim() : "";
+        const purposeEl = document.getElementById("loan-purpose");
+        const purposeVal = purposeEl ? String(purposeEl.value ?? "").trim() : "";
+        payload.loan = {
+            amount_eur: amount,
+            years: years,
+            rate_type: rateType || undefined,
+            purpose: purposeVal || undefined,
+        };
+    }
+
+    const hasDeposit = !!document.getElementById("interest-amount") || !!document.getElementById("interest-months");
+    if (hasDeposit) {
+        const amount = fpLeadReadNumber("interest-amount");
+        const months = fpLeadReadNumber("interest-months");
+        payload.deposit = {
+            amount_eur: amount,
+            months: months,
+        };
+    }
+
+    return payload;
+}
+
+function initLeadPrefillCapture() {
+    document.querySelectorAll('a[href="povprasevanje.html"][data-lead-source]').forEach((btn) => {
+        if (btn.dataset.fpPrefillBound === "1") return;
+        btn.dataset.fpPrefillBound = "1";
+
+        btn.addEventListener("click", () => {
+            const source = String(btn.dataset.leadSource ?? "").trim();
+            const payload = fpLeadBuildPrefillPayload(source);
+            fpLeadSafeLocalStorageSet("finportal_last_lead_prefill", payload);
+        });
+    });
+}
+
+function fpLeadToggleProductSections(product) {
+    const depositSection = document.getElementById("lead-section-deposit");
+    const loanSection = document.getElementById("lead-section-loan");
+    if (depositSection) depositSection.classList.toggle("hidden", product !== "deposit");
+    if (loanSection) loanSection.classList.toggle("hidden", product !== "loan");
+}
+
+function fpLeadComposeOtpTemplate(state) {
+    const lines = [];
+    lines.push("Pozdravljeni,");
+    lines.push("");
+    lines.push("posredujemo povpraševanje uporabnika prek FinPortal.si za informativno ponudbo.");
+    lines.push("");
+
+    const product = String(state.product ?? "").trim();
+    if (product === "deposit") {
+        lines.push("Produkt: Depozit / vezava");
+        if (Number.isFinite(state.deposit_amount_eur)) lines.push(`Znesek: ${Math.round(state.deposit_amount_eur)} EUR`);
+        if (Number.isFinite(state.deposit_months)) lines.push(`Doba: ${Math.round(state.deposit_months)} mesecev`);
+        if (state.deposit_notes) lines.push(`Opombe: ${state.deposit_notes}`);
+    } else if (product === "loan") {
+        lines.push("Produkt: Kredit");
+        if (state.loan_type) lines.push(`Vrsta: ${state.loan_type}`);
+        if (Number.isFinite(state.loan_amount_eur)) lines.push(`Znesek: ${Math.round(state.loan_amount_eur)} EUR`);
+        if (Number.isFinite(state.loan_years)) lines.push(`Doba: ${Math.round(state.loan_years)} let`);
+        if (state.loan_rate_type) lines.push(`Obrestna mera: ${state.loan_rate_type}`);
+        if (state.loan_income) lines.push(`Okvirni neto dohodek: ${state.loan_income}`);
+    }
+
+    lines.push("");
+    lines.push("Kontakt:");
+    if (state.name) lines.push(`Ime in priimek: ${state.name}`);
+    if (state.phone) lines.push(`Telefon: ${state.phone}`);
+    if (state.email) lines.push(`E-pošta: ${state.email}`);
+    if (state.contact_time) lines.push(`Kontaktni čas: ${state.contact_time}`);
+
+    lines.push("");
+    lines.push("Soglasje:");
+    lines.push("Uporabnik je izrecno soglašal, da FinPortal.si posreduje navedene podatke OTP banki izključno za namen priprave informativne ponudbe in kontaktiranja.");
+    if (state.consent_id) lines.push(`CONSENT_ID: ${state.consent_id}`);
+    if (state.consent_time) lines.push(`Čas soglasja: ${state.consent_time}`);
+    if (state.consent_version) lines.push(`Verzija besedila soglasja: ${state.consent_version}`);
+    if (state.source) lines.push(`Vir: ${state.source}`);
+
+    lines.push("");
+    lines.push("Lep pozdrav,");
+    lines.push("FinPortal.si");
+    return lines.join("\n");
+}
+
+function initLeadFormUi() {
+    const form = document.getElementById("lead-form");
+    if (!form) return;
+
+    const productEl = document.getElementById("lead-product");
+    const templateEl = document.getElementById("lead-email-template");
+    const copyBtn = document.getElementById("lead-copy-btn");
+
+    const setTemplate = () => {
+        if (!templateEl) return;
+        const consentChecked = !!document.getElementById("lead-consent")?.checked;
+        const product = productEl ? String(productEl.value ?? "").trim() : "";
+        fpLeadToggleProductSections(product);
+
+        const consentTime = new Date().toISOString().slice(0, 16).replace("T", " ");
+        const state = {
+            product,
+            source: fpLeadReadText("lead-source") || undefined,
+
+            deposit_amount_eur: fpLeadReadNumber("lead-deposit-amount"),
+            deposit_months: fpLeadReadNumber("lead-deposit-months"),
+            deposit_notes: fpLeadReadText("lead-deposit-notes") || undefined,
+
+            loan_amount_eur: fpLeadReadNumber("lead-loan-amount"),
+            loan_years: fpLeadReadNumber("lead-loan-years"),
+            loan_type: fpLeadReadText("lead-loan-type") || undefined,
+            loan_rate_type: fpLeadReadText("lead-loan-rate-type") || undefined,
+            loan_income: fpLeadReadText("lead-loan-income") || undefined,
+
+            name: fpLeadReadText("lead-name") || undefined,
+            phone: fpLeadReadText("lead-phone") || undefined,
+            email: fpLeadReadText("lead-email") || undefined,
+            contact_time: fpLeadReadText("lead-contact-time") || undefined,
+
+            consent_id: consentChecked ? "CONSENT-BETA" : undefined,
+            consent_time: consentChecked ? consentTime : undefined,
+            consent_version: "v1",
+        };
+
+        templateEl.value = fpLeadComposeOtpTemplate(state);
+    };
+
+    const bind = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener("change", setTemplate);
+        el.addEventListener("input", setTemplate);
+    };
+
+    [
+        "lead-product",
+        "lead-deposit-amount",
+        "lead-deposit-months",
+        "lead-deposit-notes",
+        "lead-loan-amount",
+        "lead-loan-years",
+        "lead-loan-type",
+        "lead-loan-rate-type",
+        "lead-loan-income",
+        "lead-name",
+        "lead-phone",
+        "lead-email",
+        "lead-contact-time",
+        "lead-consent",
+    ].forEach(bind);
+
+    if (copyBtn) {
+        copyBtn.addEventListener("click", async () => {
+            const text = String(templateEl ? templateEl.value : "");
+            if (!text) return;
+            try {
+                await navigator.clipboard.writeText(text);
+                copyBtn.textContent = "Kopirano";
+                setTimeout(() => {
+                    copyBtn.textContent = "Kopiraj osnutek";
+                }, 1200);
+            } catch (e) {
+                if (templateEl) {
+                    templateEl.focus();
+                    templateEl.select();
+                }
+                document.execCommand("copy");
+            }
+        });
+    }
+
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+    });
+
+    setTemplate();
+}
+
+function initLeadFormPrefill() {
+    const form = document.getElementById("lead-form");
+    if (!form) return;
+
+    const payload = fpLeadSafeLocalStorageGet("finportal_last_lead_prefill");
+    if (!payload) return;
+
+    if (payload.source) fpLeadWriteText("lead-source", String(payload.source));
+
+    const productEl = document.getElementById("lead-product");
+
+    if (payload.loan && (payload.loan.amount_eur || payload.loan.years)) {
+        if (productEl && !productEl.value) productEl.value = "loan";
+        if (Number.isFinite(payload.loan.amount_eur)) fpLeadWriteText("lead-loan-amount", fpLeadFormatThousandsSiNumber(payload.loan.amount_eur));
+        if (Number.isFinite(payload.loan.years)) fpLeadWriteText("lead-loan-years", String(Math.round(payload.loan.years)));
+        if (payload.loan.purpose) fpLeadWriteText("lead-loan-type", String(payload.loan.purpose));
+        if (payload.loan.rate_type === "fixed") fpLeadWriteText("lead-loan-rate-type", "fixed");
+        if (payload.loan.rate_type === "euribor") fpLeadWriteText("lead-loan-rate-type", "variable");
+    }
+
+    if (payload.deposit && (payload.deposit.amount_eur || payload.deposit.months)) {
+        if (productEl && !productEl.value) productEl.value = "deposit";
+        if (Number.isFinite(payload.deposit.amount_eur)) fpLeadWriteText("lead-deposit-amount", fpLeadFormatThousandsSiNumber(payload.deposit.amount_eur));
+        if (Number.isFinite(payload.deposit.months)) fpLeadWriteText("lead-deposit-months", String(Math.round(payload.deposit.months)));
+    }
+
+    fpLeadToggleProductSections(productEl ? String(productEl.value ?? "").trim() : "");
+}
+
 function initBetaLeadTracking() {
     const root = document.getElementById("beta-lead-root");
     if (root && !window.__fpBetaLeadViewFired) {
@@ -3316,6 +3592,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     safeInit("initScrollDepthTracking", initScrollDepthTracking);
     safeInit("initSessionDurationTracking", initSessionDurationTracking);
+    safeInit("initLeadPrefillCapture", initLeadPrefillCapture);
+    safeInit("initLeadFormPrefill", initLeadFormPrefill);
+    safeInit("initLeadFormUi", initLeadFormUi);
     safeInit("initBetaLeadTracking", initBetaLeadTracking);
 
     // Initialize tabs

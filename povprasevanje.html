@@ -103,29 +103,176 @@
                 <h1 class="text-3xl font-bold text-center mb-4">Povpraševanje (beta)</h1>
 
                 <p class="text-gray-600 max-w-2xl mx-auto mb-8 text-center">
-                    Funkcionalnost oddaje povpraševanj je trenutno še v pripravi.
-                    V tej fazi še ne zbiramo povpraševanj in podatkov ne posredujemo bankam.
+                    Obrazec je v beta fazi. Samodejno pošiljanje povpraševanj banki trenutno še ni aktivno.
+                    Vseeno lahko pripraviš osnutek povpraševanja (predizpolnjen iz kalkulatorja) in ga uporabiš za
+                    pilot.
                 </p>
 
                 <div class="max-w-2xl mx-auto">
                     <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
-                        <div class="font-semibold text-base mb-2">Kaj lahko narediš zdaj?</div>
-                        <div>Uporabi kalkulatorje in primerjave ter preveri informativne izračune. Funkcionalnost
-                            povpraševanja bomo dodali v prihodnjih mesecih.</div>
+                        <div class="font-semibold text-base mb-2">Pilot</div>
+                        <div>
+                            Trenutno je predvideno posredovanje povpraševanj izključno za <strong>OTP banko</strong>.
+                            Ko bo funkcionalnost aktivna, bo uporabnik pred oddajo vedno jasno obveščen, komu se podatki
+                            posredujejo.
+                        </div>
                     </div>
 
-                    <div class="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
-                        <a href="primerjava-depozitov.html"
-                            class="lead-beta-btn pridobi-btn px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center"
-                            data-lead-source="beta_cta_compare_deposits">
-                            Primerjaj depozite
-                        </a>
-                        <a href="kreditni-kalkulator.html"
-                            class="lead-beta-btn pridobi-btn px-6 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition text-center"
-                            data-lead-source="beta_cta_loan_calc">
-                            Kreditni kalkulator
-                        </a>
-                    </div>
+                    <form id="lead-form" class="mt-6 space-y-6" autocomplete="on">
+                        <input type="hidden" id="lead-source" value="" />
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Produkt <span
+                                        class="text-red-600">*</span></label>
+                                <select id="lead-product" class="input w-full" required>
+                                    <option value="">— Izberi —</option>
+                                    <option value="deposit">Depozit / vezava</option>
+                                    <option value="loan">Kredit</option>
+                                </select>
+                            </div>
+
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Partner</label>
+                                <select id="lead-partner" class="input w-full" disabled>
+                                    <option value="otp" selected>OTP banka (pilot)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="lead-section-deposit" class="hidden space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Znesek depozita (€)
+                                        <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lead-deposit-amount" class="input w-full format-number"
+                                        inputmode="numeric" placeholder="npr. 10.000" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Doba vezave (meseci)
+                                        <span class="text-red-600">*</span></label>
+                                    <input type="number" id="lead-deposit-months" class="input w-full" min="1" max="360"
+                                        step="1" placeholder="npr. 12" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Opombe / želje
+                                    (neobvezno)</label>
+                                <input type="text" id="lead-deposit-notes" class="input w-full"
+                                    placeholder="npr. možnost predčasne prekinitve" />
+                            </div>
+                        </div>
+
+                        <div id="lead-section-loan" class="hidden space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Znesek kredita (€)
+                                        <span class="text-red-600">*</span></label>
+                                    <input type="text" id="lead-loan-amount" class="input w-full format-number"
+                                        inputmode="numeric" placeholder="npr. 50.000" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Doba (leta)
+                                        <span class="text-red-600">*</span></label>
+                                    <input type="number" id="lead-loan-years" class="input w-full" min="1" max="40"
+                                        step="1" placeholder="npr. 10" />
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Vrsta kredita
+                                        (neobvezno)</label>
+                                    <select id="lead-loan-type" class="input w-full">
+                                        <option value="">—</option>
+                                        <option value="stanovanjski">Stanovanjski</option>
+                                        <option value="gotovinski">Gotovinski</option>
+                                        <option value="avto">Avto</option>
+                                        <option value="prenova">Prenova / energetska sanacija</option>
+                                        <option value="konsolidacija">Konsolidacija</option>
+                                        <option value="drugo">Drugo</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Obrestna mera
+                                        (neobvezno)</label>
+                                    <select id="lead-loan-rate-type" class="input w-full">
+                                        <option value="">—</option>
+                                        <option value="fixed">Fiksna</option>
+                                        <option value="variable">Spremenljiva</option>
+                                        <option value="either">Vseeno</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Okvirni neto dohodek
+                                    (neobvezno)</label>
+                                <input type="text" id="lead-loan-income" class="input w-full"
+                                    placeholder="npr. 1.500–2.000" />
+                            </div>
+                        </div>
+
+                        <div class="pt-2 border-t border-gray-200"></div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Ime in priimek <span
+                                        class="text-red-600">*</span></label>
+                                <input type="text" id="lead-name" class="input w-full" autocomplete="name" required />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon <span
+                                        class="text-red-600">*</span></label>
+                                <input type="tel" id="lead-phone" class="input w-full" autocomplete="tel" required />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">E-pošta <span
+                                        class="text-red-600">*</span></label>
+                                <input type="email" id="lead-email" class="input w-full" autocomplete="email"
+                                    required />
+                            </div>
+                            <div class="md:col-span-2">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Kontaktni čas
+                                    (neobvezno)</label>
+                                <select id="lead-contact-time" class="input w-full">
+                                    <option value="">—</option>
+                                    <option value="dopoldne">Dopoldne</option>
+                                    <option value="popoldne">Popoldne</option>
+                                    <option value="kadarkoli">Kadarkoli</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="flex gap-3 items-start text-sm text-gray-700">
+                                <input type="checkbox" id="lead-consent" class="mt-1" required>
+                                <span>
+                                    Strinjam se, da FinPortal.si posreduje moje podatke <strong>OTP banki</strong>
+                                    izključno
+                                    za namen priprave informativne ponudbe in kontaktiranja.
+                                </span>
+                            </label>
+                            <div class="text-xs text-gray-500 leading-snug">
+                                Opomba: v beta fazi se povpraševanja še ne pošiljajo samodejno. Spodaj se pripravi
+                                osnutek
+                                sporočila, ki ga lahko uporabiš v pilotu.
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-900 mb-2">Osnutek sporočila
+                                (OTP)</label>
+                            <textarea id="lead-email-template" class="input w-full" rows="10" readonly></textarea>
+                            <div class="mt-3 flex flex-col sm:flex-row gap-3">
+                                <button id="lead-copy-btn" type="button"
+                                    class="px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center hover:bg-[#095a32] transition">Kopiraj
+                                    osnutek</button>
+                                <button id="lead-submit-btn" type="submit" disabled aria-disabled="true"
+                                    class="px-6 py-3 border border-gray-300 rounded-xl font-semibold text-center opacity-60 cursor-not-allowed">Oddaj
+                                    povpraševanje (kmalu)</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
