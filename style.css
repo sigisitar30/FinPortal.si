@@ -55,6 +55,22 @@ a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
     outline: none !important;
 }
 
+.fp-share-icon-btn {
+    width: 44px;
+    height: 44px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+}
+
+.fp-share-icon {
+    width: 18px;
+    height: 18px;
+    display: block;
+}
+
 .fp-details-summary {
     display: flex;
     align-items: center;

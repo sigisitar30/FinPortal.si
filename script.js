@@ -898,6 +898,24 @@ function initShareUi() {
     const shareCopy = document.getElementById("fp-share-copy");
     const shareImg = document.getElementById("fp-share-img");
 
+    const setIconButton = (btn, { label, svg }) => {
+        if (!btn) return;
+        btn.classList.add("fp-share-icon-btn");
+        btn.setAttribute("aria-label", label);
+        btn.setAttribute("title", label);
+        btn.innerHTML = svg;
+    };
+
+    setIconButton(shareX, {
+        label: "Deli na X",
+        svg: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.8-6.2L6.6 22H3.5l7.3-8.4L1 2h6.3l4.4 5.7L18.9 2Zm-1.1 18h1.7L7.2 3.9H5.4L17.8 20Z"/></svg>`,
+    });
+
+    setIconButton(shareFb, {
+        label: "Deli na Facebook",
+        svg: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12H17l-.5 2.9h-2.5v7A10 10 0 0 0 22 12Z"/></svg>`,
+    });
+
     const getShareText = () => {
         const metric = getPrimaryMetricText(cfg);
         if (metric) return `Moj izračun na FinPortal.si: ${cfg.primaryMetricLabel || "Rezultat"} ${metric}`;
