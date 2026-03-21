@@ -96,9 +96,13 @@ Opomba: `robots.txt` je obravnavan ločeno v `robots-review.md`.
 ### UniCredit Banka Slovenija (www.unicreditbank.si)
 - Poskus dostopa do pravnega obvestila:
   - URL: https://www.unicreditbank.si/si/o-nas/pripomocki/pravno-obvestilo.html
+
+- Ročno potrjeno (iz vsebine pravnega obvestila):
+  - “Vsebina, struktura in oblika spletnega mesta banke so zaščiteni v skladu s slovensko in mednarodno zakonodajo o intelektualni lastnini. Kopiranje podatkov ter uporaba besedil, slik in grafov v celoti ali njihovih delov je dovoljena samo s predhodno odobritvijo banke.”
+
 - Omejitev:
-  - Tehnična omejitev: dostop iz orodja je vračal `403 Forbidden`, zato vsebine ni bilo možno prebrati.
-- Status: NEPOTRJENO (tehnična omejitev dostopa).
+  - Tehnična omejitev: dostop iz orodja je vračal `403 Forbidden`, zato vsebine ni bilo možno avtomatsko prebrati.
+- Status: OK (ročno potrjeno; jasno določilo o kopiranju/uporabi vsebin le s predhodno odobritvijo).
 
 ## Priporočila (pragmatično)
 
