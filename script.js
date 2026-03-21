@@ -1464,6 +1464,45 @@ function fpLeadComposeOtpTemplate(state) {
     return lines.join("\n");
 }
 
+function fpLeadValidateContact() {
+    const phoneRaw = fpLeadReadText("lead-phone");
+    const emailRaw = fpLeadReadText("lead-email");
+
+    const phoneDigits = phoneRaw.replace(/\D+/g, "");
+    const hasPhone = phoneDigits.length > 0;
+    const hasEmail = emailRaw.length > 0;
+
+    const errors = [];
+
+    if (!hasPhone && !hasEmail) {
+        errors.push("Vnesi vsaj telefon ali e-pošto.");
+    }
+
+    if (hasPhone && phoneDigits.length < 8) {
+        errors.push("Telefonska številka je prekratka (vnesi vsaj 8 številk). ");
+    }
+
+    if (hasEmail) {
+        const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(emailRaw);
+        if (!emailOk) {
+            errors.push("E-pošta ni v pravilnem formatu (npr. ime@domena.si). ");
+        }
+    }
+
+    const errorEl = document.getElementById("lead-contact-error");
+    if (errorEl) {
+        if (errors.length) {
+            errorEl.textContent = errors.join(" ").trim();
+            errorEl.classList.remove("hidden");
+        } else {
+            errorEl.textContent = "";
+            errorEl.classList.add("hidden");
+        }
+    }
+
+    return { ok: errors.length === 0, errors };
+}
+
 function initLeadFormUi() {
     const form = document.getElementById("lead-form");
     if (!form) return;
@@ -1477,6 +1516,13 @@ function initLeadFormUi() {
         const consentChecked = !!document.getElementById("lead-consent")?.checked;
         const product = productEl ? String(productEl.value ?? "").trim() : "";
         fpLeadToggleProductSections(product);
+
+        const contactValidation = fpLeadValidateContact();
+        if (copyBtn) {
+            copyBtn.disabled = !contactValidation.ok;
+            copyBtn.classList.toggle("opacity-60", !contactValidation.ok);
+            copyBtn.classList.toggle("cursor-not-allowed", !contactValidation.ok);
+        }
 
         const consentTime = new Date().toISOString().slice(0, 16).replace("T", " ");
         const state = {

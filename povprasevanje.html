@@ -104,16 +104,20 @@
 
                 <p class="text-gray-600 max-w-2xl mx-auto mb-8 text-center">
                     Obrazec je v beta fazi. Samodejno pošiljanje povpraševanj banki trenutno še ni aktivno.
-                    Vseeno lahko pripraviš osnutek povpraševanja (predizpolnjen iz kalkulatorja) in ga uporabiš za
-                    pilot.
+                    Trudimo se, da bo funkcionalnost kmalu na voljo.
+                </p>
+
+                <p class="text-xs text-gray-500 max-w-2xl mx-auto -mt-5 mb-8 text-center">
+                    Če prideš na obrazec iz kalkulatorja, se zadnji vneseni parametri (npr. znesek in doba) samodejno
+                    predizpolnijo spodaj. Pred pripravo osnutka jih lahko poljubno spremeniš.
                 </p>
 
                 <div class="max-w-2xl mx-auto">
                     <div class="p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
                         <div class="font-semibold text-base mb-2">Pilot</div>
                         <div>
-                            Trenutno je predvideno posredovanje povpraševanj izključno za <strong>OTP banko</strong>.
-                            Ko bo funkcionalnost aktivna, bo uporabnik pred oddajo vedno jasno obveščen, komu se podatki
+                            Trenutno je predvideno posredovanje povpraševanj še izključno.
+                            Ko bo funkcionalnost aktivna, bo uporabnik pred oddajo jasno obveščen, komu se podatki
                             posredujejo.
                         </div>
                     </div>
@@ -221,15 +225,17 @@
                                 <input type="text" id="lead-name" class="input w-full" autocomplete="name" required />
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon <span
-                                        class="text-red-600">*</span></label>
-                                <input type="tel" id="lead-phone" class="input w-full" autocomplete="tel" required />
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon</label>
+                                <input type="tel" id="lead-phone" class="input w-full" autocomplete="tel"
+                                    placeholder="npr. +38640123456" />
                             </div>
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">E-pošta <span
-                                        class="text-red-600">*</span></label>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">E-pošta</label>
                                 <input type="email" id="lead-email" class="input w-full" autocomplete="email"
-                                    required />
+                                    placeholder="npr. ime.priimek@email.si" />
+                            </div>
+                            <div id="lead-contact-error"
+                                class="md:col-span-2 hidden p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-800">
                             </div>
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kontaktni čas
@@ -248,8 +254,7 @@
                                 <input type="checkbox" id="lead-consent" class="mt-1" required>
                                 <span>
                                     Strinjam se, da FinPortal.si posreduje moje podatke <strong>OTP banki</strong>
-                                    izključno
-                                    za namen priprave informativne ponudbe in kontaktiranja.
+                                    izključno za namen priprave informativne ponudbe in kontaktiranja.
                                 </span>
                             </label>
                             <div class="text-xs text-gray-500 leading-snug">
