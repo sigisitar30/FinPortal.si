@@ -2145,6 +2145,25 @@ function highlightKalkulatorjiNav() {
     kalkLink.classList.add("text-[#0B6B3A]");
 }
 
+function initArticleInlineLinks() {
+    const article = document.querySelector("main article");
+    if (!article) return;
+
+    const links = Array.from(article.querySelectorAll("p a[href], li a[href]"));
+    if (!links.length) return;
+
+    for (const a of links) {
+        const cls = a.getAttribute("class") || "";
+        if (cls.includes("text-blue-")) continue;
+        if (cls.includes("text-[#0B6B3A]")) continue;
+        if (cls.includes("bg-")) continue;
+        if (cls.includes("rounded")) continue;
+        if (cls.includes("px-")) continue;
+        a.classList.add("text-blue-600");
+        a.classList.add("hover:underline");
+    }
+}
+
 /* ============================
    TAB SWITCHING
 ============================ */
@@ -3705,6 +3724,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
+    safeInit("initArticleInlineLinks", initArticleInlineLinks);
 
     safeInit("addLexiconNavLink", () => {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
