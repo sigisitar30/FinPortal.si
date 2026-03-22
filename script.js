@@ -3662,6 +3662,26 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initCookieBanner", initCookieBanner);
     safeInit("initMobileMenu", initMobileMenu);
 
+    safeInit("addLexiconNavLink", () => {
+        const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
+        if (!nav) return;
+
+        const existing = nav.querySelector('a[href="financni-leksikon.html"], a[href="./financni-leksikon.html"]');
+        if (existing) return;
+
+        const link = document.createElement("a");
+        link.href = "financni-leksikon.html";
+        link.textContent = "Leksikon";
+        link.className = "hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded";
+
+        const cta = nav.querySelector('a[href="primerjava-depozitov.html"]');
+        if (cta) {
+            nav.insertBefore(link, cta);
+        } else {
+            nav.appendChild(link);
+        }
+    });
+
     safeInit("initScrollDepthTracking", initScrollDepthTracking);
     safeInit("initSessionDurationTracking", initSessionDurationTracking);
     safeInit("initLeadPrefillCapture", initLeadPrefillCapture);

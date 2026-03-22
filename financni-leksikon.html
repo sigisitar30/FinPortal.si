@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="sl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="FinPortal.si - Finančni leksikon. Pojasnila pomembnih finančnih izrazov.">
+    <title>Finančni leksikon | FinPortal.si</title>
+
+    <link rel="canonical" href="https://finportal-si.pages.dev/financni-leksikon.html">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="FinPortal.si">
+    <meta property="og:title" content="Finančni leksikon | FinPortal.si">
+    <meta property="og:description" content="FinPortal.si - Finančni leksikon. Pojasnila pomembnih finančnih izrazov.">
+    <meta property="og:url" content="https://finportal-si.pages.dev/financni-leksikon.html">
+    <meta property="og:image" content="https://finportal-si.pages.dev/images/scitmali.png">
+    <meta property="og:image:alt" content="FinPortal.si">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Finančni leksikon | FinPortal.si">
+    <meta name="twitter:description" content="FinPortal.si - Finančni leksikon. Pojasnila pomembnih finančnih izrazov.">
+    <meta name="twitter:image" content="https://finportal-si.pages.dev/images/scitmali.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body class="bg-white text-[#111111] font-inter">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="flex items-center gap-3">
+                    <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                        loading="eager" />
+                    <span class="text-xl font-bold">FinPortal.si</span>
+                </a>
+            </div>
+
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium" role="navigation"
+                aria-label="Glavna navigacija">
+                <a href="index.html#home"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Domov</a>
+
+                <details class="relative">
+                    <summary
+                        class="list-none cursor-pointer hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded px-1 py-1">
+                        <a href="kalkulatorji/" class="inline-block" onclick="event.stopPropagation()">Kalkulatorji</a>
+                        <span class="ml-1 select-none" aria-hidden="true">▾</span>
+                    </summary>
+
+                    <div
+                        class="absolute left-0 mt-2 w-56 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
+                        <a href="kreditna-sposobnost.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditna
+                            sposobnost</a>
+                        <a href="kreditni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Kreditni
+                            kalkulator</a>
+                        <a href="eom-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">EOM
+                            kalkulator</a>
+                        <a href="depozitni-kalkulator.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Depozitni
+                            kalkulator</a>
+                        <a href="izgubljene-obresti.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Izgubljene
+                            obresti</a>
+                        <a href="menjalniski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Menjalniški
+                            kalkulator</a>
+                        <a href="primerjava-depozitov.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Primerjava
+                            depozitov</a>
+                        <a href="investicijski-kalkulator.html"
+                            class="block px-4 py-2 text-sm hover:bg-gray-50">Investicijski kalkulator</a>
+                        <a href="leasing-vs-kredit.html" class="block px-4 py-2 text-sm hover:bg-gray-50">Leasing vs
+                            kredit</a>
+                    </div>
+                </details>
+
+                <a href="clanki/"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Članki</a>
+
+                <a href="index.html#onas"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">O
+                    nas</a>
+                <a href="index.html#kontakt"
+                    class="hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded">Kontakt</a>
+
+                <a href="primerjava-depozitov.html"
+                    class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white hover:bg-[#095a32] focus:bg-[#095a32] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 transition">
+                    Začni primerjavo
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="py-12 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="sm:flex sm:gap-10">
+
+                <aside class="hidden sm:block sm:w-64">
+                    <div class="sticky top-28">
+                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
+                            <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
+                                loading="lazy">
+                            <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="flex-1">
+                    <div class="text-center">
+                        <h1 class="text-3xl font-bold mb-4">Finančni leksikon</h1>
+                        <p class="text-gray-600 max-w-3xl mx-auto mb-8">
+                            Pojasnila najpogostejših finančnih izrazov, ki se pojavljajo v kalkulatorjih in člankih.
+                            Izrazi so informativni in poenostavljeni.
+                        </p>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-2xl p-5 md:p-6 shadow-sm">
+                        <div class="sticky top-[92px] bg-white/95 backdrop-blur border-b border-gray-200 -mx-5 md:-mx-6 px-5 md:px-6 py-4 rounded-t-2xl">
+                            <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
+                                <div class="text-sm font-semibold text-gray-900">Filtriranje po abecedi</div>
+                                <div id="lex-filter" class="flex flex-wrap gap-2">
+                                    <button type="button" data-letter="ALL" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-gray-900 text-white text-sm font-semibold">Vsi</button>
+                                    <button type="button" data-letter="A" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">A</button>
+                                    <button type="button" data-letter="B" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">B</button>
+                                    <button type="button" data-letter="C" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">C</button>
+                                    <button type="button" data-letter="Č" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Č</button>
+                                    <button type="button" data-letter="D" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">D</button>
+                                    <button type="button" data-letter="E" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">E</button>
+                                    <button type="button" data-letter="F" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">F</button>
+                                    <button type="button" data-letter="G" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">G</button>
+                                    <button type="button" data-letter="I" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">I</button>
+                                    <button type="button" data-letter="K" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">K</button>
+                                    <button type="button" data-letter="L" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">L</button>
+                                    <button type="button" data-letter="M" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">M</button>
+                                    <button type="button" data-letter="N" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">N</button>
+                                    <button type="button" data-letter="O" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">O</button>
+                                    <button type="button" data-letter="P" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">P</button>
+                                    <button type="button" data-letter="R" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">R</button>
+                                    <button type="button" data-letter="S" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">S</button>
+                                    <button type="button" data-letter="Š" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Š</button>
+                                    <button type="button" data-letter="T" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">T</button>
+                                    <button type="button" data-letter="V" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">V</button>
+                                    <button type="button" data-letter="Z" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Z</button>
+                                    <button type="button" data-letter="Ž" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Ž</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="lex-empty" class="hidden mt-6 text-sm text-gray-600">Za izbrano črko trenutno ni izrazov.</div>
+
+                        <dl id="lex-terms" class="mt-6 space-y-6">
+                            <div class="lex-term" data-letter="A" id="anuiteta">
+                                <dt class="text-lg font-extrabold text-gray-900">Anuiteta</dt>
+                                <dd class="mt-1 text-gray-700">Fiksni mesečni obrok kredita (glavnica + obresti), ki se skozi čas običajno ne spreminja. Na začetku obroka je več obresti, kasneje več glavnice.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="B" id="bruto">
+                                <dt class="text-lg font-extrabold text-gray-900">Bruto</dt>
+                                <dd class="mt-1 text-gray-700">Znesek pred odbitki (npr. davki in prispevki). Pri plači je bruto višji od neto.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="C" id="ciljna-obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Ciljna obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki jo centralna banka uporablja kot signal za denarno politiko. Posredno vpliva na obrestne mere za kredite in depozite.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Č" id="cista-sedanja-vrednost">
+                                <dt class="text-lg font-extrabold text-gray-900">Čista sedanja vrednost (NPV)</dt>
+                                <dd class="mt-1 text-gray-700">Metoda vrednotenja naložbe, kjer prihodnje denarne tokove diskontiraš na današnjo vrednost. Pozitivna NPV običajno pomeni, da je naložba smiselna glede na diskontno stopnjo.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="D" id="depozit">
+                                <dt class="text-lg font-extrabold text-gray-900">Depozit</dt>
+                                <dd class="mt-1 text-gray-700">Bančna vezava sredstev za določeno obdobje (ročnost) po dogovorjeni obrestni meri. Običajno je predčasni dvig omejen ali manj ugoden.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="D" id="diskontna-stopnja">
+                                <dt class="text-lg font-extrabold text-gray-900">Diskontna stopnja</dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, s katero preračunaš prihodnje zneske v današnjo vrednost. Višja diskontna stopnja pomeni nižjo sedanjo vrednost prihodnjih prejemkov.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="E" id="eom">
+                                <dt class="text-lg font-extrabold text-gray-900">EOM (efektivna obrestna mera)</dt>
+                                <dd class="mt-1 text-gray-700">Skupni strošek kredita na letni ravni (obresti + stroški), izražen v %. Omogoča primerjavo ponudb, ker vključuje več kot le nominalno obrestno mero.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="E" id="etf">
+                                <dt class="text-lg font-extrabold text-gray-900">ETF</dt>
+                                <dd class="mt-1 text-gray-700">Sklad, s katerim se trguje na borzi in pogosto sledi indeksu (npr. delniški indeks). Omogoča razpršitev, stroški pa se pogosto merijo z TER.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="E" id="euribor">
+                                <dt class="text-lg font-extrabold text-gray-900">EURIBOR</dt>
+                                <dd class="mt-1 text-gray-700">Referenčna obrestna mera na evrskem medbančnem trgu. Pri variabilnih kreditih se skupna obrestna mera pogosto računa kot EURIBOR + pribitek banke.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="F" id="fiksna-obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Fiksna obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki ostane enaka skozi dogovorjeno obdobje. Obrok je bolj predvidljiv, a je lahko začetno višji kot pri variabilni obrestni meri.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="G" id="glavnica">
+                                <dt class="text-lg font-extrabold text-gray-900">Glavnica</dt>
+                                <dd class="mt-1 text-gray-700">Osnovni znesek dolga ali naložbe, brez obresti. Pri kreditu je glavnica znesek, ki ga dejansko prejmeš.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="I" id="inflacija">
+                                <dt class="text-lg font-extrabold text-gray-900">Inflacija</dt>
+                                <dd class="mt-1 text-gray-700">Splošna rast cen skozi čas. Višja inflacija pomeni, da ima denar v prihodnosti praviloma manjšo kupno moč.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="I" id="investicija">
+                                <dt class="text-lg font-extrabold text-gray-900">Investicija</dt>
+                                <dd class="mt-1 text-gray-700">Naložba sredstev z namenom ustvarjanja donosa ali povečanja vrednosti. Donos ni zagotovljen in je odvisen od vrste naložbe.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="K" id="kapitalizacija">
+                                <dt class="text-lg font-extrabold text-gray-900">Kapitalizacija (obrestno-obrestni račun)</dt>
+                                <dd class="mt-1 text-gray-700">Obračun, pri katerem se obresti prištejejo glavnici in se nato obrestujejo tudi obresti. Pogost pri varčevanju in dolgoročnih naložbah.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="K" id="kreditna-sposobnost">
+                                <dt class="text-lg font-extrabold text-gray-900">Kreditna sposobnost</dt>
+                                <dd class="mt-1 text-gray-700">Ocena, koliko kredita si lahko privoščiš glede na prihodke, obveznosti in pravila banke. Vplivajo tudi ročnost, obrestna mera in zavarovanja.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="L" id="ltv">
+                                <dt class="text-lg font-extrabold text-gray-900">LTV (loan-to-value)</dt>
+                                <dd class="mt-1 text-gray-700">Razmerje med višino kredita in vrednostjo zavarovanja (npr. nepremičnine). Višji LTV običajno pomeni večje tveganje in lahko slabše pogoje.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="M" id="marza-pribitek">
+                                <dt class="text-lg font-extrabold text-gray-900">Marža / pribitek</dt>
+                                <dd class="mt-1 text-gray-700">Dodatni del obrestne mere, ki ga določi banka (npr. pri kreditu EURIBOR + pribitek). Skupna obrestna mera je vsota referenčne mere in pribitka.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="N" id="neto">
+                                <dt class="text-lg font-extrabold text-gray-900">Neto</dt>
+                                <dd class="mt-1 text-gray-700">Znesek po odbitkih (npr. davki in prispevki). Pri plači je neto znesek, ki ga prejmeš na račun.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="O" id="obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Cena denarja, izražena v %. Pri kreditu je strošek izposoje, pri depozitu pa zaslužek za vezavo sredstev.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="O" id="obrestno-obrestni-racun">
+                                <dt class="text-lg font-extrabold text-gray-900">Obrestno-obrestni račun</dt>
+                                <dd class="mt-1 text-gray-700">Učinek, ko se obresti prištejejo glavnici in se v naslednjem obdobju obrestujejo tudi obresti.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="P" id="premija">
+                                <dt class="text-lg font-extrabold text-gray-900">Premija</dt>
+                                <dd class="mt-1 text-gray-700">Dodatno plačilo, pogosto pri zavarovanjih (zavarovalna premija) ali kot pribitek na ceno (npr. pri obveznicah, če se trguje nad nominalno vrednostjo).</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="R" id="realna-obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Realna obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera prilagojena za inflacijo. Približno: nominalna obrestna mera minus inflacija.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="R" id="rocnost">
+                                <dt class="text-lg font-extrabold text-gray-900">Rok / ročnost</dt>
+                                <dd class="mt-1 text-gray-700">Obdobje, za katerega skleneš depozit ali kredit. Pri depozitu je to čas vezave, pri kreditu pa čas odplačevanja.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="S" id="spremenljiva-obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Spremenljiva (variabilna) obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki se lahko spreminja (npr. ob spremembi EURIBOR). Obrok je lahko nižji na začetku, a manj predvidljiv.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Š" id="stroski-odobritve">
+                                <dt class="text-lg font-extrabold text-gray-900">Stroški odobritve</dt>
+                                <dd class="mt-1 text-gray-700">Enkratni stroški, ki jih zaračuna banka ali ponudnik ob sklenitvi kredita ali druge storitve. Vplivajo na EOM.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="T" id="ter">
+                                <dt class="text-lg font-extrabold text-gray-900">TER</dt>
+                                <dd class="mt-1 text-gray-700">Letni strošek sklada (Total Expense Ratio), izražen v %. Višji TER pomeni več stroškov, kar lahko dolgoročno zmanjša donos naložbe.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="V" id="valutno-tveganje">
+                                <dt class="text-lg font-extrabold text-gray-900">Valutno tveganje</dt>
+                                <dd class="mt-1 text-gray-700">Tveganje, da se zaradi spremembe menjalnega tečaja spremeni vrednost naložbe ali obveznosti v domači valuti.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Z" id="zavarovanje-kredita">
+                                <dt class="text-lg font-extrabold text-gray-900">Zavarovanje kredita</dt>
+                                <dd class="mt-1 text-gray-700">Način, kako banka zmanjša tveganje neplačila (npr. hipoteka, porok, zavarovalna polica). Vpliva na pogoje in obrestno mero.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Ž" id="zivljenjsko-zavarovanje">
+                                <dt class="text-lg font-extrabold text-gray-900">Življenjsko zavarovanje</dt>
+                                <dd class="mt-1 text-gray-700">Zavarovanje, ki ob določenem dogodku (npr. smrt zavarovane osebe) izplača dogovorjeno vsoto. Včasih se uporablja kot del zavarovanja kredita.</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="py-10 bg-[#0B6B3A] text-white">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-3">
+                <img src="images/scit8.png" alt="FinPortal.si" class="w-[72px] h-[72px] rounded-xl object-contain"
+                    loading="lazy" />
+                <span class="font-semibold"> 2026 FinPortal.si</span>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <a href="pravno-obvestilo.html" class="hover:underline">Pravno obvestilo</a>
+                <a href="pogoji-uporabe.html" class="hover:underline">Pogoji uporabe</a>
+                <a href="politika-zasebnosti.html" class="hover:underline">Politika zasebnosti</a>
+                <a href="piskotki.html" class="hover:underline">Piškotki</a>
+                <a href="#" class="hover:underline cookie-settings-open" data-cookie-settings="open">Nastavitve
+                    piškotkov</a>
+                <a href="index.html#kontakt" class="hover:underline">Kontakt</a>
+            </div>
+        </div>
+
+        <div class="mt-6 text-center text-xs text-white/80 max-w-4xl mx-auto px-6">
+            FinPortal.si je informativna platforma. Vsi izračuni so informativni. Pred sklenitvijo kateregakoli produkta
+            preverite aktualne pogoje pri ponudniku.
+            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno škodo ali
+            nepravilne finančne ter druge odločitve.
+        </div>
+    </footer>
+
+    <script type="text/javascript">
+        (function () {
+            const filterRoot = document.getElementById("lex-filter");
+            const termRoot = document.getElementById("lex-terms");
+            const emptyEl = document.getElementById("lex-empty");
+
+            if (!filterRoot || !termRoot || !emptyEl) return;
+
+            const btns = Array.from(filterRoot.querySelectorAll(".lex-btn"));
+            const terms = Array.from(termRoot.querySelectorAll(".lex-term"));
+
+            const setActiveBtn = (letter) => {
+                for (const b of btns) {
+                    const isActive = b.getAttribute("data-letter") === letter;
+                    b.classList.toggle("bg-gray-900", isActive);
+                    b.classList.toggle("text-white", isActive);
+                    b.classList.toggle("bg-white", !isActive);
+                }
+            };
+
+            const applyFilter = (letter) => {
+                const showAll = letter === "ALL";
+                let visible = 0;
+
+                for (const t of terms) {
+                    const ok = showAll || t.getAttribute("data-letter") === letter;
+                    t.classList.toggle("hidden", !ok);
+                    if (ok) visible += 1;
+                }
+
+                emptyEl.classList.toggle("hidden", visible !== 0);
+                setActiveBtn(letter);
+            };
+
+            filterRoot.addEventListener("click", (e) => {
+                const btn = e.target && e.target.closest ? e.target.closest("button[data-letter]") : null;
+                if (!btn) return;
+                const letter = btn.getAttribute("data-letter") || "ALL";
+                applyFilter(letter);
+            });
+
+            const slugify = (s) => {
+                return (s || "")
+                    .toLowerCase()
+                    .trim()
+                    .replace(/č/g, "c")
+                    .replace(/š/g, "s")
+                    .replace(/ž/g, "z")
+                    .replace(/đ/g, "d")
+                    .replace(/ć/g, "c")
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/^-+|-+$/g, "");
+            };
+
+            const applyHash = () => {
+                const id = (location.hash || "").replace("#", "");
+                if (!id) return;
+                const target = document.getElementById(id);
+                if (!target) return;
+
+                const letter = target.getAttribute("data-letter");
+                if (letter) applyFilter(letter);
+
+                setTimeout(() => {
+                    target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }, 0);
+            };
+
+            applyFilter("ALL");
+            applyHash();
+
+            window.addEventListener("hashchange", () => {
+                applyHash();
+            });
+
+            for (const t of terms) {
+                if (!t.id) {
+                    const dt = t.querySelector("dt");
+                    if (dt) t.id = slugify(dt.textContent);
+                }
+            }
+        })();
+    </script>
+</body>
+
+</html>
