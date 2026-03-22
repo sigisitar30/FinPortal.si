@@ -3674,12 +3674,23 @@ document.addEventListener('DOMContentLoaded', function () {
         link.textContent = "Leksikon";
         link.className = "hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded";
 
+        const articles = nav.querySelector('a[href="clanki/"], a[href="./clanki/"], a[href^="clanki/"]');
+        if (articles && articles.parentNode === nav) {
+            if (articles.nextSibling) {
+                nav.insertBefore(link, articles.nextSibling);
+            } else {
+                nav.appendChild(link);
+            }
+            return;
+        }
+
         const cta = nav.querySelector('a[href="primerjava-depozitov.html"]');
         if (cta) {
             nav.insertBefore(link, cta);
-        } else {
-            nav.appendChild(link);
+            return;
         }
+
+        nav.appendChild(link);
     });
 
     safeInit("initScrollDepthTracking", initScrollDepthTracking);
