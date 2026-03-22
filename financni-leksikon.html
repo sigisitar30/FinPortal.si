@@ -120,183 +120,450 @@
                     </div>
 
                     <div class="bg-white border border-gray-200 rounded-2xl p-5 md:p-6 shadow-sm">
-                        <div class="sticky top-[92px] bg-white/95 backdrop-blur border-b border-gray-200 -mx-5 md:-mx-6 px-5 md:px-6 py-4 rounded-t-2xl">
+                        <div
+                            class="sticky top-[92px] bg-white/95 backdrop-blur border-b border-gray-200 -mx-5 md:-mx-6 px-5 md:px-6 py-4 rounded-t-2xl">
                             <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-4">
                                 <div class="text-sm font-semibold text-gray-900">Filtriranje po abecedi</div>
                                 <div id="lex-filter" class="flex flex-wrap gap-2">
-                                    <button type="button" data-letter="ALL" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-gray-900 text-white text-sm font-semibold">Vsi</button>
-                                    <button type="button" data-letter="A" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">A</button>
-                                    <button type="button" data-letter="B" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">B</button>
-                                    <button type="button" data-letter="C" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">C</button>
-                                    <button type="button" data-letter="Č" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Č</button>
-                                    <button type="button" data-letter="D" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">D</button>
-                                    <button type="button" data-letter="E" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">E</button>
-                                    <button type="button" data-letter="F" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">F</button>
-                                    <button type="button" data-letter="G" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">G</button>
-                                    <button type="button" data-letter="I" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">I</button>
-                                    <button type="button" data-letter="K" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">K</button>
-                                    <button type="button" data-letter="L" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">L</button>
-                                    <button type="button" data-letter="M" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">M</button>
-                                    <button type="button" data-letter="N" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">N</button>
-                                    <button type="button" data-letter="O" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">O</button>
-                                    <button type="button" data-letter="P" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">P</button>
-                                    <button type="button" data-letter="R" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">R</button>
-                                    <button type="button" data-letter="S" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">S</button>
-                                    <button type="button" data-letter="Š" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Š</button>
-                                    <button type="button" data-letter="T" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">T</button>
-                                    <button type="button" data-letter="V" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">V</button>
-                                    <button type="button" data-letter="Z" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Z</button>
-                                    <button type="button" data-letter="Ž" class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Ž</button>
+                                    <button type="button" data-letter="ALL"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-gray-900 text-white text-sm font-semibold">Vsi</button>
+                                    <button type="button" data-letter="A"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">A</button>
+                                    <button type="button" data-letter="B"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">B</button>
+                                    <button type="button" data-letter="C"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">C</button>
+                                    <button type="button" data-letter="Č"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Č</button>
+                                    <button type="button" data-letter="D"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">D</button>
+                                    <button type="button" data-letter="E"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">E</button>
+                                    <button type="button" data-letter="F"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">F</button>
+                                    <button type="button" data-letter="G"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">G</button>
+                                    <button type="button" data-letter="H"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">H</button>
+                                    <button type="button" data-letter="I"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">I</button>
+                                    <button type="button" data-letter="J"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">J</button>
+                                    <button type="button" data-letter="K"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">K</button>
+                                    <button type="button" data-letter="L"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">L</button>
+                                    <button type="button" data-letter="M"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">M</button>
+                                    <button type="button" data-letter="N"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">N</button>
+                                    <button type="button" data-letter="O"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">O</button>
+                                    <button type="button" data-letter="P"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">P</button>
+                                    <button type="button" data-letter="R"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">R</button>
+                                    <button type="button" data-letter="S"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">S</button>
+                                    <button type="button" data-letter="Š"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Š</button>
+                                    <button type="button" data-letter="T"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">T</button>
+                                    <button type="button" data-letter="U"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">U</button>
+                                    <button type="button" data-letter="V"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">V</button>
+                                    <button type="button" data-letter="Z"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Z</button>
+                                    <button type="button" data-letter="Ž"
+                                        class="lex-btn px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100 text-sm font-semibold">Ž</button>
                                 </div>
                             </div>
                         </div>
 
-                        <div id="lex-empty" class="hidden mt-6 text-sm text-gray-600">Za izbrano črko trenutno ni izrazov.</div>
+                        <div id="lex-empty" class="hidden mt-6 text-sm text-gray-600">Za izbrano črko trenutno ni
+                            izrazov.</div>
 
                         <dl id="lex-terms" class="mt-6 space-y-6">
                             <div class="lex-term" data-letter="A" id="anuiteta">
                                 <dt class="text-lg font-extrabold text-gray-900">Anuiteta</dt>
-                                <dd class="mt-1 text-gray-700">Fiksni mesečni obrok kredita (glavnica + obresti), ki se skozi čas običajno ne spreminja. Na začetku obroka je več obresti, kasneje več glavnice.</dd>
+                                <dd class="mt-1 text-gray-700">Fiksni mesečni obrok kredita (glavnica + obresti), ki se
+                                    skozi čas običajno ne spreminja. Na začetku obroka je več obresti, kasneje več
+                                    glavnice.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="A" id="akreditiv">
+                                <dt class="text-lg font-extrabold text-gray-900">Akreditiv</dt>
+                                <dd class="mt-1 text-gray-700">Način plačila v mednarodni trgovini, kjer banka jamči
+                                    prodajalcu plačilo, ko so izpolnjeni dogovorjeni pogoji (npr. predloženi dokumenti o
+                                    dobavi).</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="A" id="akontacija">
+                                <dt class="text-lg font-extrabold text-gray-900">Akontacija</dt>
+                                <dd class="mt-1 text-gray-700">Delno predplačilo (npr. pri nakupu vozila ali storitve).
+                                    Pogosto se uporablja kot polog oziroma prvi obrok.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="A" id="amortizacija">
+                                <dt class="text-lg font-extrabold text-gray-900">Amortizacija</dt>
+                                <dd class="mt-1 text-gray-700">Postopno zmanjševanje vrednosti sredstva skozi čas
+                                    (računovodsko) ali postopno odplačevanje kredita (amortizacijski načrt).</dd>
                             </div>
 
                             <div class="lex-term" data-letter="B" id="bruto">
                                 <dt class="text-lg font-extrabold text-gray-900">Bruto</dt>
-                                <dd class="mt-1 text-gray-700">Znesek pred odbitki (npr. davki in prispevki). Pri plači je bruto višji od neto.</dd>
+                                <dd class="mt-1 text-gray-700">Znesek pred odbitki (npr. davki in prispevki). Pri plači
+                                    je bruto višji od neto.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="B" id="bilanca-stanja">
+                                <dt class="text-lg font-extrabold text-gray-900">Bilanca stanja</dt>
+                                <dd class="mt-1 text-gray-700">Poročilo, ki prikazuje premoženje (sredstva), obveznosti
+                                    in kapital podjetja na določen datum. Osnovno orodje za pregled finančnega stanja.
+                                </dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="B" id="boniteta">
+                                <dt class="text-lg font-extrabold text-gray-900">Boniteta</dt>
+                                <dd class="mt-1 text-gray-700">Ocena kreditne zanesljivosti osebe ali podjetja. Višja
+                                    boniteta običajno pomeni lažji dostop do financiranja in boljše pogoje.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="B" id="bankovna-garancija">
+                                <dt class="text-lg font-extrabold text-gray-900">Bančna garancija</dt>
+                                <dd class="mt-1 text-gray-700">Zaveza banke, da bo upravičencu izplačala dogovorjen
+                                    znesek, če naročnik ne izpolni obveznosti (npr. pri javnih razpisih ali pogodbah).
+                                </dd>
                             </div>
 
                             <div class="lex-term" data-letter="C" id="ciljna-obrestna-mera">
                                 <dt class="text-lg font-extrabold text-gray-900">Ciljna obrestna mera</dt>
-                                <dd class="mt-1 text-gray-700">Obrestna mera, ki jo centralna banka uporablja kot signal za denarno politiko. Posredno vpliva na obrestne mere za kredite in depozite.</dd>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki jo centralna banka uporablja kot signal
+                                    za denarno politiko. Posredno vpliva na obrestne mere za kredite in depozite.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="C" id="centralna-banka">
+                                <dt class="text-lg font-extrabold text-gray-900">Centralna banka</dt>
+                                <dd class="mt-1 text-gray-700">Institucija, ki skrbi za stabilnost cen in finančnega
+                                    sistema. V evroobmočju denarno politiko vodi ECB.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="Č" id="cista-sedanja-vrednost">
                                 <dt class="text-lg font-extrabold text-gray-900">Čista sedanja vrednost (NPV)</dt>
-                                <dd class="mt-1 text-gray-700">Metoda vrednotenja naložbe, kjer prihodnje denarne tokove diskontiraš na današnjo vrednost. Pozitivna NPV običajno pomeni, da je naložba smiselna glede na diskontno stopnjo.</dd>
+                                <dd class="mt-1 text-gray-700">Metoda vrednotenja naložbe, kjer prihodnje denarne tokove
+                                    diskontiraš na današnjo vrednost. Pozitivna NPV običajno pomeni, da je naložba
+                                    smiselna glede na diskontno stopnjo.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="D" id="depozit">
                                 <dt class="text-lg font-extrabold text-gray-900">Depozit</dt>
-                                <dd class="mt-1 text-gray-700">Bančna vezava sredstev za določeno obdobje (ročnost) po dogovorjeni obrestni meri. Običajno je predčasni dvig omejen ali manj ugoden.</dd>
+                                <dd class="mt-1 text-gray-700">Bančna vezava sredstev za določeno obdobje (ročnost) po
+                                    dogovorjeni obrestni meri. Običajno je predčasni dvig omejen ali manj ugoden.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="D" id="dividenda">
+                                <dt class="text-lg font-extrabold text-gray-900">Dividenda</dt>
+                                <dd class="mt-1 text-gray-700">Izplačilo dela dobička delničarjem. Lahko je denarna ali
+                                    v delnicah, odvisno od politike podjetja.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="D" id="dolg">
+                                <dt class="text-lg font-extrabold text-gray-900">Dolg</dt>
+                                <dd class="mt-1 text-gray-700">Obveznost do upnika (npr. kredit, posojilo, obveznica).
+                                    Dolg je potrebno vrniti pod dogovorjenimi pogoji.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="D" id="diskontna-stopnja">
                                 <dt class="text-lg font-extrabold text-gray-900">Diskontna stopnja</dt>
-                                <dd class="mt-1 text-gray-700">Obrestna mera, s katero preračunaš prihodnje zneske v današnjo vrednost. Višja diskontna stopnja pomeni nižjo sedanjo vrednost prihodnjih prejemkov.</dd>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, s katero preračunaš prihodnje zneske v
+                                    današnjo vrednost. Višja diskontna stopnja pomeni nižjo sedanjo vrednost prihodnjih
+                                    prejemkov.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="E" id="eom">
                                 <dt class="text-lg font-extrabold text-gray-900">EOM (efektivna obrestna mera)</dt>
-                                <dd class="mt-1 text-gray-700">Skupni strošek kredita na letni ravni (obresti + stroški), izražen v %. Omogoča primerjavo ponudb, ker vključuje več kot le nominalno obrestno mero.</dd>
+                                <dd class="mt-1 text-gray-700">Skupni strošek kredita na letni ravni (obresti +
+                                    stroški), izražen v %. Omogoča primerjavo ponudb, ker vključuje več kot le nominalno
+                                    obrestno mero.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="E" id="ecb">
+                                <dt class="text-lg font-extrabold text-gray-900">ECB</dt>
+                                <dd class="mt-1 text-gray-700">Evropska centralna banka. Določa ključne obrestne mere in
+                                    usmerja denarno politiko v evroobmočju.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="E" id="etf">
                                 <dt class="text-lg font-extrabold text-gray-900">ETF</dt>
-                                <dd class="mt-1 text-gray-700">Sklad, s katerim se trguje na borzi in pogosto sledi indeksu (npr. delniški indeks). Omogoča razpršitev, stroški pa se pogosto merijo z TER.</dd>
+                                <dd class="mt-1 text-gray-700">Sklad, s katerim se trguje na borzi in pogosto sledi
+                                    indeksu (npr. delniški indeks). Omogoča razpršitev, stroški pa se pogosto merijo z
+                                    TER.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="E" id="euribor">
                                 <dt class="text-lg font-extrabold text-gray-900">EURIBOR</dt>
-                                <dd class="mt-1 text-gray-700">Referenčna obrestna mera na evrskem medbančnem trgu. Pri variabilnih kreditih se skupna obrestna mera pogosto računa kot EURIBOR + pribitek banke.</dd>
+                                <dd class="mt-1 text-gray-700">Referenčna obrestna mera na evrskem medbančnem trgu. Pri
+                                    variabilnih kreditih se skupna obrestna mera pogosto računa kot EURIBOR + pribitek
+                                    banke.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="F" id="fiksna-obrestna-mera">
                                 <dt class="text-lg font-extrabold text-gray-900">Fiksna obrestna mera</dt>
-                                <dd class="mt-1 text-gray-700">Obrestna mera, ki ostane enaka skozi dogovorjeno obdobje. Obrok je bolj predvidljiv, a je lahko začetno višji kot pri variabilni obrestni meri.</dd>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki ostane enaka skozi dogovorjeno obdobje.
+                                    Obrok je bolj predvidljiv, a je lahko začetno višji kot pri variabilni obrestni
+                                    meri.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="F" id="financni-vzvod">
+                                <dt class="text-lg font-extrabold text-gray-900">Finančni vzvod (leverage)</dt>
+                                <dd class="mt-1 text-gray-700">Uporaba dolga za povečanje potencialnega donosa. Poveča
+                                    tudi tveganje, ker izgube in stroški financiranja lahko narastejo.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="G" id="glavnica">
                                 <dt class="text-lg font-extrabold text-gray-900">Glavnica</dt>
-                                <dd class="mt-1 text-gray-700">Osnovni znesek dolga ali naložbe, brez obresti. Pri kreditu je glavnica znesek, ki ga dejansko prejmeš.</dd>
+                                <dd class="mt-1 text-gray-700">Osnovni znesek dolga ali naložbe, brez obresti. Pri
+                                    kreditu je glavnica znesek, ki ga dejansko prejmeš.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="H" id="hipoteka">
+                                <dt class="text-lg font-extrabold text-gray-900">Hipoteka</dt>
+                                <dd class="mt-1 text-gray-700">Zavarovanje kredita z nepremičnino. Če dolžnik ne
+                                    plačuje, ima banka pravico do poplačila iz vrednosti nepremičnine po zakonskem
+                                    postopku.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="I" id="inflacija">
                                 <dt class="text-lg font-extrabold text-gray-900">Inflacija</dt>
-                                <dd class="mt-1 text-gray-700">Splošna rast cen skozi čas. Višja inflacija pomeni, da ima denar v prihodnosti praviloma manjšo kupno moč.</dd>
+                                <dd class="mt-1 text-gray-700">Splošna rast cen skozi čas. Višja inflacija pomeni, da
+                                    ima denar v prihodnosti praviloma manjšo kupno moč.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="I" id="iban">
+                                <dt class="text-lg font-extrabold text-gray-900">IBAN</dt>
+                                <dd class="mt-1 text-gray-700">Mednarodna številka bančnega računa. Uporablja se za
+                                    plačila in identifikacijo računa v SEPA območju.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="I" id="indeks">
+                                <dt class="text-lg font-extrabold text-gray-900">Indeks</dt>
+                                <dd class="mt-1 text-gray-700">Košarica izbranih vrednostnih papirjev ali kazalnik (npr.
+                                    delniški indeks). ETF-ji pogosto sledijo indeksu.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="J" id="jamstvo">
+                                <dt class="text-lg font-extrabold text-gray-900">Jamstvo</dt>
+                                <dd class="mt-1 text-gray-700">Zaveza, da bo nekdo poravnal obveznost, če je dolžnik ne
+                                    bo. V praksi je to lahko porok ali pravna zaveza (npr. garancija).</dd>
                             </div>
 
                             <div class="lex-term" data-letter="I" id="investicija">
                                 <dt class="text-lg font-extrabold text-gray-900">Investicija</dt>
-                                <dd class="mt-1 text-gray-700">Naložba sredstev z namenom ustvarjanja donosa ali povečanja vrednosti. Donos ni zagotovljen in je odvisen od vrste naložbe.</dd>
+                                <dd class="mt-1 text-gray-700">Naložba sredstev z namenom ustvarjanja donosa ali
+                                    povečanja vrednosti. Donos ni zagotovljen in je odvisen od vrste naložbe.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="K" id="kapitalizacija">
-                                <dt class="text-lg font-extrabold text-gray-900">Kapitalizacija (obrestno-obrestni račun)</dt>
-                                <dd class="mt-1 text-gray-700">Obračun, pri katerem se obresti prištejejo glavnici in se nato obrestujejo tudi obresti. Pogost pri varčevanju in dolgoročnih naložbah.</dd>
+                                <dt class="text-lg font-extrabold text-gray-900">Kapitalizacija (obrestno-obrestni
+                                    račun)</dt>
+                                <dd class="mt-1 text-gray-700">Obračun, pri katerem se obresti prištejejo glavnici in se
+                                    nato obrestujejo tudi obresti. Pogost pri varčevanju in dolgoročnih naložbah.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="K" id="kreditna-sposobnost">
                                 <dt class="text-lg font-extrabold text-gray-900">Kreditna sposobnost</dt>
-                                <dd class="mt-1 text-gray-700">Ocena, koliko kredita si lahko privoščiš glede na prihodke, obveznosti in pravila banke. Vplivajo tudi ročnost, obrestna mera in zavarovanja.</dd>
+                                <dd class="mt-1 text-gray-700">Ocena, koliko kredita si lahko privoščiš glede na
+                                    prihodke, obveznosti in pravila banke. Vplivajo tudi ročnost, obrestna mera in
+                                    zavarovanja.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="K" id="kreditna-kartica">
+                                <dt class="text-lg font-extrabold text-gray-900">Kreditna kartica</dt>
+                                <dd class="mt-1 text-gray-700">Plačilna kartica z odloženim plačilom. Če zneska ne
+                                    poravnaš v celoti, lahko nastanejo obresti in stroški (odvisno od produkta).</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="K" id="kapitalski-dobicek">
+                                <dt class="text-lg font-extrabold text-gray-900">Kapitalski dobiček</dt>
+                                <dd class="mt-1 text-gray-700">Dobiček zaradi rasti vrednosti naložbe (npr. prodaja
+                                    delnic nad nakupno ceno). Lahko je predmet obdavčitve.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="L" id="ltv">
                                 <dt class="text-lg font-extrabold text-gray-900">LTV (loan-to-value)</dt>
-                                <dd class="mt-1 text-gray-700">Razmerje med višino kredita in vrednostjo zavarovanja (npr. nepremičnine). Višji LTV običajno pomeni večje tveganje in lahko slabše pogoje.</dd>
+                                <dd class="mt-1 text-gray-700">Razmerje med višino kredita in vrednostjo zavarovanja
+                                    (npr. nepremičnine). Višji LTV običajno pomeni večje tveganje in lahko slabše
+                                    pogoje.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="L" id="likvidnost">
+                                <dt class="text-lg font-extrabold text-gray-900">Likvidnost</dt>
+                                <dd class="mt-1 text-gray-700">Kako hitro lahko sredstvo pretvoriš v denar brez večje
+                                    izgube vrednosti. Višja likvidnost običajno pomeni večjo fleksibilnost.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="M" id="marza-pribitek">
                                 <dt class="text-lg font-extrabold text-gray-900">Marža / pribitek</dt>
-                                <dd class="mt-1 text-gray-700">Dodatni del obrestne mere, ki ga določi banka (npr. pri kreditu EURIBOR + pribitek). Skupna obrestna mera je vsota referenčne mere in pribitka.</dd>
+                                <dd class="mt-1 text-gray-700">Dodatni del obrestne mere, ki ga določi banka (npr. pri
+                                    kreditu EURIBOR + pribitek). Skupna obrestna mera je vsota referenčne mere in
+                                    pribitka.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="M" id="menica">
+                                <dt class="text-lg font-extrabold text-gray-900">Menica</dt>
+                                <dd class="mt-1 text-gray-700">Vrednostni papir, s katerim izdajatelj obljubi plačilo
+                                    določenega zneska ob določenem datumu. Uporablja se tudi kot zavarovanje.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="M" id="moratorij">
+                                <dt class="text-lg font-extrabold text-gray-900">Moratorij</dt>
+                                <dd class="mt-1 text-gray-700">Začasna prekinitev ali odlog plačevanja obveznosti (npr.
+                                    odlog obrokov kredita) pod določenimi pogoji.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="N" id="neto">
                                 <dt class="text-lg font-extrabold text-gray-900">Neto</dt>
-                                <dd class="mt-1 text-gray-700">Znesek po odbitkih (npr. davki in prispevki). Pri plači je neto znesek, ki ga prejmeš na račun.</dd>
+                                <dd class="mt-1 text-gray-700">Znesek po odbitkih (npr. davki in prispevki). Pri plači
+                                    je neto znesek, ki ga prejmeš na račun.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="N" id="nominalna-obrestna-mera">
+                                <dt class="text-lg font-extrabold text-gray-900">Nominalna obrestna mera</dt>
+                                <dd class="mt-1 text-gray-700">Osnovna obrestna mera brez vključitve vseh stroškov. Za
+                                    primerjavo kreditov je pogosto bolj uporaben EOM.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="O" id="obrestna-mera">
                                 <dt class="text-lg font-extrabold text-gray-900">Obrestna mera</dt>
-                                <dd class="mt-1 text-gray-700">Cena denarja, izražena v %. Pri kreditu je strošek izposoje, pri depozitu pa zaslužek za vezavo sredstev.</dd>
+                                <dd class="mt-1 text-gray-700">Cena denarja, izražena v %. Pri kreditu je strošek
+                                    izposoje, pri depozitu pa zaslužek za vezavo sredstev.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="O" id="obveznica">
+                                <dt class="text-lg font-extrabold text-gray-900">Obveznica</dt>
+                                <dd class="mt-1 text-gray-700">Dolžniški vrednostni papir. Kupec obveznice posodi denar
+                                    izdajatelju (država/podjetje) in prejema obresti ter vračilo glavnice ob dospetju.
+                                </dd>
                             </div>
 
                             <div class="lex-term" data-letter="O" id="obrestno-obrestni-racun">
                                 <dt class="text-lg font-extrabold text-gray-900">Obrestno-obrestni račun</dt>
-                                <dd class="mt-1 text-gray-700">Učinek, ko se obresti prištejejo glavnici in se v naslednjem obdobju obrestujejo tudi obresti.</dd>
+                                <dd class="mt-1 text-gray-700">Učinek, ko se obresti prištejejo glavnici in se v
+                                    naslednjem obdobju obrestujejo tudi obresti.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="P" id="premija">
                                 <dt class="text-lg font-extrabold text-gray-900">Premija</dt>
-                                <dd class="mt-1 text-gray-700">Dodatno plačilo, pogosto pri zavarovanjih (zavarovalna premija) ali kot pribitek na ceno (npr. pri obveznicah, če se trguje nad nominalno vrednostjo).</dd>
+                                <dd class="mt-1 text-gray-700">Dodatno plačilo, pogosto pri zavarovanjih (zavarovalna
+                                    premija) ali kot pribitek na ceno (npr. pri obveznicah, če se trguje nad nominalno
+                                    vrednostjo).</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="P" id="polog">
+                                <dt class="text-lg font-extrabold text-gray-900">Polog</dt>
+                                <dd class="mt-1 text-gray-700">Začetni lastni vložek (npr. pri kreditu ali leasingu).
+                                    Višji polog običajno zniža znesek financiranja in strošek obresti.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="P" id="porok">
+                                <dt class="text-lg font-extrabold text-gray-900">Porok</dt>
+                                <dd class="mt-1 text-gray-700">Oseba, ki jamči za obveznosti dolžnika. Če dolžnik ne
+                                    plačuje, lahko banka zahteva plačilo od poroka (v skladu s pogodbo in zakonodajo).
+                                </dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="P" id="portfelj">
+                                <dt class="text-lg font-extrabold text-gray-900">Portfelj</dt>
+                                <dd class="mt-1 text-gray-700">Skupek naložb (npr. delnice, obveznice, ETF). Cilj
+                                    portfelja je razpršitev in upravljanje tveganja glede na cilje vlagatelja.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="R" id="realna-obrestna-mera">
                                 <dt class="text-lg font-extrabold text-gray-900">Realna obrestna mera</dt>
-                                <dd class="mt-1 text-gray-700">Obrestna mera prilagojena za inflacijo. Približno: nominalna obrestna mera minus inflacija.</dd>
+                                <dd class="mt-1 text-gray-700">Obrestna mera prilagojena za inflacijo. Približno:
+                                    nominalna obrestna mera minus inflacija.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="R" id="rocnost">
                                 <dt class="text-lg font-extrabold text-gray-900">Rok / ročnost</dt>
-                                <dd class="mt-1 text-gray-700">Obdobje, za katerega skleneš depozit ali kredit. Pri depozitu je to čas vezave, pri kreditu pa čas odplačevanja.</dd>
+                                <dd class="mt-1 text-gray-700">Obdobje, za katerega skleneš depozit ali kredit. Pri
+                                    depozitu je to čas vezave, pri kreditu pa čas odplačevanja.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="S" id="swift">
+                                <dt class="text-lg font-extrabold text-gray-900">SWIFT / BIC</dt>
+                                <dd class="mt-1 text-gray-700">Koda banke za mednarodna plačila. Uporablja se skupaj z
+                                    IBAN, predvsem pri plačilih izven SEPA ali za identifikacijo banke.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="S" id="spread">
+                                <dt class="text-lg font-extrabold text-gray-900">Spread</dt>
+                                <dd class="mt-1 text-gray-700">Razlika med dvema obrestnima merama ali cenama (npr.
+                                    nakupno in prodajno). Pri kreditih lahko opisuje tudi pribitek nad referenčno mero.
+                                </dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Š" id="stroski-vodenja">
+                                <dt class="text-lg font-extrabold text-gray-900">Stroški vodenja</dt>
+                                <dd class="mt-1 text-gray-700">Redni stroški za vodenje računa, kredita ali naložbenega
+                                    produkta. Pri primerjavah je pomembno upoštevati tudi te stroške.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="S" id="spremenljiva-obrestna-mera">
-                                <dt class="text-lg font-extrabold text-gray-900">Spremenljiva (variabilna) obrestna mera</dt>
-                                <dd class="mt-1 text-gray-700">Obrestna mera, ki se lahko spreminja (npr. ob spremembi EURIBOR). Obrok je lahko nižji na začetku, a manj predvidljiv.</dd>
+                                <dt class="text-lg font-extrabold text-gray-900">Spremenljiva (variabilna) obrestna mera
+                                </dt>
+                                <dd class="mt-1 text-gray-700">Obrestna mera, ki se lahko spreminja (npr. ob spremembi
+                                    EURIBOR). Obrok je lahko nižji na začetku, a manj predvidljiv.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="Š" id="stroski-odobritve">
                                 <dt class="text-lg font-extrabold text-gray-900">Stroški odobritve</dt>
-                                <dd class="mt-1 text-gray-700">Enkratni stroški, ki jih zaračuna banka ali ponudnik ob sklenitvi kredita ali druge storitve. Vplivajo na EOM.</dd>
+                                <dd class="mt-1 text-gray-700">Enkratni stroški, ki jih zaračuna banka ali ponudnik ob
+                                    sklenitvi kredita ali druge storitve. Vplivajo na EOM.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="T" id="ter">
                                 <dt class="text-lg font-extrabold text-gray-900">TER</dt>
-                                <dd class="mt-1 text-gray-700">Letni strošek sklada (Total Expense Ratio), izražen v %. Višji TER pomeni več stroškov, kar lahko dolgoročno zmanjša donos naložbe.</dd>
+                                <dd class="mt-1 text-gray-700">Letni strošek sklada (Total Expense Ratio), izražen v %.
+                                    Višji TER pomeni več stroškov, kar lahko dolgoročno zmanjša donos naložbe.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="T" id="trr">
+                                <dt class="text-lg font-extrabold text-gray-900">TRR</dt>
+                                <dd class="mt-1 text-gray-700">Transakcijski račun. Bančni račun za prejemanje plače,
+                                    plačevanje položnic in vsakodnevno bančno poslovanje.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="U" id="upravljalska-provizija">
+                                <dt class="text-lg font-extrabold text-gray-900">Upravljalska provizija</dt>
+                                <dd class="mt-1 text-gray-700">Strošek upravljanja naložbenega produkta (npr. sklad).
+                                    Pogosto je del TER ali je naveden ločeno.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="V" id="valutno-tveganje">
                                 <dt class="text-lg font-extrabold text-gray-900">Valutno tveganje</dt>
-                                <dd class="mt-1 text-gray-700">Tveganje, da se zaradi spremembe menjalnega tečaja spremeni vrednost naložbe ali obveznosti v domači valuti.</dd>
+                                <dd class="mt-1 text-gray-700">Tveganje, da se zaradi spremembe menjalnega tečaja
+                                    spremeni vrednost naložbe ali obveznosti v domači valuti.</dd>
+                            </div>
+
+                            <div class="lex-term" data-letter="Z" id="zamudne-obresti">
+                                <dt class="text-lg font-extrabold text-gray-900">Zamudne obresti</dt>
+                                <dd class="mt-1 text-gray-700">Obresti, ki jih plačaš, če z zamudo poravnaš obveznost.
+                                    Višina in pravila so lahko določeni s pogodbo in zakonodajo.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="Z" id="zavarovanje-kredita">
                                 <dt class="text-lg font-extrabold text-gray-900">Zavarovanje kredita</dt>
-                                <dd class="mt-1 text-gray-700">Način, kako banka zmanjša tveganje neplačila (npr. hipoteka, porok, zavarovalna polica). Vpliva na pogoje in obrestno mero.</dd>
+                                <dd class="mt-1 text-gray-700">Način, kako banka zmanjša tveganje neplačila (npr.
+                                    hipoteka, porok, zavarovalna polica). Vpliva na pogoje in obrestno mero.</dd>
                             </div>
 
                             <div class="lex-term" data-letter="Ž" id="zivljenjsko-zavarovanje">
                                 <dt class="text-lg font-extrabold text-gray-900">Življenjsko zavarovanje</dt>
-                                <dd class="mt-1 text-gray-700">Zavarovanje, ki ob določenem dogodku (npr. smrt zavarovane osebe) izplača dogovorjeno vsoto. Včasih se uporablja kot del zavarovanja kredita.</dd>
+                                <dd class="mt-1 text-gray-700">Zavarovanje, ki ob določenem dogodku (npr. smrt
+                                    zavarovane osebe) izplača dogovorjeno vsoto. Včasih se uporablja kot del zavarovanja
+                                    kredita.</dd>
                             </div>
                         </dl>
                     </div>
