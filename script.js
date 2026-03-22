@@ -2134,6 +2134,17 @@ function initMobileBanners() {
     }
 }
 
+function highlightKalkulatorjiNav() {
+    const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
+    if (!nav) return;
+
+    const kalkLink = nav.querySelector('a[href="kalkulatorji/"], a[href="./kalkulatorji/"], a[href="/kalkulatorji/"]');
+    if (!kalkLink) return;
+
+    kalkLink.classList.add("font-semibold");
+    kalkLink.classList.add("text-[#0B6B3A]");
+}
+
 /* ============================
    TAB SWITCHING
 ============================ */
@@ -3693,6 +3704,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initCookieBanner", initCookieBanner);
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
+    safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
 
     safeInit("addLexiconNavLink", () => {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
