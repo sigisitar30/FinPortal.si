@@ -1928,6 +1928,8 @@ function initMobileMenu() {
     const links = [
         { href: home, text: "Domov" },
         { href: kalkulatorji, text: "Kalkulatorji" },
+        { href: "/clanki/", text: "Članki" },
+        { href: "/financni-leksikon.html", text: "Leksikon" },
         { href: "primerjava-depozitov.html", text: "Primerjava depozitov" },
         { href: onas, text: "O nas" },
         { href: kontakt, text: "Kontakt" },
@@ -2101,6 +2103,35 @@ function initMobileMenu() {
     bar.appendChild(btn);
     header.appendChild(overlay);
     applyVisibility();
+}
+
+function initMobileBanners() {
+    if (window.__fpMobileBannersInit) return;
+    window.__fpMobileBannersInit = true;
+
+    const mq = window.matchMedia("(max-width: 639px)");
+    if (!mq.matches) return;
+
+    const wrappers = Array.from(document.querySelectorAll("main .sm\\:flex"));
+    if (!wrappers.length) return;
+
+    for (const w of wrappers) {
+        const aside = w.querySelector("aside");
+        const content = w.querySelector(":scope > .flex-1");
+        if (!aside || !content) continue;
+        if (!aside.classList.contains("hidden") || !aside.classList.contains("sm:block")) continue;
+        if (content.querySelector('[data-fp-mobile-banner="1"]')) continue;
+
+        const card = aside.querySelector(":scope > div");
+        if (!card) continue;
+
+        const clone = card.cloneNode(true);
+        clone.setAttribute("data-fp-mobile-banner", "1");
+        clone.classList.remove("sticky");
+        clone.classList.add("mb-6");
+
+        content.insertBefore(clone, content.firstChild);
+    }
 }
 
 /* ============================
@@ -3661,6 +3692,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     safeInit("initCookieBanner", initCookieBanner);
     safeInit("initMobileMenu", initMobileMenu);
+    safeInit("initMobileBanners", initMobileBanners);
 
     safeInit("addLexiconNavLink", () => {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
