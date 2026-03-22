@@ -66,19 +66,19 @@ a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
 }
 
 .fp-share-icon {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     display: block;
 }
 
 .fp-share-icon--fb {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
 }
 
 .fp-share-icon--link {
-    width: 26px;
-    height: 26px;
+    width: 28px;
+    height: 28px;
 }
 
 .fp-share-row {
