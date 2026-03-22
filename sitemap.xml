@@ -4,13 +4,10 @@
     <loc>https://finportal-si.pages.dev/</loc>
   </url>
   <url>
-    <loc>https://finportal-si.pages.dev/clanki/</loc>
+    <loc>https://finportal-si.pages.dev/financni-leksikon.html</loc>
   </url>
   <url>
-    <loc>https://finportal-si.pages.dev/clanki/kaj-je-eom.html</loc>
-  </url>
-  <url>
-    <loc>https://finportal-si.pages.dev/clanki/vrednost-denarja-v-casu.html</loc>
+    <loc>https://finportal-si.pages.dev/kalkulatorji/</loc>
   </url>
   <url>
     <loc>https://finportal-si.pages.dev/kreditna-sposobnost.html</loc>
@@ -34,7 +31,13 @@
     <loc>https://finportal-si.pages.dev/izgubljene-obresti.html</loc>
   </url>
   <url>
+    <loc>https://finportal-si.pages.dev/leasing-vs-kredit.html</loc>
+  </url>
+  <url>
     <loc>https://finportal-si.pages.dev/menjalniski-kalkulator.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/povprasevanje.html</loc>
   </url>
   <url>
     <loc>https://finportal-si.pages.dev/pravno-obvestilo.html</loc>
@@ -47,5 +50,29 @@
   </url>
   <url>
     <loc>https://finportal-si.pages.dev/piskotki.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/jamstvo-vlog-100000.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/kredit-2026.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/najboljsi-depozit.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/najcenejsi-potrosniski-kredit.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/prednosti-bancnega-varcevanja.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/psihologija-investiranja.html</loc>
+  </url>
+  <url>
+    <loc>https://finportal-si.pages.dev/clanki/vrednost-denarja-v-casu.html</loc>
   </url>
 </urlset>
