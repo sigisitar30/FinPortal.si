@@ -300,6 +300,21 @@ CSV_FILES = [
     "unicredit_depoziti.csv"
 ]
 
+
+SCRAPER_TO_CSV = {
+    "ADDIKO scraper.py": "addiko_depoziti.csv",
+    "BKS scraper.py": "bks_depoziti.csv",
+    "DBS scraper.py": "dbs_depoziti.csv",
+    "DH scraper.py": "dh_depoziti.csv",
+    "GBKR scraper.py": "gbkr_depoziti.csv",
+    "INTESA scraper.py": "intesa_depoziti.csv",
+    "LON scraper.py": "lon_depoziti.csv",
+    "NLB scraper.py": "nlb_depoziti.csv",
+    "OTP scraper.py": "otp_depoziti.csv",
+    "SPARKASSE scraper.py": "sparkasse_depoziti.csv",
+    "UNICREDIT scraper.py": "unicredit_depoziti.csv",
+}
+
 # 3) Datum za arhiviranje
 today = datetime.today().strftime("%Y-%m-%d")
 
@@ -373,8 +388,9 @@ def _fmt_mtime(path: str):
 
 failed_scrapers = [s for s, code, _,
                    _ in scraper_statuses if code not in (0, None)]
+failed_csvs = set()
 if failed_scrapers:
-    print("ERR Nekateri scraperji so koncali z napako:")
+    print("WRN Nekateri scraperji so koncali z napako (banka bo izlocena iz all_banks.csv):")
     for s, code, out, err in scraper_statuses:
         if code not in (0, None):
             print(f" - {s}: exit code={code}")
@@ -384,15 +400,21 @@ if failed_scrapers:
             if err and err.strip():
                 print("   --- stderr ---")
                 print(err.rstrip())
-    sys.exit(1)
 
-print("OK Vsi scraperji so koncali.")
+            csv_name = SCRAPER_TO_CSV.get(s)
+            if csv_name:
+                failed_csvs.add(csv_name)
+
+print("OK Scraperji so koncali (tudi ce so nekateri padli).")
 
 # 7) Združimo CSV-je
 dfs = []
 
 print("Najdeni CSV-ji:")
 for file in CSV_FILES:
+    if file in failed_csvs:
+        print(" -", file, "(PRESKOCEN: scraper FAIL)")
+        continue
     if os.path.exists(file):
         mt = _fmt_mtime(file)
         if mt:
@@ -414,10 +436,11 @@ for file in CSV_FILES:
             diff_warns = _diff_metrics(df, df_prev, source_file=file)
 
         if schema_errs or inv_errs:
-            print(f"ERR Validacija FAIL za {file}:")
+            print(f"WRN Validacija FAIL za {file} (banka bo izlocena iz all_banks.csv):")
             for msg in (schema_errs + inv_errs):
                 print(f" - {msg}")
-            sys.exit(1)
+            failed_csvs.add(file)
+            continue
 
         all_warns = schema_warns + inv_warns + diff_warns
         if all_warns:
@@ -442,6 +465,10 @@ else:
     print("WRN Ni CSV datotek za zdruziti.")
     sys.exit(1)
 
+if failed_csvs:
+    failed_list = ", ".join(sorted(failed_csvs))
+    print(f"WRN all_banks.csv je bil ustvarjen brez nekaterih bank (manjkajoci CSV-ji): {failed_list}")
+
 # 9) Arhiviranje master CSV-ja
 archive_master = f"archive/all_banks_{today}.csv"
 all_banks_path = os.path.join(BASE_DIR, "all_banks.csv")
@@ -462,6 +489,8 @@ else:
 
 # 10) Arhiviranje posameznih bank
 for file in CSV_FILES:
+    if file in failed_csvs:
+        continue
     if os.path.exists(file):
         archive_file = f"archive/{file.replace('.csv', '')}_{today}.csv"
         try:

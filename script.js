@@ -4639,6 +4639,20 @@ const depositOffers = [
     { bank: "Deželna banka", rate: 3.55, termMonths: 18, term: "18 mesecev (dolgoročni)", min: 500, url: "" }
 ];
 
+const DEPOSIT_COMPARE_BANKS = [
+    "NLB d.d.",
+    "OTP banka",
+    "Intesa Sanpaolo Bank",
+    "Addiko Bank d.d.",
+    "Sparkasse",
+    "UniCredit Banka Slovenija d.d.",
+    "Delavska hranilnica d.d.",
+    "Gorenjska banka d.d.",
+    "BKS Bank AG",
+    "LON d.d.",
+    "DBS d.d.",
+];
+
 function termTypeLabel(termMonths) {
     const months = Number(termMonths);
     if (!Number.isFinite(months)) return "";
@@ -5471,8 +5485,24 @@ function renderDepositTable() {
         ? (selectedUnit === "days" ? selectedTerm / 365.25 : selectedTerm / 12)
         : NaN;
 
-    const banks = Array.from(new Set(depositOffers.map(o => String(o.bank ?? "").trim()).filter(Boolean)))
-        .sort((a, b) => a.localeCompare(b, "sl"));
+    const seen = new Set();
+    const banks = [];
+    DEPOSIT_COMPARE_BANKS.forEach((b) => {
+        const name = String(b ?? "").trim();
+        if (!name) return;
+        if (seen.has(name)) return;
+        seen.add(name);
+        banks.push(name);
+    });
+
+    // In case CSV contains a bank not in the standard list (new bank added), append it.
+    Array.from(new Set(depositOffers.map(o => String(o.bank ?? "").trim()).filter(Boolean)))
+        .sort((a, b) => a.localeCompare(b, "sl"))
+        .forEach((b) => {
+            if (seen.has(b)) return;
+            seen.add(b);
+            banks.push(b);
+        });
 
     const effRate = (o) => {
         if (!o) return NaN;
