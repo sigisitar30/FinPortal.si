@@ -3674,7 +3674,12 @@ document.addEventListener('DOMContentLoaded', function () {
         link.textContent = "Leksikon";
         link.className = "hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded";
 
-        const articles = nav.querySelector('a[href="/clanki/"], a[href="clanki/"], a[href="./clanki/"], a[href="../clanki/"], a[href^="clanki/"], a[href^="../clanki/"]');
+        const directArticles = Array.from(nav.querySelectorAll("a")).find((a) => {
+            const label = (a.textContent || "").trim().toLowerCase();
+            return label === "članki";
+        });
+
+        const articles = directArticles || nav.querySelector('a[href="/clanki/"], a[href="clanki/"], a[href="./clanki/"], a[href="../clanki/"], a[href^="clanki/"], a[href^="../clanki/"], a[href="./"], a[href="../clanki"]');
         if (articles && articles.parentNode === nav) {
             if (articles.nextSibling) {
                 nav.insertBefore(link, articles.nextSibling);
