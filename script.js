@@ -906,6 +906,10 @@ function initShareUi() {
         btn.innerHTML = svg;
     };
 
+    const iconLink = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-2.12 2.12a1 1 0 1 1-1.41-1.41l2.12-2.12a1 1 0 1 0-1.41-1.41l-3.18 3.18a1 1 0 0 1-1.42-.01ZM13.41 10.59a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l2.12-2.12a1 1 0 0 1 1.41 1.41L7.4 12.35a1 1 0 0 0 1.41 1.41l3.18-3.18a1 1 0 0 1 1.42.01Z"/></svg>`;
+    const iconCheck = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M9.0 16.2 4.8 12l1.4-1.4 2.8 2.8 8-8 1.4 1.4-9.4 9.4Z"/></svg>`;
+    const iconError = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 14h-2v-2h2v2Zm0-4h-2V6h2v6Z"/></svg>`;
+
     setIconButton(shareX, {
         label: "Deli na X",
         svg: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M18.9 2H22l-6.8 7.8L23 22h-6.2l-4.8-6.2L6.6 22H3.5l7.3-8.4L1 2h6.3l4.4 5.7L18.9 2Zm-1.1 18h1.7L7.2 3.9H5.4L17.8 20Z"/></svg>`,
@@ -913,7 +917,12 @@ function initShareUi() {
 
     setIconButton(shareFb, {
         label: "Deli na Facebook",
-        svg: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12H17l-.5 2.9h-2.5v7A10 10 0 0 0 22 12Z"/></svg>`,
+        svg: `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon fp-share-icon--fb" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.4h-1.2c-1.2 0-1.6.8-1.6 1.5V12H17l-.5 2.9h-2.5v7A10 10 0 0 0 22 12Z"/></svg>`,
+    });
+
+    setIconButton(shareCopy, {
+        label: "Kopiraj povezavo",
+        svg: iconLink,
     });
 
     const getShareText = () => {
@@ -962,24 +971,12 @@ function initShareUi() {
                 method: "copy",
                 calculator: cfg.id || undefined,
             });
-            await withTempButtonText(
-                shareCopy,
-                null,
-                async () => {
-                    const ok = await copyToClipboard(shareUrl);
-                    if (!ok) {
-                        await withTempButtonText(shareCopy, null, async () => { }, {
-                            errorText: "Ni uspelo",
-                            revertAfterMs: 1600,
-                        });
-                    }
-                    return ok;
-                },
-                {
-                    successText: "Kopirano!",
-                    revertAfterMs: 1400,
-                }
-            );
+            const prev = shareCopy.innerHTML;
+            const ok = await copyToClipboard(shareUrl);
+            shareCopy.innerHTML = ok ? iconCheck : iconError;
+            setTimeout(() => {
+                shareCopy.innerHTML = prev;
+            }, ok ? 900 : 1400);
         });
     }
 

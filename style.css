@@ -71,6 +71,11 @@ a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
     display: block;
 }
 
+.fp-share-icon--fb {
+    width: 20px;
+    height: 20px;
+}
+
 .fp-details-summary {
     display: flex;
     align-items: center;
