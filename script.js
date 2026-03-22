@@ -906,7 +906,7 @@ function initShareUi() {
         btn.innerHTML = svg;
     };
 
-    const iconLink = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M10.59 13.41a1 1 0 0 1 0-1.41l3.18-3.18a3 3 0 1 1 4.24 4.24l-2.12 2.12a1 1 0 1 1-1.41-1.41l2.12-2.12a1 1 0 1 0-1.41-1.41l-3.18 3.18a1 1 0 0 1-1.42-.01ZM13.41 10.59a1 1 0 0 1 0 1.41l-3.18 3.18a3 3 0 1 1-4.24-4.24l2.12-2.12a1 1 0 0 1 1.41 1.41L7.4 12.35a1 1 0 0 0 1.41 1.41l3.18-3.18a1 1 0 0 1 1.42.01Z"/></svg>`;
+    const iconLink = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon fp-share-icon--link" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 1 0-7l1-1a5 5 0 0 1 7 7l-1 1"/><path d="M14 11a5 5 0 0 1 0 7l-1 1a5 5 0 0 1-7-7l1-1"/></svg>`;
     const iconCheck = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M9.0 16.2 4.8 12l1.4-1.4 2.8 2.8 8-8 1.4 1.4-9.4 9.4Z"/></svg>`;
     const iconError = `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" class="fp-share-icon" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 14h-2v-2h2v2Zm0-4h-2V6h2v6Z"/></svg>`;
 
