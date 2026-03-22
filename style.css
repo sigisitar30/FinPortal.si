@@ -83,8 +83,15 @@ a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
 
 .fp-share-row {
     overflow-y: visible !important;
-    padding-top: 10px;
-    padding-bottom: 6px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.fp-share-scroll {
+    overflow-x: auto;
+    overflow-y: visible;
+    padding-top: 18px;
+    padding-bottom: 14px;
 }
 
 .fp-details-summary {
@@ -201,7 +208,7 @@ ul.container li::before {
         0 0 0 2px var(--highlight-glow-soft),
         0 0 10px var(--highlight-glow-soft),
         0 0 18px var(--highlight-glow);
-    transform: translateY(-1px) scale(1.01);
+    transform: scale(1.01);
     transition: box-shadow 0.22s ease, transform 0.22s ease;
     outline: none;
 }
