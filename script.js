@@ -3666,15 +3666,15 @@ document.addEventListener('DOMContentLoaded', function () {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
         if (!nav) return;
 
-        const existing = nav.querySelector('a[href="financni-leksikon.html"], a[href="./financni-leksikon.html"]');
+        const existing = nav.querySelector('a[href="financni-leksikon.html"], a[href="./financni-leksikon.html"], a[href="/financni-leksikon.html"]');
         if (existing) return;
 
         const link = document.createElement("a");
-        link.href = "financni-leksikon.html";
+        link.href = "/financni-leksikon.html";
         link.textContent = "Leksikon";
         link.className = "hover:text-[#0B6B3A] focus:text-[#0B6B3A] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 rounded";
 
-        const articles = nav.querySelector('a[href="clanki/"], a[href="./clanki/"], a[href^="clanki/"]');
+        const articles = nav.querySelector('a[href="/clanki/"], a[href="clanki/"], a[href="./clanki/"], a[href="../clanki/"], a[href^="clanki/"], a[href^="../clanki/"]');
         if (articles && articles.parentNode === nav) {
             if (articles.nextSibling) {
                 nav.insertBefore(link, articles.nextSibling);
@@ -3691,6 +3691,42 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         nav.appendChild(link);
+    });
+
+    safeInit("normalizeMainNavLinks", () => {
+        const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
+        if (!nav) return;
+
+        const links = Array.from(nav.querySelectorAll("a"));
+        for (const a of links) {
+            const label = (a.textContent || "").trim().toLowerCase();
+            const href = a.getAttribute("href") || "";
+
+            if (label === "članki") {
+                a.setAttribute("href", "/clanki/");
+                continue;
+            }
+
+            if (label === "kalkulatorji") {
+                a.setAttribute("href", "/kalkulatorji/");
+                continue;
+            }
+
+            if (label === "leksikon") {
+                a.setAttribute("href", "/financni-leksikon.html");
+                continue;
+            }
+
+            if (href === "clanki/" || href === "./clanki/" || href === "../clanki/" || href === "./") {
+                a.setAttribute("href", "/clanki/");
+                continue;
+            }
+
+            if (href === "kalkulatorji/" || href === "./kalkulatorji/" || href === "../kalkulatorji/") {
+                a.setAttribute("href", "/kalkulatorji/");
+                continue;
+            }
+        }
     });
 
     safeInit("initScrollDepthTracking", initScrollDepthTracking);
