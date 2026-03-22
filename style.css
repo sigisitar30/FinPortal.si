@@ -90,8 +90,12 @@ a.lead-beta-btn[href="povprasevanje.html"]:focus-visible {
 .fp-share-scroll {
     overflow-x: auto;
     overflow-y: visible;
+    width: 100%;
+    justify-content: center;
     padding-top: 18px;
     padding-bottom: 14px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 .fp-details-summary {
