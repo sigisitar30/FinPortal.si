@@ -943,7 +943,7 @@ function initShareUi() {
                 calculator: cfg.id || undefined,
             });
             const shareUrl = buildShareUrl(cfg);
-            const intent = new URL("https://twitter.com/intent/tweet");
+            const intent = new URL("https://x.com/intent/post");
             intent.searchParams.set("text", getShareText());
             intent.searchParams.set("url", shareUrl);
             openPopup(intent.toString());
