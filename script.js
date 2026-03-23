@@ -3980,8 +3980,6 @@ document.addEventListener('DOMContentLoaded', function () {
     normalizeRateInput("lost-etf-fee");
     normalizeRateInput("fx-spread");
 
-    safeInit("initShareUi", initShareUi);
-
     const csRateEl = document.getElementById("cs-rate");
     if (csRateEl) {
         csRateEl.addEventListener("blur", () => normalizeRateInput("cs-rate"));
