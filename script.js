@@ -1701,6 +1701,102 @@ function initBetaLeadTracking() {
     });
 }
 
+function initContactForm() {
+    const form = document.getElementById("contact-form");
+    if (!form) return;
+    if (form.dataset.fpBound === "1") return;
+    form.dataset.fpBound = "1";
+
+    const endpoint = "https://formspree.io/f/mlgpqeyk";
+    const alertEl = document.getElementById("contact-form-alert");
+    const submitBtn = document.getElementById("contact-form-submit");
+    const originalBtnText = submitBtn ? submitBtn.textContent : "";
+
+    const setAlert = (type, text) => {
+        if (!alertEl) return;
+
+        alertEl.textContent = text;
+        alertEl.classList.remove("hidden");
+
+        alertEl.classList.remove("border-green-200", "bg-green-50", "text-green-900");
+        alertEl.classList.remove("border-red-200", "bg-red-50", "text-red-900");
+
+        if (type === "success") {
+            alertEl.classList.add("border-green-200", "bg-green-50", "text-green-900");
+        } else {
+            alertEl.classList.add("border-red-200", "bg-red-50", "text-red-900");
+        }
+    };
+
+    const clearAlert = () => {
+        if (!alertEl) return;
+        alertEl.textContent = "";
+        alertEl.classList.add("hidden");
+        alertEl.classList.remove("border-green-200", "bg-green-50", "text-green-900");
+        alertEl.classList.remove("border-red-200", "bg-red-50", "text-red-900");
+    };
+
+    const setSubmitting = (submitting) => {
+        if (!submitBtn) return;
+        submitBtn.disabled = !!submitting;
+        submitBtn.setAttribute("aria-disabled", submitting ? "true" : "false");
+        if (submitting) {
+            submitBtn.classList.add("opacity-70", "cursor-not-allowed");
+            submitBtn.textContent = "Pošiljam...";
+        } else {
+            submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
+            submitBtn.textContent = originalBtnText || "Pošlji";
+        }
+    };
+
+    form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearAlert();
+        setSubmitting(true);
+
+        try {
+            const fd = new FormData(form);
+            const email = String(fd.get("email") ?? "").trim();
+            if (email) {
+                fd.set("_replyto", email);
+            }
+            fd.set("_subject", "Kontakt FinPortal.si");
+
+            const res = await fetch(endpoint, {
+                method: "POST",
+                body: fd,
+                headers: {
+                    Accept: "application/json",
+                },
+            });
+
+            if (res.ok) {
+                setAlert("success", "Hvala! Sporočilo je poslano. Odgovorimo v 1–2 delovnih dneh.");
+                form.reset();
+                return;
+            }
+
+            let details = "";
+            try {
+                const data = await res.json();
+                if (data && Array.isArray(data.errors) && data.errors.length) {
+                    details = data.errors.map((x) => x.message).filter(Boolean).join(" ");
+                }
+            } catch { }
+
+            setAlert(
+                "error",
+                `Prišlo je do napake pri pošiljanju. Prosimo poskusi znova.${details ? ` ${details}` : ""}`
+            );
+        } catch (err) {
+            console.warn("Contact form submit failed", err);
+            setAlert("error", "Prišlo je do napake pri pošiljanju. Prosimo poskusi znova.");
+        } finally {
+            setSubmitting(false);
+        }
+    });
+}
+
 function initCookieBanner() {
     const key = "finportal_cookie_consent";
     let existing = null;
@@ -3721,6 +3817,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initShareUi", initShareUi);
 
     safeInit("initCookieBanner", initCookieBanner);
+    safeInit("initContactForm", initContactForm);
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);

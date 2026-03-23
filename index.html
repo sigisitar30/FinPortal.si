@@ -580,28 +580,30 @@
                         Ne deli občutljivih podatkov (npr. številke kartic, osebnih dokumentov).
                     </div>
 
-                    <form class="mt-6 space-y-4">
+                    <form id="contact-form" class="mt-6 space-y-4">
+                        <div id="contact-form-alert" class="hidden rounded-xl border p-3 text-sm"></div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Ime in priimek</label>
-                            <input type="text" placeholder="Ime in priimek" class="input w-full" />
+                            <input type="text" name="name" placeholder="Ime in priimek" class="input w-full" required />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" placeholder="Email" class="input w-full" />
+                            <input type="email" name="email" placeholder="Email" class="input w-full" required />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Sporočilo</label>
-                            <textarea placeholder="Sporočilo" class="input w-full h-32"></textarea>
+                            <textarea name="message" placeholder="Sporočilo" class="input w-full h-32"
+                                required></textarea>
                         </div>
 
-                        <button type="button"
+                        <button id="contact-form-submit" type="submit"
                             class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
                             Pošlji
                         </button>
                     </form>
 
                     <div class="mt-4 text-xs text-gray-500">
-                        Opomba: obrazec je trenutno informativen (brez avtomatskega pošiljanja).
+                        Opomba: obrazec pošlje sporočilo na info@finportal.si.
                     </div>
                 </div>
             </div>
