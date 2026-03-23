@@ -297,9 +297,12 @@ function pressAnimate(el) {
                 [
                     { transform: "scale(1)" },
                     { transform: "scale(0.98)" },
-                    { transform: "scale(1)" },
+                    { transform: "scale(1)" }
                 ],
-                { duration: 140, easing: "ease-out" }
+                {
+                    duration: 160,
+                    easing: "ease-out"
+                }
             );
             return;
         }
@@ -313,11 +316,35 @@ function pressAnimate(el) {
     el.style.transform = "scale(0.98)";
     setTimeout(() => {
         el.style.transform = "scale(1)";
-        setTimeout(() => {
-            el.style.transition = prevTransition;
-            el.style.transform = prevTransform;
-        }, 160);
     }, 60);
+    setTimeout(() => {
+        el.style.transition = prevTransition;
+        el.style.transform = prevTransform;
+    }, 180);
+}
+
+function ensureFavicon() {
+    const head = document.head;
+    if (!head) return;
+
+    const upsertLink = ({ rel, href, type }) => {
+        const selector = type
+            ? `link[rel="${rel}"][type="${type}"]`
+            : `link[rel="${rel}"]`;
+
+        let link = head.querySelector(selector);
+        if (!link) {
+            link = document.createElement("link");
+            link.setAttribute("rel", rel);
+            if (type) link.setAttribute("type", type);
+            head.appendChild(link);
+        }
+        link.setAttribute("href", href);
+    };
+
+    upsertLink({ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" });
+    upsertLink({ rel: "icon", href: "/images/scitmali.png", type: "image/png" });
+    upsertLink({ rel: "apple-touch-icon", href: "/images/scitmali.png" });
 }
 
 async function withTempButtonText(btn, nextText, fn, opts = {}) {
@@ -3813,6 +3840,8 @@ document.addEventListener('DOMContentLoaded', function () {
             console.warn(`${name} init failed`, e);
         }
     };
+
+    safeInit("ensureFavicon", ensureFavicon);
 
     safeInit("initShareUi", initShareUi);
 
