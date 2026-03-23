@@ -962,77 +962,77 @@ function initShareUi() {
         window.open(url, "_blank", "noopener,noreferrer");
     };
 
-    if (shareX) {
-        shareX.addEventListener("click", () => {
-            pressAnimate(shareX);
-            fpTrack("share_click", {
-                method: "x",
-                calculator: cfg.id || undefined,
-            });
-            const shareUrl = buildShareUrl(cfg);
-            const intent = new URL("https://twitter.com/intent/tweet");
-            intent.searchParams.set("text", getShareText());
-            intent.searchParams.set("url", shareUrl);
-            openPopup(intent.toString());
-        });
-    }
+    const bindOnce = (btn, key, handler) => {
+        if (!btn) return;
+        const attr = `fpBound${key}`;
+        if (btn.dataset && btn.dataset[attr] === "1") return;
+        if (btn.dataset) btn.dataset[attr] = "1";
+        btn.addEventListener("click", handler);
+    };
 
-    if (shareFb) {
-        shareFb.addEventListener("click", () => {
-            pressAnimate(shareFb);
-            fpTrack("share_click", {
-                method: "facebook",
-                calculator: cfg.id || undefined,
-            });
-            const shareUrl = buildShareUrl(cfg);
-            const intent = new URL("https://www.facebook.com/sharer/sharer.php");
-            intent.searchParams.set("u", shareUrl);
-            openPopup(intent.toString());
+    bindOnce(shareX, "ShareX", () => {
+        pressAnimate(shareX);
+        fpTrack("share_click", {
+            method: "x",
+            calculator: cfg.id || undefined,
         });
-    }
+        const shareUrl = buildShareUrl(cfg);
+        const intent = new URL("https://twitter.com/intent/tweet");
+        intent.searchParams.set("text", getShareText());
+        intent.searchParams.set("url", shareUrl);
+        openPopup(intent.toString());
+    });
 
-    if (shareCopy) {
-        shareCopy.addEventListener("click", async () => {
-            const shareUrl = buildShareUrl(cfg);
-            fpTrack("share_click", {
-                method: "copy",
-                calculator: cfg.id || undefined,
-            });
-            const prev = shareCopy.innerHTML;
-            const ok = await copyToClipboard(shareUrl);
-            shareCopy.innerHTML = ok ? iconCheck : iconError;
-            setTimeout(() => {
-                shareCopy.innerHTML = prev;
-            }, ok ? 900 : 1400);
+    bindOnce(shareFb, "ShareFb", () => {
+        pressAnimate(shareFb);
+        fpTrack("share_click", {
+            method: "facebook",
+            calculator: cfg.id || undefined,
         });
-    }
+        const shareUrl = buildShareUrl(cfg);
+        const intent = new URL("https://www.facebook.com/sharer/sharer.php");
+        intent.searchParams.set("u", shareUrl);
+        openPopup(intent.toString());
+    });
 
-    if (shareImg) {
-        shareImg.addEventListener("click", async () => {
-            const shareUrl = buildShareUrl(cfg);
-            fpTrack("share_click", {
-                method: "image",
-                calculator: cfg.id || undefined,
-            });
-            await withTempButtonText(
-                shareImg,
-                "Pripravljam...",
-                async () => {
-                    const dataUrl = await buildShareImageDataUrl(cfg);
-                    if (!dataUrl) return false;
-                    const file = (cfg.title || "izracun").toLowerCase().replace(/\s+/g, "-");
-                    await downloadDataUrl(`${file}.png`, dataUrl);
-                    await copyToClipboard(shareUrl);
-                    return true;
-                },
-                {
-                    successText: "Preneseno!",
-                    revertAfterMs: 1400,
-                    setBusy: true,
-                }
-            );
+    bindOnce(shareCopy, "ShareCopy", async () => {
+        const shareUrl = buildShareUrl(cfg);
+        fpTrack("share_click", {
+            method: "copy",
+            calculator: cfg.id || undefined,
         });
-    }
+        const prev = shareCopy.innerHTML;
+        const ok = await copyToClipboard(shareUrl);
+        shareCopy.innerHTML = ok ? iconCheck : iconError;
+        setTimeout(() => {
+            shareCopy.innerHTML = prev;
+        }, ok ? 900 : 1400);
+    });
+
+    bindOnce(shareImg, "ShareImg", async () => {
+        const shareUrl = buildShareUrl(cfg);
+        fpTrack("share_click", {
+            method: "image",
+            calculator: cfg.id || undefined,
+        });
+        await withTempButtonText(
+            shareImg,
+            "Pripravljam...",
+            async () => {
+                const dataUrl = await buildShareImageDataUrl(cfg);
+                if (!dataUrl) return false;
+                const file = (cfg.title || "izracun").toLowerCase().replace(/\s+/g, "-");
+                await downloadDataUrl(`${file}.png`, dataUrl);
+                await copyToClipboard(shareUrl);
+                return true;
+            },
+            {
+                successText: "Preneseno!",
+                revertAfterMs: 1400,
+                setBusy: true,
+            }
+        );
+    });
 }
 
 function syncDepositCompareTermBounds() {
