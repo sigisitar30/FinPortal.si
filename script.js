@@ -2137,7 +2137,7 @@ function initMobileMenu() {
 
     const cta = document.createElement("a");
     cta.href = "primerjava-depozitov.html";
-    cta.textContent = "Začni primerjavo";
+    cta.textContent = "Primerjaj depozite bank";
     cta.style.display = "block";
     cta.style.textAlign = "center";
     cta.style.padding = "12px 14px";
