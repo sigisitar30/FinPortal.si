@@ -2730,6 +2730,8 @@ function calculateLeasingVsLoan() {
     const down = getElementValue("lvk-down");
     const months = getElementValue("lvk-months");
     const loanRate = getElementValue("lvk-loan-rate") / 100;
+    const leasingRate = getElementValue("lvk-leasing-rate") / 100;
+    const loanMonthsRaw = getElementValue("lvk-loan-months");
     const leasingMonthsRaw = getElementValue("lvk-leasing-months");
 
     const loanMonths = Number.isFinite(loanMonthsRaw) && loanMonthsRaw > 0 ? loanMonthsRaw : months;
@@ -2752,7 +2754,8 @@ function calculateLeasingVsLoan() {
         !Number.isFinite(months) || months <= 0 ||
         !Number.isFinite(loanMonths) || loanMonths <= 0 ||
         !Number.isFinite(leasingMonths) || leasingMonths <= 0 ||
-        !Number.isFinite(loanRate) || loanRate < 0
+        !Number.isFinite(loanRate) || loanRate < 0 ||
+        !Number.isFinite(leasingRate) || leasingRate < 0
     ) {
         setDash();
         return;
@@ -2767,7 +2770,7 @@ function calculateLeasingVsLoan() {
 
     // Leasing: financed part is treated as annuity, and residual is paid at the end.
     // This is a simplification but works well for comparison.
-    const leasingPayment = calcAnnuityPayment(financed, leasingMonths, loanRate);
+    const leasingPayment = calcAnnuityPayment(financed, leasingMonths, leasingRate);
     const safeLeasingMonthlyFee = Number.isFinite(getElementValue("lvk-leasing-monthly-fee")) ? getElementValue("lvk-leasing-monthly-fee") : 0;
     const leasingMonthlyOutflow = Number.isFinite(leasingPayment) ? (leasingPayment + safeLeasingMonthlyFee) : NaN;
 
@@ -2830,7 +2833,7 @@ function calculateLeasingVsLoan() {
         down_eur: Math.round(down),
         months: Number(months),
         loan_rate_percent: Math.round((loanRate * 100) * 100) / 100,
-        leasing_rate_percent: Math.round((loanRate * 100) * 100) / 100,
+        leasing_rate_percent: Math.round((leasingRate * 100) * 100) / 100,
     });
 }
 
