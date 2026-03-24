@@ -343,7 +343,6 @@ function ensureFavicon() {
         if (sizes) link.setAttribute("sizes", sizes);
     };
 
-    upsertLink({ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" });
     upsertLink({ rel: "icon", href: "/images/scitmali.png", type: "image/png", sizes: "32x32" });
     upsertLink({ rel: "shortcut icon", href: "/images/scitmali.png", type: "image/png" });
     upsertLink({ rel: "apple-touch-icon", href: "/images/scitmali.png" });
