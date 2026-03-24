@@ -343,10 +343,10 @@ function ensureFavicon() {
         if (sizes) link.setAttribute("sizes", sizes);
     };
 
-    upsertLink({ rel: "icon", href: "/favicon.ico", type: "image/x-icon" });
-    upsertLink({ rel: "icon", href: "/images/scitmali.png", type: "image/png", sizes: "32x32" });
-    upsertLink({ rel: "shortcut icon", href: "/images/scitmali.png", type: "image/png" });
-    upsertLink({ rel: "apple-touch-icon", href: "/images/scitmali.png" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon-96x96.png?v=5", type: "image/png", sizes: "96x96" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon.ico?v=5", type: "image/x-icon" });
+    upsertLink({ rel: "shortcut icon", href: "/images/favicon/favicon.ico?v=5", type: "image/x-icon" });
+    upsertLink({ rel: "apple-touch-icon", href: "/images/favicon/apple-touch-icon.png?v=5" });
 }
 
 async function withTempButtonText(btn, nextText, fn, opts = {}) {
