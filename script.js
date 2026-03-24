@@ -3843,6 +3843,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     };
 
+    safeInit("fixHashScrollOffset", () => {
+        const getHeaderOffset = () => {
+            const header = document.querySelector('header.sticky') || document.querySelector('header');
+            const height = header ? header.getBoundingClientRect().height : 0;
+            return Math.max(0, Math.round(height + 12));
+        };
+
+        const scrollToHashWithOffset = (hash, behavior) => {
+            if (!hash || hash.length < 2) return false;
+            const id = decodeURIComponent(hash.slice(1));
+            const el = document.getElementById(id);
+            if (!el) return false;
+
+            const top = el.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+            window.scrollTo({ top: Math.max(0, top), behavior: behavior || 'auto' });
+            return true;
+        };
+
+        const maybeFixCurrentHash = () => {
+            if (!location.hash) return;
+            scrollToHashWithOffset(location.hash, 'auto');
+        };
+
+        setTimeout(maybeFixCurrentHash, 0);
+        window.addEventListener('load', maybeFixCurrentHash);
+        window.addEventListener('hashchange', () => scrollToHashWithOffset(location.hash, 'auto'));
+    });
+
     safeInit("ensureFavicon", ensureFavicon);
 
     safeInit("initShareUi", initShareUi);
