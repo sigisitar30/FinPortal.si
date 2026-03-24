@@ -630,13 +630,15 @@ async function buildShareTableImageDataUrl(cfg) {
     const logoSize = 72;
     const brandLogoY = H - pad - logoSize;
     if (logo) ctx.drawImage(logo, pad, brandLogoY, logoSize, logoSize);
+
+    ctx.textBaseline = "top";
     ctx.fillStyle = "#111827";
     ctx.font = "800 26px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("FinPortal.si", pad + logoSize + 14, brandLogoY + 4);
+    ctx.fillText("FinPortal.si", pad + logoSize + 14, brandLogoY + 10);
 
     ctx.fillStyle = "#374151";
     ctx.font = "500 20px Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial";
-    ctx.fillText("Izračunaj tudi ti na finportal.si", pad + logoSize + 14, brandLogoY + 34);
+    ctx.fillText("Izračunaj tudi ti na finportal.si", pad + logoSize + 14, brandLogoY + 44);
 
     return canvas.toDataURL("image/png");
 }
