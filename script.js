@@ -327,7 +327,7 @@ function ensureFavicon() {
     const head = document.head;
     if (!head) return;
 
-    const upsertLink = ({ rel, href, type }) => {
+    const upsertLink = ({ rel, href, type, sizes }) => {
         const selector = type
             ? `link[rel="${rel}"][type="${type}"]`
             : `link[rel="${rel}"]`;
@@ -340,10 +340,12 @@ function ensureFavicon() {
             head.appendChild(link);
         }
         link.setAttribute("href", href);
+        if (sizes) link.setAttribute("sizes", sizes);
     };
 
     upsertLink({ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" });
-    upsertLink({ rel: "icon", href: "/images/scitmali.png", type: "image/png" });
+    upsertLink({ rel: "icon", href: "/images/scitmali.png", type: "image/png", sizes: "32x32" });
+    upsertLink({ rel: "shortcut icon", href: "/images/scitmali.png", type: "image/png" });
     upsertLink({ rel: "apple-touch-icon", href: "/images/scitmali.png" });
 }
 
