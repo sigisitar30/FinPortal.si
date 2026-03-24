@@ -1249,15 +1249,20 @@ function formatPercentSI(num) {
     return `${n.toFixed(2).replace(".", ",")}%`;
 }
 
-function enableGa4Analytics() {
+function initGa4Base() {
     const measurementId = "G-1G82TV8KFZ";
-    if (window.__fpGa4Enabled) return;
-    window.__fpGa4Enabled = true;
+    if (window.__fpGa4BaseInit) return;
+    window.__fpGa4BaseInit = true;
 
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+
+    try {
+        window.gtag('consent', 'default', { analytics_storage: 'denied' });
+    } catch (e) { }
+
     window.gtag('js', new Date());
-    window.gtag('config', measurementId);
+    window.gtag('config', measurementId, { cookie_expires: 7776000 });
 
     const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${measurementId}"]`);
     if (existing) return;
@@ -1268,7 +1273,18 @@ function enableGa4Analytics() {
     document.head.appendChild(s);
 }
 
+function enableGa4Analytics() {
+    initGa4Base();
+    window.__fpGa4Enabled = true;
+    if (typeof window.gtag === 'function') {
+        try {
+            window.gtag('consent', 'update', { analytics_storage: 'granted' });
+        } catch (e) { }
+    }
+}
+
 function disableGa4Analytics() {
+    initGa4Base();
     window.__fpGa4Enabled = false;
     if (typeof window.gtag === 'function') {
         try {
@@ -2006,7 +2022,9 @@ function initCookieBanner() {
         document.documentElement.dataset.cookieConsent = existing;
         hide();
         if (existing === "accepted") enableGa4Analytics();
+        if (existing === "rejected") disableGa4Analytics();
     } else {
+        initGa4Base();
         show();
     }
 
