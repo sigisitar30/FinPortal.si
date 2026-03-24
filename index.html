@@ -178,490 +178,159 @@
                         aria-label="Prikaži drugo HERO sliko"></button>
                     <button type="button" id="hero-dot-2" class="h-2.5 w-2.5 rounded-full transition-colors"
                         aria-label="Prikaži tretjo HERO sliko"></button>
-                </div>
-            </div>
-
-        </div>
     </section>
 
     <!-- KAKO DELUJE -->
-    <section id="kako-deluje" class="pt-12 pb-20 bg-gray-100">
+    <section id="kako-deluje" class="pt-12 pb-20 bg-gray-300">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <h2 class="text-3xl font-bold mb-12">Kako deluje?</h2>
 
             <!-- PRAVILNO: grid ovije vse 4 step-card elemente -->
             <div class="grid md:grid-cols-4 gap-10">
 
+
                 <div class="step-card">
                     <img src="images/SVG_icons/bookshelf-svgrepo-com.webp" loading="lazy" alt="Izberi produkt"
                         class="step-icon">
                     <span class="step-number">1.</span>
-                    <p>Izberi produkt</p>
-                </div>
-
-                <div class="step-card">
-                    <img src="images/SVG_icons/report-svgrepo-com.webp" loading="lazy" alt="Primerjaj ponudbe"
-                        class="step-icon">
-                    <span class="step-number">2.</span>
-                    <p>Primerjaj ponudbe</p>
-                </div>
-
-                <div class="step-card">
-                    <img src="images/SVG_icons/office-svgrepo-com.webp" loading="lazy" alt="Odloči se pametno"
-                        class="step-icon">
-                    <span class="step-number">3.</span>
-                    <p>Odloči se pametno</p>
-                </div>
-
-                <div class="step-card">
-                    <img src="images/SVG_icons/indicator-svgrepo-com.webp" loading="lazy" alt="Pridobi ponudbo"
-                        class="step-icon">
-                    <span class="step-number">4.</span>
-                    <p>Pridobi ponudbo</p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- KALKULATORJI -->
-    <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-
-            <div class="sm:flex sm:gap-10">
-
-                <aside class="hidden sm:block sm:w-64 mb-8 sm:mb-0">
-                    <div class="sticky top-28">
-                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
-                            <a href="images/banner.webp" target="_blank" rel="noopener noreferrer" class="block">
-                                <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
-                                    loading="lazy">
-
-                                <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
-                            </a>
-                        </div>
-                    </div>
-                </aside>
-
-                <div class="flex-1 text-center">
-
-                    <h2 id="kalkulatorji" class="scroll-mt-32 text-3xl font-bold mb-12">KALKULATORJI</h2>
-
-                    <div class="mb-8">
-                        <a href="kalkulatorji/"
-                            class="inline-flex items-center justify-center px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold glow-hover">
-                            Vsi kalkulatorji
-                        </a>
-                    </div>
-
-                    <!-- Glavni disclaimer – zelo viden in pomemben -->
-                    <div
-                        class="mb-8 p-4 bg-amber-50 border border-amber-200 rounded-xl text-sm text-amber-900 leading-snug">
-                        <p class="font-semibold text-base mb-3">Pomembno pravno obvestilo</p>
-                        <p>
-                            Vsi izračuni in primerjave na tej strani so <strong>strogo informativne narave</strong> in
-                            ne
-                            predstavljajo zavezujoče ponudbe, finančnega nasveta ali garancije.
-                        </p>
-                        <p class="mt-2">
-                            Dejanske obrestne mere, efektivna obrestna mera (EOM), stroški in pogoji se lahko kadarkoli
-                            spremenijo. Pred sklenitvijo kateregakoli finančnega produkta <strong>obvezno preverite
-                                aktualne
-                                pogoje pri ponudniku</strong>.
-                        </p>
-                        <p class="mt-2 font-medium">
-                            FinPortal.si <strong>ni banka, posrednik, zavarovalnica ali finančni svetovalec</strong>.
-                            Uporaba strani je na lastno odgovornost. FinPortal.si ne prevzema odgovornosti za morebitno
-                            škodo
-                            ali slabe odločitve.
-                        </p>
-                        <p class="mt-2">
-                            FinPortal.si je <strong>neodvisen informativni agregator</strong> na podlagi javno dostopnih
-                            podatkov. Ne posredujemo pri sklenitvi finančnih produktov. Izbira banke ali finančnega
-                            produkta je izključno odločitev uporabnika.
-                        </p>
-                    </div>
-
-                    <!-- Hitri dostop do kalkulatorjev -->
-                    <div class="text-center mb-12">
-                        <h2 class="text-3xl font-bold mb-4">Hitri dostop do kalkulatorjev</h2>
-                        <p class="text-gray-600 max-w-2xl mx-auto mb-8">
-                            Najbolj uporabni finančni kalkulatorji za hitre izračune.
-                        </p>
-                        <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
-                            <!-- Kreditni kalkulator -->
-                            <div
-                                class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                                <div class="flex items-center mb-4">
-                                    <div
-                                        class="w-12 h-12 bg-[#0B6B3A] rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4">
-                                        💰
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold text-lg">Kreditni kalkulator</h3>
-                                        <p class="text-sm text-gray-600">Izračun obrokov in obresti</p>
-                                    </div>
-                                </div>
-                                <a href="kreditni-kalkulator.html"
-                                    class="w-full block py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center glow-hover">
-                                    Izračunaj kredit
-                                </a>
-                            </div>
-
-                            <!-- Primerjava depozitov -->
-                            <div
-                                class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                                <div class="flex items-center mb-4">
-                                    <div
-                                        class="w-12 h-12 bg-[#0B6B3A] rounded-lg flex items-center justify-center text-white font-bold text-lg mr-4">
-                                        🏦
-                                    </div>
-                                    <div>
-                                        <h3 class="font-semibold text-lg">Primerjava depozitov</h3>
-                                        <p class="text-sm text-gray-600">Najdi najboljšo obrestno mero</p>
-                                    </div>
-                                </div>
-                                <a href="primerjava-depozitov.html"
-                                    class="w-full block py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold text-center glow-hover">
-                                    Primerjaj depozite bank
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Primerjava vezanih depozitov -->
-    <section class="py-20 bg-white">
-        <div class="max-w-7xl mx-auto px-6 mt-16">
-            <div class="sm:flex sm:gap-10">
-                <aside class="hidden sm:block sm:w-64 relative z-0 mb-8 sm:mb-0">
-                    <div class="sticky top-28">
-                        <div class="bg-white border border-gray-200 rounded-2xl p-4 text-left">
-                            <a href="images/banner.webp" target="_blank" rel="noopener noreferrer" class="block">
-                                <img src="images/banner.webp" alt="BANNER - BANNER" class="w-full h-auto rounded-xl"
-                                    loading="lazy">
-                                <div class="mt-3 text-sm font-semibold text-gray-900">BANNER - BANNER</div>
-                            </a>
-                        </div>
-                    </div>
-                </aside>
-
-                <div class="flex-1 relative z-10">
-                    <h2 class="text-3xl font-bold text-center mb-12">Primerjava vezanih depozitov</h2>
-
-                    <div class="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto mb-8">
-
-                        <!-- Znesek -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Znesek depozita (€) <span class="text-red-600">*</span>
-                            </label>
-                            <input type="text" id="deposit-compare-amount" value="10.000"
-                                class="input w-full format-number" />
-                        </div>
-
-                        <!-- Rocnost + enota -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Doba vezave <span class="text-red-600">*</span>
-                            </label>
-                            <div class="grid grid-cols-2 gap-3">
-                                <input type="number" id="deposit-compare-term" value="12" min="1" max="360" step="1"
-                                    class="input w-full" />
-                                <select id="deposit-compare-unit" class="input w-full">
-                                    <option value="months" selected>meseci</option>
-                                    <option value="days">dnevi</option>
-                                </select>
-                            </div>
-
-                            <!-- Checkbox posebne ponudbe -->
-                            <div class="flex items-center gap-2 mt-3">
-                                <input type="checkbox" id="deposit-compare-special" class="h-4 w-4">
-                                <label for="deposit-compare-special" class="text-sm text-gray-700">
-                                    Prikaži tudi posebne / akcijske ponudbe
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tabela rezultatov -->
-                    <div class="max-w-5xl mx-auto">
-                        <div id="deposit-table-container" class="overflow-x-auto overflow-y-visible w-full"></div>
-                        <div id="deposit-data-date" class="mt-3 text-sm text-gray-600"></div>
-                    </div>
-
+                    {{ ... }
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ČLANKI -->
-    <section class="py-20 bg-gray-50 border-t border-gray-200">
+    <section class="py-20 bg-gray-200 border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold mb-4">ČLANKI</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Evergreen vodiči in finančni nasveti. Izberi temo in preberi
+                <p class="text-gray-600 max-w-2xl mx-auto">
+                    Evergreen vodiči in finančni nasveti. Izberi temo in preberi
                     v
                     nekaj minutah.</p>
             </div>
 
             <div class="mt-10 mb-8 text-center">
-                <a href="clanki/"
-                    class="inline-flex items-center justify-center px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold glow-hover">Vsi
-                    članki</a>
+                {{ ... }
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <a href="clanki/psihologija-investiranja.html"
-                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div class="text-sm font-semibold text-[#0B6B3A]">Investicije</div>
-                    <div class="mt-2 text-xl font-bold">Psihologija investiranja – skriti vplivi, ki odločajo o vašem
-                        finančnem uspehu</div>
-                    <div class="mt-2 text-gray-700">Psihološki mehanizmi, ki tiho oblikujejo naše investicijske
-                        odločitve,
-                        razkrivajo, zakaj je razumevanje sebe pogosto pomembnejše od razumevanja trgov.</div>
-                    <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
-                </a>
-
-                <a href="clanki/vrednost-denarja-v-casu.html"
-                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Vrednost denarja v času</div>
-                    <div class="mt-2 text-gray-700">Kaj pomeni inflacija, kako vpliva na prihranke in kako razmišljati o
-                        depozitih ter dolgoročnih ciljih.</div>
-                    <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
-                </a>
-
-                <a href="clanki/kredit-2026.html"
-                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Krediti 2026 – najcenejši ponudniki in priporočena obrestna
-                        mera</div>
-                    <div class="mt-2 text-gray-700">Primerjava fiksnih in variabilnih obrestnih mer, aktualni EOM med
-                        slovenskimi bankami, vpliv EURIBOR‑ja ter realni izračuni mesečnih obrokov.</div>
-                    <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
-                </a>
-
-                <a href="clanki/najcenejsi-potrosniski-kredit.html"
-                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
-                    <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Kaj je EOM in zakaj je pomembnejša od nominalne obrestne mere?
-                    </div>
-                    <div class="mt-2 text-gray-700">Kratek vodič kaj je EOM, kakšna je razlika z nominalno obrestno mero
-                        in na kaj morate biti pozorni pri izbiri kredita.</div>
-                    <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
-                </a>
-            </div>
-
-
         </div>
-    </section>
-
-    <!-- O NAS -->
-    <section class="py-20 bg-white">
-        <div class="max-w-5xl mx-auto px-6 text-left">
-            <h2 id="onas" class="scroll-mt-32 text-center text-3xl font-bold mb-6">O nas</h2>
-
-            <p class="mb-10 text-center">
-                FinPortal.si je neodvisna platforma za primerjavo finančnih produktov v Sloveniji.
-                Naš cilj je zagotoviti preglednost, enostavnost in realen prihranek za uporabnike.
-            </p>
-
-            <div class="grid gap-14">
-                <div class="grid md:grid-cols-2 gap-12 items-start">
-                    <div class="text-left">
-                        <h3 class="text-2xl font-bold mb-4">Naša zgodba</h3>
-                        <p class="mb-8 text-justify hyphens-auto">
-                            FinPortal.si je nastal iz zelo preproste, a pomembne potrebe: kot uporabniki finančnih
-                            storitev smo želeli jasne, pregledne in poštene informacije. Na trgu, kjer so ponudbe
-                            pogosto
-                            zapletene, pogoji skriti, primerjave pa razpršene med različnimi bankami oz. ponudniki, smo
-                            pogrešali orodje, ki bi omogočalo objektiven vpogled v dejanske stroške in koristi
-                            posameznih finančnih produktov. Zato smo ustvarili platformo, ki temelji na
-                            transparentnosti, podatkih in uporabniški
-                            izkušnji. Naš cilj je <strong>omogočiti ljudem, da sprejemajo boljše finančne
-                                odločitve</strong>, brez pritiska
-                            prodajnih taktik ali marketinških trikov. FinPortal.si je tako zrasel iz osebne potrebe v
-                            projekt, ki danes pomaga širokemu krogu uporabnikov, od posameznikov do podjetij.
-                        </p>
-                    </div>
-
-                    <div class="relative overflow-hidden rounded-3xl border border-gray-200/80 shadow-lg bg-white">
-                        <div class="aspect-[16/12] md:aspect-[16/12] lg:aspect-[16/12] w-full">
-                            <img src="images/HERO/Obleka.webp" alt="FinPortal.si" loading="lazy"
-                                class="w-full h-full object-cover" />
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0"></div>
-                    </div>
-                </div>
-
-                <div class="grid md:grid-cols-2 gap-12 items-start">
-                    <div
-                        class="order-2 md:order-1 relative overflow-hidden rounded-3xl border border-gray-200/80 shadow-lg bg-white">
-                        <div class="aspect-[16/16] md:aspect-[16/16] lg:aspect-[16/16] w-full">
-                            <img src="images/HERO/ocala.webp" alt="FinPortal.si" loading="lazy"
-                                class="w-full h-full object-cover object-[50%_100%]" />
-                        </div>
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-black/0 to-black/0"></div>
-                    </div>
-
-                    <div class="order-1 md:order-2 text-left">
-                        <h3 class="text-2xl font-bold mb-4">Naša vizija</h3>
-                        <p class="mb-4 text-justify hyphens-auto">
-                            Naša vizija je postati <strong>osrednja slovenska digitalna točka za primerjavo finančnih
-                                produktov</strong> – od kreditov, depozitov, leasinga in faktoringa do zavarovanj in
-                            drugih finančnih storitev.
-                            Ustvariti želimo okolje, kjer so informacije:
-                        </p>
-                        <ul class="container">
-                            <li><label>zanesljive,</label></li>
-                            <li><label>neodvisne,</label></li>
-                            <li><label>ažurne in</label></li>
-                            <li><label>preprosto razumljive.</label></li>
-                        </ul>
-                        <p class="mb-8 text-justify hyphens-auto">
-                            Verjamemo, da lahko s podatkovno podprtimi orodji, naprednimi kalkulatorji in jasnimi
-                            razlagami zmanjšamo kompleksnost finančnega sveta in ga približamo vsakemu uporabniku.
-                            Naš dolgoročni cilj je postati <strong>vodilna primerjalna platforma v Sloveniji</strong> –
-                            tako za posameznike, ki iščejo najboljše pogoje za svoj prvi kredit ali varčevanje, kot tudi
-                            za podjetja, ki potrebujejo pregledne informacije za strateške finančne odločitve.
-                            FinPortal.si
-                            želimo razvijati v smeri, kjer bo vsak uporabnik dobil <strong>transparenten vpogled,
-                                realne
-                                izračune in nepristranske informacije</strong>, ki mu omogočajo, da izbere najboljšo
-                            rešitev zase.
-                        </p>
-                    </div>
-                </div>
-            </div>
         </div>
     </section>
 
     <!-- KONTAKT -->
-    <section class="py-20 bg-gray-100 border-t border-gray-200">
+    <section class="py-20 bg-gray-300 border-t border-gray-200">
         <div class="max-w-6xl mx-auto px-6">
             <h2 id="kontakt" class="scroll-mt-32 text-3xl font-bold text-center mb-10">Kontakt</h2>
 
             <div class="grid md:grid-cols-2 gap-10 items-start">
-                <div class="text-left">
-                    <div class="text-2xl font-bold mt-2 text-[#0B6B3A] inline-flex items-center gap-2">
-                        <img src="images/SVG_icons/email-svgrepo-com.webp" alt="Email" class="w-10 h-10" />
-                        <span>Pišite nam.</span>
-                    </div>
-                    <h3 class="text-2xl font-bold mt-2">Pomagajte nam izboljšati FinPortal.si</h3>
-                    <p class="mt-4 text-gray-700 leading-relaxed">
-                        Veseli bomo sporočila – predloga izboljšave, opozorila na napako ali vprašanja.
-                        Z veseljem prisluhnemo tudi bankam in partnerjem.
-                    </p>
+                <h3 class="text-2xl font-bold mt-2">Pomagajte nam izboljšati FinPortal.si</h3>
+                <p class="mt-4 text-gray-700 leading-relaxed">
+                    Veseli bomo sporočila – predloga izboljšave, opozorila na napako ali vprašanja.
+                    Z veseljem prisluhnemo tudi bankam in partnerjem.
+                </p>
 
-                    <div class="mt-6 grid sm:grid-cols-2 gap-3 text-sm">
-                        <div class="bg-white border border-gray-200 rounded-xl p-4">
-                            <div class="font-semibold text-gray-900">Predlog izboljšave</div>
-                            <div class="mt-1 text-gray-600">Kaj bi vam olajšalo primerjavo?</div>
-                        </div>
-                        <div class="bg-white border border-gray-200 rounded-xl p-4">
-                            <div class="font-semibold text-gray-900">Napaka / neskladje</div>
-                            <div class="mt-1 text-gray-600">Opazili ste napačen podatek ali izračun?</div>
-                        </div>
-                        <div class="bg-white border border-gray-200 rounded-xl p-4">
-                            <div class="font-semibold text-gray-900">Sodelovanje</div>
-                            <div class="mt-1 text-gray-600">Banka, broker ali partner? Pišite nam.</div>
-                        </div>
-                        <div class="bg-white border border-gray-200 rounded-xl p-4">
-                            <div class="font-semibold text-gray-900">Vsebina / pojmi</div>
-                            <div class="mt-1 text-gray-600">Kateri pojmi naj bodo bolje razloženi?</div>
-                        </div>
+                <div class="mt-6 grid sm:grid-cols-2 gap-3 text-sm">
+                    <div class="bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="font-semibold text-gray-900">Predlog izboljšave</div>
+                        <div class="mt-1 text-gray-600">Kaj bi vam olajšalo primerjavo?</div>
                     </div>
-
-                    <div class="mt-6 text-sm text-gray-600">
-                        Običajno odgovorimo v 1–2 delovnih dneh.
+                    <div class="bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="font-semibold text-gray-900">Napaka / neskladje</div>
+                        <div class="mt-1 text-gray-600">Opazili ste napačen podatek ali izračun?</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="font-semibold text-gray-900">Sodelovanje</div>
+                        <div class="mt-1 text-gray-600">Banka, broker ali partner? Pišite nam.</div>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-xl p-4">
+                        <div class="font-semibold text-gray-900">Vsebina / pojmi</div>
+                        <div class="mt-1 text-gray-600">Kateri pojmi naj bodo bolje razloženi?</div>
                     </div>
                 </div>
 
-                <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-                    <div class="text-lg font-semibold text-gray-900">Kontaktni obrazec</div>
-                    <div class="mt-1 text-sm text-gray-600">
-                        Ne deli občutljivih podatkov (npr. številke kartic, osebnih dokumentov).
-                    </div>
-
-                    <form id="contact-form" action="https://formspree.io/f/mlgpqeyk" method="POST"
-                        class="mt-6 space-y-4">
-                        <div id="contact-form-alert" class="hidden rounded-xl border p-3 text-sm"></div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Ime in priimek</label>
-                            <input type="text" name="name" placeholder="Ime in priimek" class="input w-full" required />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-                            <input type="email" name="email" placeholder="Email" class="input w-full" required />
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Sporočilo</label>
-                            <textarea name="message" placeholder="Sporočilo" class="input w-full h-32"
-                                required></textarea>
-                        </div>
-
-                        <button id="contact-form-submit" type="submit"
-                            class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
-                            Pošlji
-                        </button>
-                    </form>
-
-                    <div class="mt-4 text-xs text-gray-500">
-                        Opomba: obrazec pošlje sporočilo na info@finportal.si.
-                    </div>
+                <div class="mt-6 text-sm text-gray-600">
+                    Običajno odgovorimo v 1–2 delovnih dneh.
                 </div>
             </div>
 
-            <div class="mt-12">
-                <h3 class="text-2xl font-bold text-center mb-8">Pogosta vprašanja</h3>
-                <div class="max-w-3xl mx-auto space-y-3">
-                    <details class="bg-white border border-gray-200 rounded-xl p-4">
-                        <summary class="cursor-pointer font-semibold text-gray-900">Kako pogosto osvežujete podatke?
-                        </summary>
-                        <div class="mt-3 text-sm text-gray-700 leading-relaxed">
-                            Trudimo se, da so podatki čim bolj ažurni. Kljub temu se lahko pogoji pri ponudnikih
-                            spremenijo brez predhodnega obvestila – zato pred odločitvijo vedno preveri uradne pogoje.
-                        </div>
-                    </details>
-                    <details class="bg-white border border-gray-200 rounded-xl p-4">
-                        <summary class="cursor-pointer font-semibold text-gray-900">Ali so izračuni zavezujoči?
-                        </summary>
-                        <div class="mt-3 text-sm text-gray-700 leading-relaxed">
-                            Ne. Vsi izračuni so informativni in ne predstavljajo zavezujoče ponudbe ali finančnega
-                            nasveta.
-                        </div>
-                    </details>
-                    <details class="bg-white border border-gray-200 rounded-xl p-4">
-                        <summary class="cursor-pointer font-semibold text-gray-900">Ali je uporaba kalkulatorjev
-                            plačljiva?
-                        </summary>
-                        <div class="mt-3 text-sm text-gray-700 leading-relaxed">
-                            Ne. Vsi kalkulatorji so popolnoma brezplačni in dostopni vsem.
-                        </div>
-                    </details>
-                    <details class="bg-white border border-gray-200 rounded-xl p-4">
-                        <summary class="cursor-pointer font-semibold text-gray-900">Ali se moram za uporabo spletne
-                            strani in pridobivanje bančnih ponudb registrirati?
-                        </summary>
-                        <div class="mt-3 text-sm text-gray-700 leading-relaxed">
-                            Ne. Spletne strani in bančne ponudbe so popolnoma dostopne brez registracije.
-                        </div>
-                    </details>
-                    <details class="bg-white border border-gray-200 rounded-xl p-4">
-                        <summary class="cursor-pointer font-semibold text-gray-900">Zakaj se EOM razlikuje od nominalne
-                            obrestne mere?</summary>
-                        <div class="mt-3 text-sm text-gray-700 leading-relaxed">
-                            Nominalna obrestna mera upošteva le obresti, EOM pa upošteva tudi stroške (npr. provizije,
-                            mesečne stroške) in je zato praviloma boljši kazalnik za primerjavo ponudb.
-                        </div>
-                    </details>
+            <div class="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+                <div class="text-lg font-semibold text-gray-900">Kontaktni obrazec</div>
+                <div class="mt-1 text-sm text-gray-600">
+                    Ne deli občutljivih podatkov (npr. številke kartic, osebnih dokumentov).
+                </div>
+
+                <form id="contact-form" action="https://formspree.io/f/mlgpqeyk" method="POST" class="mt-6 space-y-4">
+                    <div id="contact-form-alert" class="hidden rounded-xl border p-3 text-sm"></div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Ime in priimek</label>
+                        <input type="text" name="name" placeholder="Ime in priimek" class="input w-full" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input type="email" name="email" placeholder="Email" class="input w-full" required />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Sporočilo</label>
+                        <textarea name="message" placeholder="Sporočilo" class="input w-full h-32" required></textarea>
+                    </div>
+
+                    <button id="contact-form-submit" type="submit"
+                        class="w-full py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
+                        Pošlji
+                    </button>
+                </form>
+
+                <div class="mt-4 text-xs text-gray-500">
+                    Opomba: obrazec pošlje sporočilo na info@finportal.si.
                 </div>
             </div>
+        </div>
+
+        <div class="mt-12">
+            <h3 class="text-2xl font-bold text-center mb-8">Pogosta vprašanja</h3>
+            <div class="max-w-3xl mx-auto space-y-3">
+                <details class="bg-white border border-gray-200 rounded-xl p-4">
+                    <summary class="cursor-pointer font-semibold text-gray-900">Kako pogosto osvežujete podatke?
+                    </summary>
+                    <div class="mt-3 text-sm text-gray-700 leading-relaxed">
+                        Trudimo se, da so podatki čim bolj ažurni. Kljub temu se lahko pogoji pri ponudnikih
+                        spremenijo brez predhodnega obvestila – zato pred odločitvijo vedno preveri uradne pogoje.
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-xl p-4">
+                    <summary class="cursor-pointer font-semibold text-gray-900">Ali so izračuni zavezujoči?
+                    </summary>
+                    <div class="mt-3 text-sm text-gray-700 leading-relaxed">
+                        Ne. Vsi izračuni so informativni in ne predstavljajo zavezujoče ponudbe ali finančnega
+                        nasveta.
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-xl p-4">
+                    <summary class="cursor-pointer font-semibold text-gray-900">Ali je uporaba kalkulatorjev
+                        plačljiva?
+                    </summary>
+                    <div class="mt-3 text-sm text-gray-700 leading-relaxed">
+                        Ne. Vsi kalkulatorji so popolnoma brezplačni in dostopni vsem.
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-xl p-4">
+                    <summary class="cursor-pointer font-semibold text-gray-900">Ali se moram za uporabo spletne
+                        strani in pridobivanje bančnih ponudb registrirati?
+                    </summary>
+                    <div class="mt-3 text-sm text-gray-700 leading-relaxed">
+                        Ne. Spletne strani in bančne ponudbe so popolnoma dostopne brez registracije.
+                    </div>
+                </details>
+                <details class="bg-white border border-gray-200 rounded-xl p-4">
+                    <summary class="cursor-pointer font-semibold text-gray-900">Zakaj se EOM razlikuje od nominalne
+                        obrestne mere?</summary>
+                    <div class="mt-3 text-sm text-gray-700 leading-relaxed">
+                        Nominalna obrestna mera upošteva le obresti, EOM pa upošteva tudi stroške (npr. provizije,
+                        mesečne stroške) in je zato praviloma boljši kazalnik za primerjavo ponudb.
+                    </div>
+                </details>
+            </div>
+        </div>
         </div>
     </section>
 
