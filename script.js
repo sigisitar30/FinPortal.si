@@ -343,10 +343,12 @@ function ensureFavicon() {
         if (sizes) link.setAttribute("sizes", sizes);
     };
 
-    upsertLink({ rel: "icon", href: "/images/favicon/favicon-96x96.png?v=5", type: "image/png", sizes: "96x96" });
-    upsertLink({ rel: "icon", href: "/images/favicon/favicon.ico?v=5", type: "image/x-icon" });
-    upsertLink({ rel: "shortcut icon", href: "/images/favicon/favicon.ico?v=5", type: "image/x-icon" });
-    upsertLink({ rel: "apple-touch-icon", href: "/images/favicon/apple-touch-icon.png?v=5" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon-16x16.png?v=6", type: "image/png", sizes: "16x16" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon-32x32.png?v=6", type: "image/png", sizes: "32x32" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon-96x96.png?v=6", type: "image/png", sizes: "96x96" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon.ico?v=6", type: "image/x-icon" });
+    upsertLink({ rel: "shortcut icon", href: "/images/favicon/favicon.ico?v=6", type: "image/x-icon" });
+    upsertLink({ rel: "apple-touch-icon", href: "/images/favicon/apple-touch-icon.png?v=6" });
 }
 
 async function withTempButtonText(btn, nextText, fn, opts = {}) {
