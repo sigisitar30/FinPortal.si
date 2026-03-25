@@ -1373,6 +1373,12 @@ function initGa4Base() {
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
+    let debugMode = false;
+    try {
+        const sp = new URLSearchParams(String(window.location.search ?? ""));
+        debugMode = sp.get("fp_debug") === "1";
+    } catch { }
+
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
 
@@ -1381,7 +1387,7 @@ function initGa4Base() {
     } catch (e) { }
 
     window.gtag('js', new Date());
-    window.gtag('config', measurementId, { cookie_expires: 7776000 });
+    window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
 
     const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${measurementId}"]`);
     if (existing) return;
