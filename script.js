@@ -1041,6 +1041,123 @@ function initShareUi() {
     });
 }
 
+function initLeadIntentTracking() {
+    const form = document.getElementById("lead-form");
+    if (!form) return;
+    if (form.dataset.fpLeadIntentBound === "1") return;
+    form.dataset.fpLeadIntentBound = "1";
+
+    const read = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return "";
+        return String(el.value ?? "").trim();
+    };
+
+    const readNumberLike = (id) => {
+        const raw = read(id);
+        if (!raw) return null;
+        const cleaned = raw.replace(/\./g, "").replace(/,/g, ".");
+        const n = Number(cleaned);
+        return Number.isFinite(n) ? n : null;
+    };
+
+    const isChecked = (id) => {
+        const el = document.getElementById(id);
+        return !!el?.checked;
+    };
+
+    const computeState = () => {
+        const product = read("lead-product");
+        const source = read("lead-source");
+
+        const required = [
+            { id: "lead-product", ok: () => !!product },
+            { id: "lead-name", ok: () => !!read("lead-name") },
+            { id: "lead-consent", ok: () => isChecked("lead-consent") },
+        ];
+
+        if (product === "deposit") {
+            required.push(
+                { id: "lead-deposit-amount", ok: () => Number.isFinite(readNumberLike("lead-deposit-amount")) },
+                { id: "lead-deposit-months", ok: () => Number.isFinite(readNumberLike("lead-deposit-months")) }
+            );
+        }
+
+        if (product === "loan") {
+            required.push(
+                { id: "lead-loan-amount", ok: () => Number.isFinite(readNumberLike("lead-loan-amount")) },
+                { id: "lead-loan-years", ok: () => Number.isFinite(readNumberLike("lead-loan-years")) }
+            );
+        }
+
+        const total = required.length;
+        const filled = required.reduce((acc, r) => acc + (r.ok() ? 1 : 0), 0);
+        const pct = total ? Math.round((filled / total) * 100) : 0;
+
+        return {
+            product: product || undefined,
+            source: source || undefined,
+            required_total: total,
+            required_filled: filled,
+            completion_pct: pct,
+            is_complete: total > 0 && filled === total,
+        };
+    };
+
+    let started = false;
+    let progress50Fired = false;
+    let progress80Fired = false;
+    let completeFired = false;
+    let lastInputAt = 0;
+
+    const track = (name, extra = {}) => {
+        const st = computeState();
+        fpTrack(name, { ...st, ...extra, page: "povprasevanje_beta" });
+    };
+
+    const maybeTrackProgress = () => {
+        const st = computeState();
+
+        if (!started) return;
+
+        if (!progress50Fired && st.completion_pct >= 50) {
+            progress50Fired = true;
+            fpTrack("lead_form_progress", { ...st, milestone: 50, page: "povprasevanje_beta" });
+        }
+
+        if (!progress80Fired && st.completion_pct >= 80) {
+            progress80Fired = true;
+            fpTrack("lead_form_progress", { ...st, milestone: 80, page: "povprasevanje_beta" });
+        }
+
+        if (!completeFired && st.is_complete) {
+            completeFired = true;
+            fpTrack("lead_form_complete", { ...st, page: "povprasevanje_beta" });
+        }
+    };
+
+    const onFirstInteraction = () => {
+        if (started) return;
+        started = true;
+        track("lead_form_start");
+        maybeTrackProgress();
+    };
+
+    const onInput = () => {
+        if (!started) onFirstInteraction();
+        const now = Date.now();
+        lastInputAt = now;
+        setTimeout(() => {
+            if (lastInputAt !== now) return;
+            maybeTrackProgress();
+        }, 350);
+    };
+
+    form.addEventListener("focusin", onFirstInteraction);
+    form.addEventListener("input", onInput);
+    form.addEventListener("change", onInput);
+}
+
 function syncDepositCompareTermBounds() {
     const termInput = document.getElementById("deposit-compare-term");
     const unitSelect = document.getElementById("deposit-compare-unit");
@@ -3984,6 +4101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initLeadPrefillCapture", initLeadPrefillCapture);
     safeInit("initLeadFormPrefill", initLeadFormPrefill);
     safeInit("initLeadFormUi", initLeadFormUi);
+    safeInit("initLeadIntentTracking", initLeadIntentTracking);
     safeInit("initBetaLeadTracking", initBetaLeadTracking);
 
     // Initialize tabs
