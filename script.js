@@ -5338,10 +5338,17 @@ function toNumberSl(val) {
 async function loadDepositOffersFromCsv() {
     try {
         // Prefer the daily generated all_banks.csv (stable filename, always newest), fallback to ./latest.csv.
-        let res = await fetch("./Podatki%20bank/all_banks.csv", { cache: "no-store" });
+        // Force non-www origin so relative fetches never resolve to https://www.finportal.si/ (seen in DevTools).
+        const origin = (window.location && window.location.origin)
+            ? window.location.origin.replace("://www.", "://")
+            : "";
+        const allBanksCsvUrl = `${origin}/Podatki%20bank/all_banks.csv`;
+        const latestCsvUrl = `${origin}/latest.csv`;
+
+        let res = await fetch(allBanksCsvUrl, { cache: "no-store" });
         let sourceLabel = "all_banks.csv";
         if (!res.ok) {
-            res = await fetch("./latest.csv", { cache: "no-store" });
+            res = await fetch(latestCsvUrl, { cache: "no-store" });
             sourceLabel = "latest.csv";
         }
         if (!res.ok) {
