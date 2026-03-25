@@ -351,6 +351,106 @@ function ensureFavicon() {
     upsertLink({ rel: "apple-touch-icon", href: "/images/favicon/apple-touch-icon.png?v=6" });
 }
 
+function injectBreadcrumbJsonLd() {
+    const head = document.head;
+    if (!head) return;
+
+    const existing = Array.from(head.querySelectorAll('script[type="application/ld+json"]')).some((s) => {
+        const t = String(s.textContent ?? "");
+        return /BreadcrumbList/i.test(t);
+    });
+    if (existing) return;
+
+    const canonicalHref = head.querySelector('link[rel="canonical"]')?.getAttribute("href");
+    const baseUrl = (() => {
+        try {
+            if (canonicalHref) return new URL(canonicalHref).origin;
+        } catch {
+            // ignore
+        }
+        return window.location.origin;
+    })();
+
+    const canonicalUrl = (() => {
+        try {
+            if (canonicalHref) return new URL(canonicalHref, baseUrl).toString();
+        } catch {
+            // ignore
+        }
+        return new URL(window.location.href).toString();
+    })();
+
+    const pathname = String(window.location.pathname ?? "/");
+    let file = pathname.split("/").filter(Boolean).pop() || "";
+    if (!file) file = "index.html";
+    if (!file.includes(".")) file = `${file}.html`;
+
+    const cleanTitle = () => {
+        const t = String(document.title ?? "").trim();
+        return t.replace(/\s*\|\s*FinPortal\.si\s*$/i, "").trim() || t;
+    };
+
+    const pageTitle = cleanTitle();
+
+    const routeMap = {
+        "kreditni-kalkulator.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Kreditni kalkulator" },
+        "depozitni-kalkulator.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Depozitni kalkulator" },
+        "investicijski-kalkulator.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Investicijski kalkulator" },
+        "eom-kalkulator.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "EOM kalkulator" },
+        "kreditna-sposobnost.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Kreditna sposobnost" },
+        "izgubljene-obresti.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Izgubljene obresti" },
+        "menjalniski-kalkulator.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Menjalniški kalkulator" },
+        "leasing-vs-kredit.html": { sectionName: "Kalkulatorji", sectionUrl: `${baseUrl}/kalkulatorji/`, pageName: "Leasing vs kredit" },
+
+        "primerjava-depozitov.html": { sectionName: "Primerjave", sectionUrl: `${baseUrl}/`, pageName: "Primerjava depozitov" },
+
+        "financni-leksikon.html": { sectionName: null, sectionUrl: null, pageName: "Finančni leksikon" },
+
+        "piskotki.html": { sectionName: "Pravno", sectionUrl: `${baseUrl}/`, pageName: "Piškotki" },
+        "pogoji-uporabe.html": { sectionName: "Pravno", sectionUrl: `${baseUrl}/`, pageName: "Pogoji uporabe" },
+        "politika-zasebnosti.html": { sectionName: "Pravno", sectionUrl: `${baseUrl}/`, pageName: "Politika zasebnosti" },
+        "pravno-obvestilo.html": { sectionName: "Pravno", sectionUrl: `${baseUrl}/`, pageName: "Pravno obvestilo" },
+    };
+
+    const items = [];
+    items.push({ "@type": "ListItem", position: 1, name: "Domov", item: `${baseUrl}/` });
+
+    if (pathname.startsWith("/clanki")) {
+        items.push({ "@type": "ListItem", position: 2, name: "Članki", item: `${baseUrl}/clanki/` });
+        const name = pageTitle || "Članek";
+        items.push({ "@type": "ListItem", position: 3, name, item: canonicalUrl });
+    } else if (pathname.startsWith("/kalkulatorji")) {
+        items.push({ "@type": "ListItem", position: 2, name: "Kalkulatorji", item: `${baseUrl}/kalkulatorji/` });
+        if (!/\/kalkulatorji\/?$/.test(pathname)) {
+            const name = pageTitle;
+            items.push({ "@type": "ListItem", position: 3, name, item: canonicalUrl });
+        }
+    } else if (file === "index.html" && (pathname === "/" || pathname === "")) {
+        // home only
+    } else {
+        const cfg = routeMap[file] ?? null;
+        if (cfg && cfg.sectionName && cfg.sectionUrl) {
+            items.push({ "@type": "ListItem", position: 2, name: cfg.sectionName, item: cfg.sectionUrl });
+            items.push({ "@type": "ListItem", position: 3, name: cfg.pageName || pageTitle, item: canonicalUrl });
+        } else {
+            items.push({ "@type": "ListItem", position: 2, name: pageTitle || file, item: canonicalUrl });
+        }
+    }
+
+    if (items.length < 2) return;
+
+    const data = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": items,
+    };
+
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.textContent = JSON.stringify(data);
+    head.appendChild(script);
+}
+
 async function withTempButtonText(btn, nextText, fn, opts = {}) {
     if (!btn) return fn();
 
@@ -4020,6 +4120,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     safeInit("ensureFavicon", ensureFavicon);
+
+    safeInit("injectBreadcrumbJsonLd", injectBreadcrumbJsonLd);
 
     safeInit("initShareUi", initShareUi);
 
