@@ -41,4 +41,6 @@
 - [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
 - [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
 - [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiseln6e vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
+
 
