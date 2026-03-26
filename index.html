@@ -154,12 +154,19 @@
     </header>
 
     <!-- HERO -->
-    <section id="home" class="scroll-mt-32 pt-24 pb-16 bg-gradient-to-b from-white to-gray-50">
+    <section id="home" class="scroll-mt-32 pt-24 pb-16 bg-gradient-to-b from-white via-white to-gray-50">
         <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-[1fr_1.08fr] gap-12 items-center">
 
             <div>
-                <h1 class="text-4xl md:text-5xl font-extrabold leading-tight mb-6">
-                    Primerjaj. Prihrani. <br>
+                <div
+                    class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm">
+                    <span class="h-2 w-2 rounded-full bg-[#0B6B3A]" aria-hidden="true"></span>
+                    Slovenija • finančni kalkulatorji in primerjave
+                </div>
+
+                <h1 class="mt-5 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight mb-6">
+                    Primerjaj. Prihrani.
+                    <br>
                     <span class="text-[#0B6B3A]">Izberi pametno.</span>
                 </h1>
 
@@ -170,7 +177,7 @@
 
                 <div class="flex flex-wrap gap-4">
                     <a href="kreditni-kalkulator.html"
-                        class="px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold">
+                        class="px-6 py-3 bg-[#0B6B3A] text-white rounded-xl font-semibold hover:bg-[#095a32] transition">
                         Izračunaj svoj obrok kredita
                     </a>
 
@@ -180,12 +187,18 @@
                     </a>
                 </div>
 
-                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-600 max-w-xl">
-                    <div class="leading-snug">
-                        Vnesi znesek, dobo in obrestno mero ter dobi pregled stroškov.
+                <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-gray-700 max-w-2xl">
+                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+                        <div class="font-semibold text-gray-900">Krediti</div>
+                        <div class="mt-1 text-gray-600 leading-snug">Obroki, stroški in EOM – hitro in pregledno.</div>
                     </div>
-                    <div class="leading-snug">
-                        Primerjaj depozite bank glede na znesek in dobo vezave.
+                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+                        <div class="font-semibold text-gray-900">Depoziti</div>
+                        <div class="mt-1 text-gray-600 leading-snug">Primerjava bank glede na znesek in ročnosti.</div>
+                    </div>
+                    <div class="rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
+                        <div class="font-semibold text-gray-900">Razlage</div>
+                        <div class="mt-1 text-gray-600 leading-snug">Evergreen vodiči in pojmi – brez balasta.</div>
                     </div>
                 </div>
             </div>
@@ -214,6 +227,44 @@
                     <button type="button" id="hero-dot-2" class="h-2.5 w-2.5 rounded-full transition-colors"
                         aria-label="Prikaži tretjo HERO sliko"></button>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold">Najhitrejša pot do odgovora</h2>
+                <p class="mt-3 text-gray-600 max-w-2xl mx-auto">Tri stvari, ki jih na FinPortal.si uporabniki
+                    najpogosteje potrebujejo – na enem mestu.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <a href="kalkulatorji/"
+                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+                    <div class="text-sm font-semibold text-[#0B6B3A]">Kalkulatorji</div>
+                    <div class="mt-2 text-xl font-bold">Izračuni brez kompliciranja</div>
+                    <div class="mt-2 text-gray-700">Kredit, depozit, EOM, investicije – hitro do številk in razlage.
+                    </div>
+                    <div class="mt-4 text-sm font-semibold text-gray-900">Odpri kalkulatorje →</div>
+                </a>
+
+                <a href="primerjava-depozitov.html"
+                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+                    <div class="text-sm font-semibold text-[#0B6B3A]">Primerjave</div>
+                    <div class="mt-2 text-xl font-bold">Primerjaj banke na enostaven način</div>
+                    <div class="mt-2 text-gray-700">Filtriraj po znesku in ročnosti ter izberi pametno.</div>
+                    <div class="mt-4 text-sm font-semibold text-gray-900">Primerjaj depozite →</div>
+                </a>
+
+                <a href="clanki/"
+                    class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+                    <div class="text-sm font-semibold text-[#0B6B3A]">Članki</div>
+                    <div class="mt-2 text-xl font-bold">Razlage, ki držijo v praksi</div>
+                    <div class="mt-2 text-gray-700">Kratki vodiči in pojmi, ki ti pomagajo sprejeti boljšo odločitev.
+                    </div>
+                    <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članke →</div>
+                </a>
             </div>
         </div>
     </section>
@@ -844,7 +895,7 @@
     </footer>
 
     <!-- JavaScript -->
-    <script src="script.js?v=2026-03-23" type="text/javascript"></script>
+    <script src="script.js?v=2026-03-26-1" type="text/javascript"></script>
 
     <script type="text/javascript">
         (function () {
