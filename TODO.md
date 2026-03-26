@@ -26,3 +26,15 @@
 - [x] **[2]** Implementirati generiranje `BreadcrumbList` v `script.js` za ključne strani (root kalkulatorji/primerjave/leksikon) z mappingi
 - [x] **[3]** Dodati `BreadcrumbList` v `clanki/template-clanek.html` (Domov → Članki → Naslov)
 - [x] **[6]** Batch posodobitev obstoječih člankov v `/clanki/*.html` (inline BreadcrumbList)
+## My additional suggestions
+- [ ] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
+- [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
+- [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
+- [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
+- [ ] **[27]** Dodaj "share" gumb na člankih
+- [ ] **[28]** Poenostavi navigacijo (kjer lahko)
+- [ ] **[29]** Izboljšaj vizualno hierarhijo
+- [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
+- [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
+- [ ] **[32]** Dodaj Članke, FAQ vsebino
+
