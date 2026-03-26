@@ -38,3 +38,7 @@
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
 - [ ] **[32]** Dodaj Članke, FAQ vsebino
 - [ ] **[33]** Dodaj slike in grafe k člankom
+- [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
+- [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
+- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiseln6e vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+
