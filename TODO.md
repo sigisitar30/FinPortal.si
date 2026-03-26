@@ -37,4 +37,4 @@
 - [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
 - [ ] **[32]** Dodaj Članke, FAQ vsebino
-
+- [ ] **[33]** Dodaj slike in grafe k člankom
