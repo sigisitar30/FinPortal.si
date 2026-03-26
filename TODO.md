@@ -43,5 +43,6 @@
 - [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiseln6e vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
 - [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
 - [ ] **[38]**povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
+- [ ] **[39]** v script.js je treba narediti link kjer pod tabelo za depozite piše moj info@finportal.si mail - povezava do kontaktnega obrazca
 
 
