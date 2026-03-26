@@ -1169,6 +1169,7 @@ function initLeadIntentTracking() {
     const computeState = () => {
         const product = read("lead-product");
         const source = read("lead-source");
+        const leadType = product === "loan" ? "credit" : (product === "deposit" ? "deposit" : "");
 
         const required = [
             { id: "lead-product", ok: () => !!product },
@@ -1196,6 +1197,7 @@ function initLeadIntentTracking() {
 
         return {
             product: product || undefined,
+            lead_type: leadType || undefined,
             source: source || undefined,
             required_total: total,
             required_filled: filled,
@@ -1895,7 +1897,25 @@ function initLeadFormUi() {
     form.addEventListener("submit", (e) => {
         e.preventDefault();
         if (!enforceConsent()) return;
-        fpLeadValidateContact();
+        const contact = fpLeadValidateContact();
+        if (!contact.ok) return;
+
+        const product = productEl ? String(productEl.value ?? "").trim() : "";
+        const leadType = product === "loan" ? "credit" : (product === "deposit" ? "deposit" : "");
+        const source = fpLeadReadText("lead-source") || undefined;
+
+        fpTrack(
+            "lead_form_submit",
+            {
+                product: product || undefined,
+                lead_type: leadType || undefined,
+                source,
+                page: "povprasevanje_beta",
+            },
+            {
+                transport_type: "beacon",
+            }
+        );
     });
 
     setTemplate();
