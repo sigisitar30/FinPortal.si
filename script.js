@@ -1631,7 +1631,10 @@ function fpLeadWriteText(id, value) {
 
 function fpLeadFormatThousandsSiNumber(n) {
     if (!Number.isFinite(n)) return "";
-    return formatThousandsSI(String(Math.round(n)));
+    const whole = Math.round(n);
+    const sign = whole < 0 ? "-" : "";
+    const abs = Math.abs(whole);
+    return sign + String(abs).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
 }
 
 function fpLeadSafeLocalStorageSet(key, value) {
