@@ -1809,6 +1809,15 @@ function initLeadFormUi() {
     const productEl = document.getElementById("lead-product");
     const templateEl = document.getElementById("lead-email-template");
     const consentEl = document.getElementById("lead-consent");
+    const submitBtn = document.getElementById("lead-submit-btn");
+    const isTestMode = (() => {
+        try {
+            const params = new URLSearchParams(window.location.search || "");
+            return params.get("test") === "1";
+        } catch {
+            return false;
+        }
+    })();
 
     const enforceConsent = () => {
         if (!consentEl) return true;
@@ -1868,6 +1877,13 @@ function initLeadFormUi() {
         };
 
         templateEl.value = fpLeadComposeOtpTemplate(state);
+
+        if (submitBtn) {
+            submitBtn.disabled = !isTestMode;
+            submitBtn.setAttribute("aria-disabled", (!isTestMode).toString());
+            submitBtn.classList.toggle("opacity-60", !isTestMode);
+            submitBtn.classList.toggle("cursor-not-allowed", !isTestMode);
+        }
     };
 
     const bind = (id) => {
