@@ -1819,6 +1819,17 @@ function initLeadFormUi() {
         }
     })();
 
+    if (isTestMode) {
+        try {
+            if (document?.documentElement?.dataset) {
+                document.documentElement.dataset.cookieConsent = "accepted";
+            }
+        } catch { }
+        try {
+            enableGa4Analytics();
+        } catch { }
+    }
+
     const enforceConsent = () => {
         if (!consentEl) return true;
         if (consentEl.checked) return true;
