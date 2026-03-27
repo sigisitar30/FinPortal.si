@@ -47,6 +47,6 @@
 - [ ] **[40]** kako iz ga4 analitike izločim sebe?
 - [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
-- [ ] **[43]** Logotipi (scit8 in scitmali) in faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju
+- [ ] **[43]** faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju
 
 
