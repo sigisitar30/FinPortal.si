@@ -45,5 +45,8 @@
 - [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
 - [ ] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
 - [ ] **[40]** kako iz ga4 analitike izločim sebe?
+- [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
+- [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
+- [ ] **[43]** Logotipi (scit8 in scitmali) in faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju
 
 
