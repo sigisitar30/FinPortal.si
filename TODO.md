@@ -44,6 +44,6 @@
 - [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
 - [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
 - [ ] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
-- [ ] **[40]** ?
+- [ ] **[40]** kako iz ga4 analitike izločim sebe?
 
 
