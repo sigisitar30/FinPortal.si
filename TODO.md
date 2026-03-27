@@ -61,7 +61,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M5 13l4 4L19 7" />
             </svg>
-            <span class="text-gray-700">Podatki iz vseh slovenskih bank</span>
+            <span class="text-gray-700">Podatki iz slovenskih bank</span>
         </div>
 
         <div class="flex items-center justify-center gap-2">
@@ -70,7 +70,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M5 13l4 4L19 7" />
             </svg>
-            <span class="text-gray-700">Neodvisen slovenski finančni portal</span>
+            <span class="text-gray-700">Neodvisen finančni portal</span>
         </div>
 
         <div class="flex items-center justify-center gap-2">
@@ -79,7 +79,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round"
                     d="M5 13l4 4L19 7" />
             </svg>
-            <span class="text-gray-700">Ažurni podatki, posodobljeni dnevno</span>
+            <span class="text-gray-700">Brezplačno in brez registracije</span>
         </div>
 
     </div>
