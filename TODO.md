@@ -48,5 +48,39 @@
 - [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
 - [ ] **[43]** faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju
+- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
 
 
+<!-- SOCIAL PROOF BAR -->
+<div class="w-full bg-gray-50 border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-6 py-3 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-sm">
+
+        <div class="flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-[#0B6B3A]" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-700">Podatki iz vseh slovenskih bank</span>
+        </div>
+
+        <div class="flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-[#0B6B3A]" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-700">Neodvisen slovenski finančni portal</span>
+        </div>
+
+        <div class="flex items-center justify-center gap-2">
+            <svg class="w-5 h-5 text-[#0B6B3A]" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M5 13l4 4L19 7" />
+            </svg>
+            <span class="text-gray-700">Ažurni podatki, posodobljeni dnevno</span>
+        </div>
+
+    </div>
+</div>
