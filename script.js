@@ -1522,6 +1522,9 @@ function enableGa4Analytics() {
             const mid = String(window.__fpGa4MeasurementId || "").trim();
             if (mid) {
                 window.gtag('config', mid, { cookie_expires: 7776000 });
+                try {
+                    window.gtag('event', 'page_view', { send_to: mid });
+                } catch (e) { }
             }
         } catch (e) { }
     }
