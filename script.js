@@ -1772,6 +1772,57 @@ function fpLeadComposeOtpTemplate(state) {
     return lines.join("\n");
 }
 
+function fpLeadValidateName() {
+    const raw = fpLeadReadText("lead-name");
+    const trimmed = raw.trim();
+    const errors = [];
+
+    if (!trimmed) {
+        errors.push("Vnesi ime in priimek.");
+    } else {
+        const nameOk = /^[A-Za-zÀ-ÖØ-öø-ÿČŠŽčšžĐđĆćŔŕŐőŰű'\-\s]+$/u.test(trimmed);
+        if (!nameOk) {
+            errors.push("Ime in priimek naj vsebuje samo črke.");
+        }
+        if (trimmed.replace(/\s+/g, " ").split(" ").filter(Boolean).length < 2) {
+            errors.push("Vnesi ime in priimek (vsaj 2 besedi).");
+        }
+    }
+
+    return { ok: errors.length === 0, errors };
+}
+
+function fpLeadValidateProductFields(product) {
+    const p = String(product ?? "").trim();
+    const errors = [];
+
+    const requireNumberInRange = (id, label, min, max) => {
+        const n = fpLeadReadNumber(id);
+        if (!Number.isFinite(n)) {
+            errors.push(`${label} mora biti številka.`);
+            return;
+        }
+        if (Number.isFinite(min) && n < min) {
+            errors.push(`${label} je prenizek (min. ${min}).`);
+        }
+        if (Number.isFinite(max) && n > max) {
+            errors.push(`${label} je previsok (max. ${max}).`);
+        }
+    };
+
+    if (p === "deposit") {
+        requireNumberInRange("lead-deposit-amount", "Znesek depozita", 1, 100000000);
+        requireNumberInRange("lead-deposit-months", "Doba vezave (meseci)", 1, 360);
+    }
+
+    if (p === "loan") {
+        requireNumberInRange("lead-loan-amount", "Znesek kredita", 1, 100000000);
+        requireNumberInRange("lead-loan-years", "Doba (leta)", 1, 40);
+    }
+
+    return { ok: errors.length === 0, errors };
+}
+
 function fpLeadValidateContact() {
     const phoneRaw = fpLeadReadText("lead-phone");
     const emailRaw = fpLeadReadText("lead-email");
@@ -1796,19 +1847,21 @@ function fpLeadValidateContact() {
             errors.push("E-pošta ni v pravilnem formatu (npr. ime@domena.si). ");
         }
     }
-
-    const errorEl = document.getElementById("lead-contact-error");
-    if (errorEl) {
-        if (errors.length) {
-            errorEl.textContent = errors.join(" ").trim();
-            errorEl.classList.remove("hidden");
-        } else {
-            errorEl.textContent = "";
-            errorEl.classList.add("hidden");
-        }
-    }
-
     return { ok: errors.length === 0, errors };
+}
+
+function fpLeadSetErrorBox(errors) {
+    const errorEl = document.getElementById("lead-contact-error");
+    if (!errorEl) return;
+
+    const list = Array.isArray(errors) ? errors.filter(Boolean) : [];
+    if (list.length) {
+        errorEl.textContent = list.join(" ").trim();
+        errorEl.classList.remove("hidden");
+    } else {
+        errorEl.textContent = "";
+        errorEl.classList.add("hidden");
+    }
 }
 
 function initLeadFormUi() {
@@ -1819,6 +1872,7 @@ function initLeadFormUi() {
     const templateEl = document.getElementById("lead-email-template");
     const consentEl = document.getElementById("lead-consent");
     const submitBtn = document.getElementById("lead-submit-btn");
+    let touched = false;
     const isTestMode = (() => {
         try {
             const params = new URLSearchParams(window.location.search || "");
@@ -1869,7 +1923,15 @@ function initLeadFormUi() {
         fpLeadToggleProductSections(product);
 
         const contactValidation = fpLeadValidateContact();
-        void contactValidation;
+        const nameValidation = fpLeadValidateName();
+        const productValidation = fpLeadValidateProductFields(product);
+        if (touched) {
+            fpLeadSetErrorBox([
+                ...nameValidation.errors,
+                ...productValidation.errors,
+                ...contactValidation.errors,
+            ]);
+        }
 
         const consentTime = new Date().toISOString().slice(0, 16).replace("T", " ");
         const state = {
@@ -1899,18 +1961,23 @@ function initLeadFormUi() {
         templateEl.value = fpLeadComposeOtpTemplate(state);
 
         if (submitBtn) {
-            submitBtn.disabled = !isTestMode;
-            submitBtn.setAttribute("aria-disabled", (!isTestMode).toString());
-            submitBtn.classList.toggle("opacity-60", !isTestMode);
-            submitBtn.classList.toggle("cursor-not-allowed", !isTestMode);
+            const canSubmit = !!product && consentChecked && contactValidation.ok && nameValidation.ok && productValidation.ok;
+            submitBtn.disabled = !canSubmit;
+            submitBtn.setAttribute("aria-disabled", (!canSubmit).toString());
+            submitBtn.classList.toggle("opacity-60", !canSubmit);
+            submitBtn.classList.toggle("cursor-not-allowed", !canSubmit);
         }
     };
 
     const bind = (id) => {
         const el = document.getElementById(id);
         if (!el) return;
-        el.addEventListener("change", setTemplate);
-        el.addEventListener("input", setTemplate);
+        const onChange = () => {
+            touched = true;
+            setTemplate();
+        };
+        el.addEventListener("change", onChange);
+        el.addEventListener("input", onChange);
     };
 
     [
@@ -1932,11 +1999,21 @@ function initLeadFormUi() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
+        touched = true;
         if (!enforceConsent()) return;
-        const contact = fpLeadValidateContact();
-        if (!contact.ok) return;
 
         const product = productEl ? String(productEl.value ?? "").trim() : "";
+        const contact = fpLeadValidateContact();
+        const name = fpLeadValidateName();
+        const fields = fpLeadValidateProductFields(product);
+
+        fpLeadSetErrorBox([
+            ...name.errors,
+            ...fields.errors,
+            ...contact.errors,
+        ]);
+
+        if (!contact.ok || !name.ok || !fields.ok) return;
         const leadType = product === "loan" ? "credit" : (product === "deposit" ? "deposit" : "");
         const source = fpLeadReadText("lead-source") || undefined;
 
@@ -1952,6 +2029,12 @@ function initLeadFormUi() {
                 transport_type: "beacon",
             }
         );
+
+        if (!isTestMode) {
+            fpLeadSetErrorBox([
+                "Hvala! Obrazec je v beta fazi – povpraševanja se trenutno še ne pošiljajo samodejno."
+            ]);
+        }
     });
 
     setTemplate();
