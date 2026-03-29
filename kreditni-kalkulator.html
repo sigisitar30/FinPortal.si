@@ -271,23 +271,47 @@
                                     </div>
 
                                     <div class="md:col-span-2">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">Predčasno vplačilo
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Predčasna vplačila
                                             (neobvezno)</label>
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            <input type="text" id="loan-extra-amount" value="0" min="0" max="999999999"
-                                                step="50" class="input w-full format-number" inputmode="numeric" />
-                                            <select id="loan-extra-frequency" class="input w-full md:col-span-2">
-                                                <option value="none" selected>Brez</option>
-                                                <option value="monthly">Mesečno</option>
-                                                <option value="yearly">Letno</option>
-                                            </select>
+                                            <div>
+                                                <label for="loan-extra-amount"
+                                                    class="block text-xs font-medium text-gray-600 mb-1">Redno vplačilo
+                                                    (znesek €)</label>
+                                                <input type="text" id="loan-extra-amount" value="0" min="0"
+                                                    max="999999999" step="50" class="input w-full format-number"
+                                                    inputmode="numeric" />
+                                            </div>
+                                            <div class="md:col-span-2">
+                                                <label for="loan-extra-frequency"
+                                                    class="block text-xs font-medium text-gray-600 mb-1">Redno vplačilo
+                                                    (pogostost)</label>
+                                                <select id="loan-extra-frequency" class="input w-full">
+                                                    <option value="none" selected>Brez</option>
+                                                    <option value="monthly">Mesečno</option>
+                                                    <option value="yearly">Letno</option>
+                                                </select>
+                                            </div>
                                         </div>
 
                                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                                            <input type="text" id="loan-lump-amount" value="0" min="0" max="999999999"
-                                                step="50" class="input w-full format-number" inputmode="numeric" />
-                                            <input type="number" id="loan-lump-month" value="0" min="0" max="600"
-                                                step="1" class="input w-full md:col-span-2" />
+                                            <div>
+                                                <label for="loan-lump-amount"
+                                                    class="block text-xs font-medium text-gray-600 mb-1">Enkratno
+                                                    poplačilo
+                                                    (znesek €)</label>
+                                                <input type="text" id="loan-lump-amount" value="0" min="0"
+                                                    max="999999999" step="50" class="input w-full format-number"
+                                                    inputmode="numeric" />
+                                            </div>
+                                            <div class="md:col-span-2">
+                                                <label for="loan-lump-month"
+                                                    class="block text-xs font-medium text-gray-600 mb-1">Enkratno
+                                                    poplačilo
+                                                    (mesec izvedbe)</label>
+                                                <input type="number" id="loan-lump-month" value="0" min="0" max="600"
+                                                    step="1" class="input w-full" />
+                                            </div>
                                         </div>
                                         <div class="mt-2 text-xs text-gray-600">
                                             Enkratno poplačilo: vnesi znesek in mesec izvedbe (0 = brez). Mesec 1 pomeni
