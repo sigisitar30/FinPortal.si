@@ -18,7 +18,7 @@
 
 ## Vsebina + deljenje (rast)
 - [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
-- [ ] **[27]** Dodaj "share" gumb na člankih
+- [x] **[27]** Dodaj "share" gumb na člankih
 - [ ] **[32]** Dodaj Članke, FAQ vsebino
 - [ ] **[33]** Dodaj slike in grafe k člankom
 - [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)

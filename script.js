@@ -4324,6 +4324,88 @@ function initNumberFormatting() {
     });
 }
 
+function initArticleShare() {
+    try {
+        const path = String(window.location.pathname || "");
+        if (!path.includes("/clanki/")) return;
+
+        const article = document.querySelector("article");
+        if (!article) return;
+
+        const h1 = article.querySelector("h1");
+        if (!h1) return;
+
+        const existing = document.getElementById("fp-article-share");
+        if (existing) return;
+
+        const slot = document.getElementById("fp-article-share-slot");
+        const wrap = slot || document.createElement("div");
+        if (!slot) wrap.className = "mt-4";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = "fp-article-share";
+        btn.setAttribute("aria-label", "Deli članek");
+        btn.className = "px-4 py-2 rounded-xl border border-gray-300 bg-white font-semibold hover:bg-gray-50 transition";
+        btn.textContent = "Deli";
+
+        const getSharePayload = () => {
+            const url = window.location.href;
+            const title = String(document.title || "").trim();
+            const metaDesc = document.querySelector('meta[name="description"]');
+            const text = metaDesc ? String(metaDesc.getAttribute("content") || "").trim() : "";
+            return { url, title, text };
+        };
+
+        const setTempText = (text) => {
+            const prev = btn.textContent;
+            btn.textContent = text;
+            window.setTimeout(() => {
+                btn.textContent = prev;
+            }, 1500);
+        };
+
+        btn.addEventListener("click", async () => {
+            const { url, title, text } = getSharePayload();
+            try {
+                if (navigator.share) {
+                    await navigator.share({ title, text, url });
+                    return;
+                }
+            } catch {
+                // fallback below
+            }
+
+            try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(url);
+                    setTempText("Kopirano");
+                    return;
+                }
+            } catch {
+                // fallback below
+            }
+
+            try {
+                const input = document.createElement("input");
+                input.value = url;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand("copy");
+                document.body.removeChild(input);
+                setTempText("Kopirano");
+            } catch {
+                setTempText("Ne gre");
+            }
+        });
+
+        wrap.appendChild(btn);
+        if (!slot) h1.insertAdjacentElement("afterend", wrap);
+    } catch (e) {
+        console.warn("initArticleShare failed", e);
+    }
+}
+
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
@@ -4519,6 +4601,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialize formatting for numeric inputs
     safeInit("initNumberFormatting", initNumberFormatting);
+    safeInit("initArticleShare", initArticleShare);
 
     // Normalize rate inputs to two decimals + decimal comma
     normalizeRateInput("loan-rate");
