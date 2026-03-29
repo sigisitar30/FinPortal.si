@@ -1477,7 +1477,7 @@ function formatPercentSI(num) {
 }
 
 function initGa4Base() {
-    const measurementId = "G-1G82TV8KFZ";
+    const measurementId = "G-D5JQ8PB9MC";
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
