@@ -423,28 +423,47 @@
             const filterButtons = document.querySelectorAll('.category-filter');
             const calculatorCategories = document.querySelectorAll('.calculator-category');
 
+            const applyCategory = (category) => {
+                // default
+                const safeCategory = category || 'all';
+
+                // Posodobi gumbe
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('bg-[#0B6B3A]', 'text-white');
+                    btn.classList.add('border', 'border-gray-300', 'bg-white');
+                });
+
+                const activeBtn = Array.from(filterButtons).find((btn) => btn.dataset.category === safeCategory);
+                if (activeBtn) {
+                    activeBtn.classList.remove('border', 'border-gray-300', 'bg-white');
+                    activeBtn.classList.add('bg-[#0B6B3A]', 'text-white');
+                }
+
+                // Prikaži/skrij kategorije
+                calculatorCategories.forEach(calcCategory => {
+                    if (safeCategory === 'all' || calcCategory.dataset.category === safeCategory) {
+                        calcCategory.style.display = 'block';
+                    } else {
+                        calcCategory.style.display = 'none';
+                    }
+                });
+            };
+
             filterButtons.forEach(button => {
                 button.addEventListener('click', function () {
                     const category = this.dataset.category;
-
-                    // Posodobi gumbe
-                    filterButtons.forEach(btn => {
-                        btn.classList.remove('bg-[#0B6B3A]', 'text-white');
-                        btn.classList.add('border', 'border-gray-300', 'bg-white');
-                    });
-                    this.classList.remove('border', 'border-gray-300', 'bg-white');
-                    this.classList.add('bg-[#0B6B3A]', 'text-white');
-
-                    // Prikaži/skrij kategorije
-                    calculatorCategories.forEach(calcCategory => {
-                        if (category === 'all' || calcCategory.dataset.category === category) {
-                            calcCategory.style.display = 'block';
-                        } else {
-                            calcCategory.style.display = 'none';
-                        }
-                    });
+                    applyCategory(category);
                 });
             });
+
+            // Support links from navigation dropdown: kalkulatorji/?category=...
+            try {
+                const params = new URLSearchParams(window.location.search || '');
+                const category = params.get('category');
+                if (category) applyCategory(category);
+            } catch (e) {
+                // no-op
+            }
         });
     </script>
 
