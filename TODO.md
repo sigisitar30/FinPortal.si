@@ -26,7 +26,7 @@
 ## Tehnično (perf + struktura)
 - [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
 - [ ] **[9]** Poenotiti structured data (JSON-LD) še na vseh ostalih “legal/info” straneh inline (brez odvisnosti od JS)
-- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
+- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
 
 ## Večji projekti / kasneje
 - [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
