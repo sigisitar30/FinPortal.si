@@ -1482,6 +1482,9 @@ function initGa4Base() {
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
+    window.__fpGa4MeasurementId = measurementId;
+    window.__fpGa4TagLoaderId = tagLoaderId;
+
     let debugMode = false;
     try {
         const sp = new URLSearchParams(String(window.location.search ?? ""));
@@ -1513,6 +1516,13 @@ function enableGa4Analytics() {
     if (typeof window.gtag === 'function') {
         try {
             window.gtag('consent', 'update', { analytics_storage: 'granted' });
+        } catch (e) { }
+
+        try {
+            const mid = String(window.__fpGa4MeasurementId || "").trim();
+            if (mid) {
+                window.gtag('config', mid, { cookie_expires: 7776000 });
+            }
         } catch (e) { }
     }
 }
