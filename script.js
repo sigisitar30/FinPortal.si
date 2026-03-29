@@ -1491,6 +1491,8 @@ function initGa4Base() {
         debugMode = sp.get("fp_debug") === "1";
     } catch { }
 
+    window.__fpGa4DebugMode = debugMode;
+
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
 
@@ -1521,9 +1523,10 @@ function enableGa4Analytics() {
         try {
             const mid = String(window.__fpGa4MeasurementId || "").trim();
             if (mid) {
-                window.gtag('config', mid, { cookie_expires: 7776000 });
+                const dbg = window.__fpGa4DebugMode ? true : undefined;
+                window.gtag('config', mid, { cookie_expires: 7776000, debug_mode: dbg });
                 try {
-                    window.gtag('event', 'page_view', { send_to: mid });
+                    window.gtag('event', 'page_view', { send_to: mid, debug_mode: dbg });
                 } catch (e) { }
             }
         } catch (e) { }
