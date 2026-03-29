@@ -2706,9 +2706,8 @@ function groupKalkulatorjiDropdown() {
 
     if (menu.querySelector('[data-fp-kalk-group="true"]')) return;
 
-    const summaryLink = details.querySelector('summary a[href]');
-    const baseHref = (summaryLink?.getAttribute("href") || "kalkulatorji/").trim() || "kalkulatorji/";
-    const baseUrl = new URL(baseHref, window.location.href);
+    // Always point to the root katalog to avoid relative URL issues on /kalkulatorji/ pages
+    const baseUrl = new URL("/kalkulatorji/", window.location.origin);
 
     const buildLink = (label, href) => {
         const a = document.createElement("a");
