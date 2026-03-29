@@ -3962,13 +3962,15 @@ function fpFormatMonthsToYearsMonths(totalMonths) {
     return `${y} let ${rem} mesecev`;
 }
 
-function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, moratoriumMonths, extraAmount, extraFrequency) {
+function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, moratoriumMonths, extraAmount, extraFrequency, lumpAmount, lumpMonth) {
     const P0 = Number(principal);
     const n = Math.round(Number(months));
     const rA = Number(annualRate);
     const mor = Math.max(0, Math.min(Math.round(Number(moratoriumMonths) || 0), n));
     const extra = Math.max(0, Number(extraAmount) || 0);
     const freq = String(extraFrequency || "none");
+    const lump = Math.max(0, Number(lumpAmount) || 0);
+    const lumpM = Math.round(Number(lumpMonth) || 0);
     if (!Number.isFinite(P0) || !Number.isFinite(n) || !Number.isFinite(rA) || P0 <= 0 || n <= 0 || rA < 0) return null;
 
     const rM = rA / 12;
@@ -3992,6 +3994,7 @@ function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, m
         const interest = balance * rM;
         let principalPaid = 0;
         let extraPaid = 0;
+        let lumpPaid = 0;
 
         if (m > mor && amortMonths > 0) {
             principalPaid = annuity - interest;
@@ -4009,8 +4012,14 @@ function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, m
             }
         }
 
+        const isLumpMonth = lump > 0 && lumpM > 0 && m === lumpM;
+        if (isLumpMonth && balance > 0) {
+            lumpPaid = Math.min(lump, balance);
+            balance -= lumpPaid;
+        }
+
         cumInterest += interest;
-        totalPaid += (interest + principalPaid + extraPaid);
+        totalPaid += (interest + principalPaid + extraPaid + lumpPaid);
 
         labels.push(m);
         remainingPrincipal.push(balance);
@@ -4187,6 +4196,9 @@ function calculateLoan() {
         const extraFrequencyEl = document.getElementById("loan-extra-frequency");
         const extraFrequency = extraFrequencyEl ? String(extraFrequencyEl.value ?? "none") : "none";
 
+        const lumpAmount = getElementValue("loan-lump-amount");
+        const lumpMonth = getElementValue("loan-lump-month");
+
         const purposeEl = document.getElementById("loan-purpose");
         const purpose = purposeEl ? String(purposeEl.value ?? "").trim() : "";
 
@@ -4231,7 +4243,9 @@ function calculateLoan() {
             rate,
             safeMoratorium,
             extraFrequency === "none" ? 0 : extraAmount,
-            extraFrequency
+            extraFrequency,
+            lumpAmount,
+            lumpMonth
         );
 
         const effectiveMonths = scheduleWithExtra ? scheduleWithExtra.effectiveMonths : months;

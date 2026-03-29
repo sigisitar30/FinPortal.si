@@ -282,6 +282,17 @@
                                                 <option value="yearly">Letno</option>
                                             </select>
                                         </div>
+
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                                            <input type="text" id="loan-lump-amount" value="0" min="0" max="999999999"
+                                                step="50" class="input w-full format-number" inputmode="numeric" />
+                                            <input type="number" id="loan-lump-month" value="0" min="0" max="600"
+                                                step="1" class="input w-full md:col-span-2" />
+                                        </div>
+                                        <div class="mt-2 text-xs text-gray-600">
+                                            Enkratno poplačilo: vnesi znesek in mesec izvedbe (0 = brez). Mesec 1 pomeni
+                                            prvi mesec po črpanju.
+                                        </div>
                                     </div>
                                 </div>
                             </details>
