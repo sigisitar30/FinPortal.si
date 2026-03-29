@@ -273,16 +273,24 @@
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-2">Predčasna vplačila
                                             (neobvezno)</label>
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
                                             <div>
                                                 <label for="loan-extra-amount"
                                                     class="block text-xs font-medium text-gray-600 mb-1">Redno vplačilo
-                                                    (znesek €)</label>
+                                                    (znesek €)
+                                                    <span class="fp-help">
+                                                        <span class="fp-help__icon" tabindex="0">?</span>
+                                                        <span class="fp-help__tooltip">
+                                                            Redno vplačilo zmanjša glavnico po rednem obroku. Mesečni
+                                                            obrok ostane enak, kredit se običajno odplača prej.
+                                                        </span>
+                                                    </span>
+                                                </label>
                                                 <input type="text" id="loan-extra-amount" value="0" min="0"
                                                     max="999999999" step="50" class="input w-full format-number"
                                                     inputmode="numeric" />
                                             </div>
-                                            <div class="md:col-span-2">
+                                            <div>
                                                 <label for="loan-extra-frequency"
                                                     class="block text-xs font-medium text-gray-600 mb-1">Redno vplačilo
                                                     (pogostost)</label>
@@ -294,17 +302,25 @@
                                             </div>
                                         </div>
 
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4 items-end">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 items-end">
                                             <div>
                                                 <label for="loan-lump-amount"
                                                     class="block text-xs font-medium text-gray-600 mb-1">Enkratno
                                                     poplačilo
-                                                    (znesek €)</label>
+                                                    (znesek €)
+                                                    <span class="fp-help">
+                                                        <span class="fp-help__icon" tabindex="0">?</span>
+                                                        <span class="fp-help__tooltip">
+                                                            Enkratno poplačilo v izbranem mesecu zmanjša glavnico.
+                                                            Mesečni obrok ostane enak, kredit se običajno odplača prej.
+                                                        </span>
+                                                    </span>
+                                                </label>
                                                 <input type="text" id="loan-lump-amount" value="0" min="0"
                                                     max="999999999" step="50" class="input w-full format-number"
                                                     inputmode="numeric" />
                                             </div>
-                                            <div class="md:col-span-2">
+                                            <div>
                                                 <label for="loan-lump-month"
                                                     class="block text-xs font-medium text-gray-600 mb-1">Enkratno
                                                     poplačilo
