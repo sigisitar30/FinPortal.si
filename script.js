@@ -4345,7 +4345,8 @@ function calculateLoan() {
             intercalaryInterest,
             amount,
             effectiveTermText,
-            interestSaved
+            interestSaved,
+            totalInterest
         );
 
         drawLoanAmortizationChart(
@@ -4367,7 +4368,7 @@ function calculateLoan() {
     }
 }
 
-function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercalaryInterest, newPrincipal, effectiveTermText, interestSaved) {
+function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercalaryInterest, newPrincipal, effectiveTermText, interestSaved, baselineInterest) {
     setElementText("loan-monthly", formatSI(monthlyPayment));
     setElementText("loan-interest", formatSI(totalInterest));
     setElementText("loan-total", formatSI(totalPayment));
@@ -4377,6 +4378,7 @@ function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercal
     setElementText("loan-principal-after", formatSI(newPrincipal));
     setElementText("loan-term-effective", effectiveTermText || "–");
     setElementText("loan-interest-saved", Number.isFinite(interestSaved) ? formatSI(interestSaved) : "–");
+    setElementText("loan-interest-base", Number.isFinite(baselineInterest) ? formatSI(baselineInterest) : "–");
 }
 
 function initNumberFormatting() {
