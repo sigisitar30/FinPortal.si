@@ -1496,6 +1496,12 @@ function initGa4Base() {
     window.dataLayer = window.dataLayer || [];
     window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
 
+    if (debugMode && typeof window.gtag === 'function') {
+        try {
+            window.gtag('set', { debug_mode: true });
+        } catch (e) { }
+    }
+
     try {
         window.gtag('consent', 'default', { analytics_storage: 'denied' });
     } catch (e) { }
@@ -1527,6 +1533,14 @@ function enableGa4Analytics() {
                 window.gtag('config', mid, { cookie_expires: 7776000, debug_mode: dbg });
                 try {
                     window.gtag('event', 'page_view', { send_to: mid, debug_mode: dbg });
+                } catch (e) { }
+
+                try {
+                    window.setTimeout(() => {
+                        try {
+                            window.gtag('event', 'page_view', { send_to: mid, debug_mode: dbg });
+                        } catch (e) { }
+                    }, 1200);
                 } catch (e) { }
             }
         } catch (e) { }
