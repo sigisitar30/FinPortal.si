@@ -4315,25 +4315,46 @@ function calculateLoan() {
         // 5) Skupne obresti
         const totalInterest = totalPayment - amount;
 
-        const scheduleWithExtra = buildLoanAmortizationScheduleWithExtra(
+        // Build schedules so comparison is apples-to-apples:
+        // - baseline: no prepayments
+        // - with prepayments: regular extra and/or lump sum
+        // Note: intercalary interest is shown separately and is not affected by prepayments,
+        // so the "interest saved" comparison uses schedule interest (without intercalary).
+        const baseSchedule = buildLoanAmortizationScheduleWithExtra(
             amount,
             months,
             rate,
             safeMoratorium,
-            extraFrequency === "none" ? 0 : extraAmount,
-            extraFrequency,
-            lumpAmount,
-            lumpMonth
+            0,
+            "none",
+            0,
+            0
         );
+
+        const hasRegularExtra = extraFrequency !== "none" && Number(extraAmount) > 0;
+        const hasLump = Number(lumpAmount) > 0 && Number(lumpMonth) > 0;
+
+        const scheduleWithExtra = (hasRegularExtra || hasLump) ? buildLoanAmortizationScheduleWithExtra(
+            amount,
+            months,
+            rate,
+            safeMoratorium,
+            hasRegularExtra ? extraAmount : 0,
+            extraFrequency,
+            hasLump ? lumpAmount : 0,
+            hasLump ? lumpMonth : 0
+        ) : baseSchedule;
 
         const effectiveMonths = scheduleWithExtra ? scheduleWithExtra.effectiveMonths : months;
         const effectiveTermText = fpFormatMonthsToYearsMonths(effectiveMonths);
-        const extraTotalInterest = scheduleWithExtra ? scheduleWithExtra.totalInterest : totalInterest;
-        const interestSaved = Number.isFinite(totalInterest) && Number.isFinite(extraTotalInterest)
-            ? Math.max(0, totalInterest - extraTotalInterest)
+
+        const baselineInterestSchedule = baseSchedule ? baseSchedule.totalInterest : totalInterest;
+        const chosenInterestSchedule = scheduleWithExtra ? scheduleWithExtra.totalInterest : totalInterest;
+        const interestSaved = Number.isFinite(baselineInterestSchedule) && Number.isFinite(chosenInterestSchedule)
+            ? Math.max(0, baselineInterestSchedule - chosenInterestSchedule)
             : 0;
 
-        const chosenTotalInterest = scheduleWithExtra ? extraTotalInterest : totalInterest;
+        const chosenTotalInterest = chosenInterestSchedule;
         const chosenTotalPayment = scheduleWithExtra
             ? (scheduleWithExtra.totalPaid + intercalaryInterest)
             : totalPayment;
@@ -4346,7 +4367,7 @@ function calculateLoan() {
             amount,
             effectiveTermText,
             interestSaved,
-            totalInterest
+            baselineInterestSchedule
         );
 
         drawLoanAmortizationChart(
