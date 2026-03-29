@@ -6280,7 +6280,7 @@ function renderDepositTable() {
         <div class="mt-3 text-sm text-gray-600 leading-snug">
             <div>Opomba: prikazane obrestne mere so iz <strong>redne ponudbe</strong> bank (posebnih/akcijskih ponudb ta kalkulator privzeto ne upošteva). Pogoji se lahko spremenijo in lahko odstopajo od dejanske ponudbe banke.</div>
             <div class="mt-1">Če je prikazano <strong>—</strong>, banka za izbrano ročnost (ali znesek) nima ustrezne ponudbe.</div>
-            <div class="mt-1">Viri: uradne strani bank oziroma PDF dokumenti. Za popravke ali zahtevo za umik vira pišite na info@finportal.si.</div>
+            <div class="mt-1">Viri: uradne strani bank oziroma PDF dokumenti. Za popravke ali zahtevo za umik vira pišite na <a href="/#kontakt" class="underline">info@finportal.si</a>.</div>
         </div>
     `;
 
