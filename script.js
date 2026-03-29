@@ -329,8 +329,12 @@ function ensureFavicon() {
 
     const upsertLink = ({ rel, href, type, sizes }) => {
         const selector = type
-            ? `link[rel="${rel}"][type="${type}"]`
-            : `link[rel="${rel}"]`;
+            ? (sizes
+                ? `link[rel="${rel}"][type="${type}"][sizes="${sizes}"]`
+                : `link[rel="${rel}"][type="${type}"]`)
+            : (sizes
+                ? `link[rel="${rel}"][sizes="${sizes}"]`
+                : `link[rel="${rel}"]`);
 
         let link = head.querySelector(selector);
         if (!link) {
@@ -349,6 +353,8 @@ function ensureFavicon() {
     upsertLink({ rel: "icon", href: "/images/favicon/favicon.ico?v=6", type: "image/x-icon" });
     upsertLink({ rel: "shortcut icon", href: "/images/favicon/favicon.ico?v=6", type: "image/x-icon" });
     upsertLink({ rel: "apple-touch-icon", href: "/images/favicon/apple-touch-icon.png?v=6" });
+    upsertLink({ rel: "icon", href: "/images/favicon/favicon.svg?v=6", type: "image/svg+xml" });
+    upsertLink({ rel: "manifest", href: "/images/favicon/site.webmanifest?v=6" });
 }
 
 function injectBreadcrumbJsonLd() {
