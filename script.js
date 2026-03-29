@@ -4339,14 +4339,25 @@ function initArticleShare() {
         if (existing) return;
 
         const slot = document.getElementById("fp-article-share-slot");
+
+        const findMetaRow = () => {
+            const candidates = Array.from(article.querySelectorAll("div"));
+            return candidates.find((el) => {
+                const t = String(el.textContent || "");
+                if (!t) return false;
+                return t.includes("Avtor") && (t.includes("Objavljeno") || t.includes("Posodobljeno"));
+            }) || null;
+        };
+
+        const metaRow = slot ? null : findMetaRow();
         const wrap = slot || document.createElement("div");
-        if (!slot) wrap.className = "mt-4";
+        if (!slot) wrap.className = "fp-article-share-wrap";
 
         const btn = document.createElement("button");
         btn.type = "button";
         btn.id = "fp-article-share";
         btn.setAttribute("aria-label", "Deli članek");
-        btn.className = "px-4 py-2 rounded-xl border border-gray-300 bg-white font-semibold hover:bg-gray-50 transition";
+        btn.className = "fp-article-share-btn glow-hover";
         btn.textContent = "Deli";
 
         const getSharePayload = () => {
@@ -4400,7 +4411,15 @@ function initArticleShare() {
         });
 
         wrap.appendChild(btn);
-        if (!slot) h1.insertAdjacentElement("afterend", wrap);
+        if (slot) return;
+
+        if (metaRow) {
+            metaRow.classList.add("fp-article-meta");
+            metaRow.appendChild(wrap);
+            return;
+        }
+
+        h1.insertAdjacentElement("afterend", wrap);
     } catch (e) {
         console.warn("initArticleShare failed", e);
     }

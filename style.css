@@ -122,6 +122,43 @@ details[open] .fp-details-caret {
     transform: rotate(180deg);
 }
 
+.fp-article-meta {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.fp-article-share-wrap {
+    margin-left: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-start;
+}
+
+.fp-article-share-btn {
+    padding: 0.35rem 0.7rem;
+    border-radius: 0.75rem;
+    border: 2px solid var(--border-light);
+    background: #ffffff;
+    color: #111111;
+    font-weight: 700;
+    font-size: 0.8rem;
+    line-height: 1;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.fp-article-share-btn:hover {
+    background: var(--bg-hover);
+    border-color: var(--highlight);
+    box-shadow:
+        0 0 6px var(--highlight-glow-soft),
+        0 0 14px var(--highlight-glow),
+        0 0 24px var(--highlight-glow-soft);
+    transform: translateY(-2px) scale(1.015);
+    transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 .lvk-advanced-grid label {
     min-height: 2.75rem;
     margin-bottom: 0.25rem !important;
