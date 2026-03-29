@@ -1,19 +1,45 @@
 # FinPortal.si TODO
 
-## High priority
-- [x] **[18]** Lead forma: omejiti vnose na smiselne vrednosti (znesek kredita/depozita samo številke, ročnost samo številke v dovoljenem razponu, validacija email/telefon)
-- [x] **[16]** GA4: zagotoviti, da se `lead_form_submit` dejansko sproži (trenutno je submit gumb na `povprasevanje.html` `disabled`) – omogočiti testni submit ali sprožiti event na alternativni akciji
+## Najprej (tracking + SEO: največji ROI)
 - [ ] **[15]** GA4: označiti `lead_form_submit` kot Conversion v GA4 (po tem ko se event vsaj enkrat sproži)
+- [x] **[40]** kako iz ga4 analitike izločim sebe?
 - [ ] **[13]** GSC: pregled “Pages/Strani” (Indexed vs Not indexed) in odprava glavnih razlogov za neindeksiranje (Discovered/Crawled currently not indexed, duplicate/canonical ipd.) za ključne strani + članke
-
-## Medium priority
 - [ ] **[14]** Cloudflare: potrditi, da je `www` → non-`www` preusmeritev vedno `301` (ne `302`) za home in tipične podstrani
-- [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
-- [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
-- [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
+- [ ] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
 
-## Low priority
+## UX + konverzije (hitri win-i)
+- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
+- [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
+- [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
+- [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
+- [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
+- [ ] **[28]** Poenostavi navigacijo (kjer lahko)
+- [ ] **[29]** Izboljšaj vizualno hierarhijo
+
+## Vsebina + deljenje (rast)
+- [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
+- [ ] **[27]** Dodaj "share" gumb na člankih
+- [ ] **[32]** Dodaj Članke, FAQ vsebino
+- [ ] **[33]** Dodaj slike in grafe k člankom
+- [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
+
+## Tehnično (perf + struktura)
+- [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
 - [ ] **[9]** Poenotiti structured data (JSON-LD) še na vseh ostalih “legal/info” straneh inline (brez odvisnosti od JS)
+- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
+
+## Večji projekti / kasneje
+- [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
+- [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
+- [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
+- [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
+- [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
+- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+- [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
+- [ ] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
+- [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
+- [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
+- [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
 
 ## Completed
 - [x] **[19]** Modernizirati Home page (index.html): hero + sekcije + tipografija + spacing + CTA (minimalen redesign)
@@ -26,33 +52,10 @@
 - [x] **[2]** Implementirati generiranje `BreadcrumbList` v `script.js` za ključne strani (root kalkulatorji/primerjave/leksikon) z mappingi
 - [x] **[3]** Dodati `BreadcrumbList` v `clanki/template-clanek.html` (Domov → Članki → Naslov)
 - [x] **[6]** Batch posodobitev obstoječih člankov v `/clanki/*.html` (inline BreadcrumbList)
-## My additional suggestions
-- [ ] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
-- [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
-- [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
-- [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
-- [ ] **[27]** Dodaj "share" gumb na člankih
-- [ ] **[28]** Poenostavi navigacijo (kjer lahko)
-- [ ] **[29]** Izboljšaj vizualno hierarhijo
-- [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
-- [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
-- [ ] **[32]** Dodaj Članke, FAQ vsebino
-- [ ] **[33]** Dodaj slike in grafe k člankom
-- [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
-- [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
-- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
-- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
-- [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
-- [ ] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
-- [x] **[40]** kako iz ga4 analitike izločim sebe?
-- [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
-- [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
+- [x] **[18]** Lead forma: omejiti vnose na smiselne vrednosti (znesek kredita/depozita samo številke, ročnost samo številke v dovoljenem razponu, validacija email/telefon)
+- [x] **[16]** GA4: zagotoviti, da se `lead_form_submit` dejansko sproži (trenutno je submit gumb na `povprasevanje.html` `disabled`) – omogočiti testni submit ali sprožiti event na alternativni akciji
 - [x] **[43]** faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju - ODLOČITEV: “ne delamo WebP za favicon”
-- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
-- [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
-- [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
 - [x] **[47]** Dodati v kalkulator za kredit, da bi lahko dolocil še mesecna/letna vplačila za predhodno poplačilo kredita. Predlog? na tej strani je ena ideja https://jsfiddle.net/bjs475gw/
-- [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
 
 
 <!-- SOCIAL PROOF BAR -->
