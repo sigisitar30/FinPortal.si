@@ -40,6 +40,7 @@
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
 - [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
 - [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
+- [ ] **[47]** a bi imelo smisel v “prihranek obresti” vnest koliko človek prihrani z dodatnim vplačevanjem vs poplačilom kredita po rednem amortizacijskem nacrtu. Trenutno samo prikazujem interkalarne - tam kaže tudi če dam dodatno vplačilo. Pa ko izbrišem dodatno vplačilo in dodatne postavke in še enkrat kliknem preračunaj kredit se številke ne osvežijo. Vse to delam na telefonu, ne vem a je to relevantno, tako da je lahko glitch na moji strani
 
 ## Completed
 - [x] **[19]** Modernizirati Home page (index.html): hero + sekcije + tipografija + spacing + CTA (minimalen redesign)
