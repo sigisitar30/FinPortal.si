@@ -1478,6 +1478,7 @@ function formatPercentSI(num) {
 
 function initGa4Base() {
     const measurementId = "G-D5JQ8PB9MC";
+    const tagLoaderId = "G-1G82TV8KFZ";
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
@@ -1497,12 +1498,12 @@ function initGa4Base() {
     window.gtag('js', new Date());
     window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
 
-    const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${measurementId}"]`);
+    const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}"]`);
     if (existing) return;
 
     const s = document.createElement('script');
     s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}`;
     document.head.appendChild(s);
 }
 
