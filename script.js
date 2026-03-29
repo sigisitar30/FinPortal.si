@@ -2685,6 +2685,117 @@ function highlightKalkulatorjiNav() {
     kalkLink.classList.add("text-[#0B6B3A]");
 }
 
+function groupKalkulatorjiDropdown() {
+    const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
+    if (!nav) return;
+
+    const details = Array.from(nav.querySelectorAll("details")).find((d) => {
+        const summary = d.querySelector("summary");
+        if (!summary) return false;
+        const a = summary.querySelector("a");
+        const label = (a?.textContent || summary.textContent || "").trim().toLowerCase();
+        return label.includes("kalkulatorji");
+    });
+    if (!details) return;
+
+    const menu = details.querySelector("div");
+    if (!menu) return;
+
+    const links = Array.from(menu.querySelectorAll("a"));
+    if (!links.length) return;
+
+    // If already grouped (idempotent)
+    if (menu.querySelector('[data-fp-kalk-group="true"]')) return;
+
+    const byHref = new Map(
+        links
+            .map((a) => {
+                const href = (a.getAttribute("href") || "").trim();
+                return [href, a];
+            })
+            .filter(([href]) => href)
+    );
+
+    const hrefs = {
+        all: ["kalkulatorji/", "./kalkulatorji/", "/kalkulatorji/"],
+        credit: ["kreditna-sposobnost.html", "kreditni-kalkulator.html", "eom-kalkulator.html"],
+        savings: ["depozitni-kalkulator.html", "izgubljene-obresti.html", "primerjava-depozitov.html"],
+        other: ["investicijski-kalkulator.html", "menjalniski-kalkulator.html", "leasing-vs-kredit.html"],
+    };
+
+    const resolve = (candidates) => {
+        for (const c of candidates) {
+            const direct = byHref.get(c);
+            if (direct) return direct;
+            const abs = byHref.get(`/` + c.replace(/^\//, ""));
+            if (abs) return abs;
+        }
+        return null;
+    };
+
+    const pickAll = () => {
+        for (const c of hrefs.all) {
+            const a = resolve([c]);
+            if (a) return a;
+        }
+        // Fallback: try to find link by label
+        const byLabel = links.find((a) => (a.textContent || "").trim().toLowerCase().includes("vsi"));
+        return byLabel || null;
+    };
+
+    const used = new Set();
+    const out = document.createDocumentFragment();
+
+    const addLabel = (text) => {
+        const el = document.createElement("div");
+        el.setAttribute("data-fp-kalk-group", "true");
+        el.className = "px-4 py-2 text-xs font-semibold text-gray-500 bg-gray-50";
+        el.textContent = text;
+        out.appendChild(el);
+    };
+
+    const addLink = (a) => {
+        if (!a) return;
+        used.add(a);
+        out.appendChild(a);
+    };
+
+    const addDivider = () => {
+        const el = document.createElement("div");
+        el.setAttribute("data-fp-kalk-group", "true");
+        el.className = "h-px bg-gray-200";
+        out.appendChild(el);
+    };
+
+    // Keep "Vsi kalkulatorji" (if present) at top
+    const allLink = pickAll();
+    if (allLink) {
+        addLink(allLink);
+        addDivider();
+    }
+
+    addLabel("Krediti");
+    for (const h of hrefs.credit) addLink(resolve([h]));
+    addDivider();
+
+    addLabel("Varčevanje");
+    for (const h of hrefs.savings) addLink(resolve([h]));
+    addDivider();
+
+    addLabel("Investicije & ostalo");
+    for (const h of hrefs.other) addLink(resolve([h]));
+
+    // Append any leftover links (to avoid losing items if some page has extras)
+    const leftovers = links.filter((a) => !used.has(a));
+    if (leftovers.length) {
+        addDivider();
+        for (const a of leftovers) addLink(a);
+    }
+
+    // Replace contents
+    menu.replaceChildren(out);
+}
+
 function initArticleInlineLinks() {
     const article = document.querySelector("main article");
     if (!article) return;
@@ -4521,6 +4632,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
+    safeInit("groupKalkulatorjiDropdown", groupKalkulatorjiDropdown);
     safeInit("initArticleInlineLinks", initArticleInlineLinks);
 
     safeInit("addLexiconNavLink", () => {

@@ -2,7 +2,7 @@
 
 ## Najprej (tracking + SEO: največji ROI)
 - [ ] **[15]** GA4: označiti `lead_form_submit` kot Conversion v GA4 (po tem ko se event vsaj enkrat sproži)
-- [x] **[40]** kako iz ga4 analitike izločim sebe?
+- [ ] **[40]** kako iz ga4 analitike izločim sebe?
 - [ ] **[13]** GSC: pregled “Pages/Strani” (Indexed vs Not indexed) in odprava glavnih razlogov za neindeksiranje (Discovered/Crawled currently not indexed, duplicate/canonical ipd.) za ključne strani + članke
 - [ ] **[14]** Cloudflare: potrditi, da je `www` → non-`www` preusmeritev vedno `301` (ne `302`) za home in tipične podstrani
 - [ ] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
@@ -11,7 +11,7 @@
 - [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
 - [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
 - [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
-- [ ] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
+- [x] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
 - [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
@@ -40,7 +40,7 @@
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
 - [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
 - [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
-- [ ] **[47]** a bi imelo smisel v “prihranek obresti” vnest koliko človek prihrani z dodatnim vplačevanjem vs poplačilom kredita po rednem amortizacijskem nacrtu. Trenutno samo prikazujem interkalarne - tam kaže tudi če dam dodatno vplačilo. Pa ko izbrišem dodatno vplačilo in dodatne postavke in še enkrat kliknem preračunaj kredit se številke ne osvežijo. Vse to delam na telefonu, ne vem a je to relevantno, tako da je lahko glitch na moji strani
+- [ ] **[49]** a bi imelo smisel v “prihranek obresti” vnest koliko človek prihrani z dodatnim vplačevanjem vs poplačilom kredita po rednem amortizacijskem nacrtu. Trenutno samo prikazujem interkalarne - tam kaže tudi če dam dodatno vplačilo. Pa ko izbrišem dodatno vplačilo in dodatne postavke in še enkrat kliknem preračunaj kredit se številke ne osvežijo. Vse to delam na telefonu, ne vem a je to relevantno, tako da je lahko glitch na moji strani
 
 ## Completed
 - [x] **[19]** Modernizirati Home page (index.html): hero + sekcije + tipografija + spacing + CTA (minimalen redesign)
