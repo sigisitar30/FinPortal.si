@@ -40,7 +40,7 @@
 - [ ] **[33]** Dodaj slike in grafe k člankom
 - [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
 - [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
-- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiseln6e vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
 - [ ] **[37]** v google je še vedno viden modri planet, in ne favicon
 - [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? je to že?
 - [ ] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
@@ -51,7 +51,7 @@
 - [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
 - [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
 - [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
-- [ ] **[47]** Dodati v kalkulator za kredit, da bi lahko dolocil še mesecna/letna vplačila za predhodno poplačilo kredita. Predlog? na tej strani je ena ideja https://jsfiddle.net/bjs475gw/
+- [x] **[47]** Dodati v kalkulator za kredit, da bi lahko dolocil še mesecna/letna vplačila za predhodno poplačilo kredita. Predlog? na tej strani je ena ideja https://jsfiddle.net/bjs475gw/
 - [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
 
 

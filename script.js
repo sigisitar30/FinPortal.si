@@ -3953,6 +3953,83 @@ function getLoanEffectiveAnnualRate() {
 let loanAmortizationChart = null;
 let investmentChart = null;
 
+function fpFormatMonthsToYearsMonths(totalMonths) {
+    const m = Math.max(0, Math.round(Number(totalMonths) || 0));
+    const y = Math.floor(m / 12);
+    const rem = m % 12;
+    if (y <= 0) return `${rem} mesecev`;
+    if (rem === 0) return `${y} let`;
+    return `${y} let ${rem} mesecev`;
+}
+
+function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, moratoriumMonths, extraAmount, extraFrequency) {
+    const P0 = Number(principal);
+    const n = Math.round(Number(months));
+    const rA = Number(annualRate);
+    const mor = Math.max(0, Math.min(Math.round(Number(moratoriumMonths) || 0), n));
+    const extra = Math.max(0, Number(extraAmount) || 0);
+    const freq = String(extraFrequency || "none");
+    if (!Number.isFinite(P0) || !Number.isFinite(n) || !Number.isFinite(rA) || P0 <= 0 || n <= 0 || rA < 0) return null;
+
+    const rM = rA / 12;
+    const amortMonths = Math.max(0, n - mor);
+    const annuity = amortMonths > 0 ? calcAnnuityPayment(P0, amortMonths, rA) : 0;
+
+    let balance = P0;
+    let cumInterest = 0;
+    let totalPaid = 0;
+
+    const labels = [];
+    const remainingPrincipal = [];
+    const cumulativeInterest = [];
+
+    let effectiveMonths = 0;
+
+    for (let m = 1; m <= n; m++) {
+        if (balance <= 0) break;
+        effectiveMonths = m;
+
+        const interest = balance * rM;
+        let principalPaid = 0;
+        let extraPaid = 0;
+
+        if (m > mor && amortMonths > 0) {
+            principalPaid = annuity - interest;
+            if (!Number.isFinite(principalPaid) || principalPaid < 0) principalPaid = 0;
+            if (principalPaid > balance) principalPaid = balance;
+            balance -= principalPaid;
+
+            const isExtraMonth = extra > 0 && (
+                freq === "monthly" ||
+                (freq === "yearly" && ((m - mor) % 12 === 0))
+            );
+            if (isExtraMonth && balance > 0) {
+                extraPaid = Math.min(extra, balance);
+                balance -= extraPaid;
+            }
+        }
+
+        cumInterest += interest;
+        totalPaid += (interest + principalPaid + extraPaid);
+
+        labels.push(m);
+        remainingPrincipal.push(balance);
+        cumulativeInterest.push(cumInterest);
+    }
+
+    return {
+        labels,
+        remainingPrincipal,
+        cumulativeInterest,
+        annuity,
+        amortMonths,
+        moratoriumMonths: mor,
+        effectiveMonths,
+        totalInterest: cumInterest,
+        totalPaid,
+    };
+}
+
 function buildLoanAmortizationSchedule(principal, months, annualRate, moratoriumMonths) {
     const P0 = Number(principal);
     const n = Number(months);
@@ -4106,6 +4183,10 @@ function calculateLoan() {
         const years = getElementValue("loan-years");
         const rate = getLoanEffectiveAnnualRate();
 
+        const extraAmount = getElementValue("loan-extra-amount");
+        const extraFrequencyEl = document.getElementById("loan-extra-frequency");
+        const extraFrequency = extraFrequencyEl ? String(extraFrequencyEl.value ?? "none") : "none";
+
         const purposeEl = document.getElementById("loan-purpose");
         const purpose = purposeEl ? String(purposeEl.value ?? "").trim() : "";
 
@@ -4144,16 +4225,39 @@ function calculateLoan() {
         // 5) Skupne obresti
         const totalInterest = totalPayment - amount;
 
+        const scheduleWithExtra = buildLoanAmortizationScheduleWithExtra(
+            amount,
+            months,
+            rate,
+            safeMoratorium,
+            extraFrequency === "none" ? 0 : extraAmount,
+            extraFrequency
+        );
+
+        const effectiveMonths = scheduleWithExtra ? scheduleWithExtra.effectiveMonths : months;
+        const effectiveTermText = fpFormatMonthsToYearsMonths(effectiveMonths);
+        const extraTotalInterest = scheduleWithExtra ? scheduleWithExtra.totalInterest : totalInterest;
+        const interestSaved = Number.isFinite(totalInterest) && Number.isFinite(extraTotalInterest)
+            ? Math.max(0, totalInterest - extraTotalInterest)
+            : 0;
+
+        const chosenTotalInterest = scheduleWithExtra ? extraTotalInterest : totalInterest;
+        const chosenTotalPayment = scheduleWithExtra
+            ? (scheduleWithExtra.totalPaid + intercalaryInterest)
+            : totalPayment;
+
         updateLoanResults(
             monthlyPayment,
-            totalInterest,
-            totalPayment,
+            chosenTotalInterest,
+            chosenTotalPayment,
             intercalaryInterest,
-            amount
+            amount,
+            effectiveTermText,
+            interestSaved
         );
 
         drawLoanAmortizationChart(
-            buildLoanAmortizationSchedule(amount, months, rate, safeMoratorium)
+            scheduleWithExtra
         );
 
         fpTrack("calculator_used", {
@@ -4171,7 +4275,7 @@ function calculateLoan() {
     }
 }
 
-function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercalaryInterest, newPrincipal) {
+function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercalaryInterest, newPrincipal, effectiveTermText, interestSaved) {
     setElementText("loan-monthly", formatSI(monthlyPayment));
     setElementText("loan-interest", formatSI(totalInterest));
     setElementText("loan-total", formatSI(totalPayment));
@@ -4179,6 +4283,8 @@ function updateLoanResults(monthlyPayment, totalInterest, totalPayment, intercal
     // Novi prikazi
     setElementText("loan-intercalary", formatSI(intercalaryInterest));
     setElementText("loan-principal-after", formatSI(newPrincipal));
+    setElementText("loan-term-effective", effectiveTermText || "–");
+    setElementText("loan-interest-saved", Number.isFinite(interestSaved) ? formatSI(interestSaved) : "–");
 }
 
 function initNumberFormatting() {

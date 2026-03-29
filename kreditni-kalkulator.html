@@ -269,6 +269,20 @@
                                         <input type="number" id="loan-intercalary-days" value="0" min="0" max="365"
                                             step="1" class="input w-full" />
                                     </div>
+
+                                    <div class="md:col-span-2">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">Predčasno vplačilo
+                                            (neobvezno)</label>
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                            <input type="text" id="loan-extra-amount" value="0" min="0" max="999999999"
+                                                step="50" class="input w-full format-number" inputmode="numeric" />
+                                            <select id="loan-extra-frequency" class="input w-full md:col-span-2">
+                                                <option value="none" selected>Brez</option>
+                                                <option value="monthly">Mesečno</option>
+                                                <option value="yearly">Letno</option>
+                                            </select>
+                                        </div>
+                                    </div>
                                 </div>
                             </details>
                         </div>
@@ -300,6 +314,16 @@
                                 <div class="flex justify-between items-center py-4">
                                     <span class="fp-result-label">Skupaj za plačilo</span>
                                     <span id="loan-total" class="fp-result-value">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="fp-result-label">Efektivna ročnost</span>
+                                    <span id="loan-term-effective" class="fp-result-value">–</span>
+                                </div>
+
+                                <div class="flex justify-between items-center py-4">
+                                    <span class="fp-result-label">Prihranek obresti</span>
+                                    <span id="loan-interest-saved" class="fp-result-value">–</span>
                                 </div>
 
                                 <div class="mt-4">
