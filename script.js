@@ -1507,7 +1507,18 @@ function initGa4Base() {
     } catch (e) { }
 
     window.gtag('js', new Date());
-    window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+
+    // Configure the loaded Google tag ID (diagnostics expects a matching config for the tag we load)
+    try {
+        window.gtag('config', tagLoaderId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+    } catch (e) { }
+
+    // Also configure the GA4 destination if it's different
+    if (measurementId && measurementId !== tagLoaderId) {
+        try {
+            window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+        } catch (e) { }
+    }
 
     const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}"]`);
     if (existing) return;
