@@ -2,7 +2,7 @@
 
 ## Najprej (tracking + SEO: največji ROI)
 - [ ] **[15]** GA4: označiti `lead_form_submit` kot Conversion v GA4 (po tem ko se event vsaj enkrat sproži)
-- [ ] **[40]** kako iz ga4 analitike izločim sebe?
+- [x] **[40]** kako iz ga4 analitike izločim sebe?
 - [x] **[50]** Jutri ponovno preveri Google Tag diagnostiko/pokritost oznake: ali je "Ni označeno" padlo na 0 po www→non-www 301 redirectu
 - [ ] **[13]** GSC: pregled “Pages/Strani” (Indexed vs Not indexed) in odprava glavnih razlogov za neindeksiranje (Discovered/Crawled currently not indexed, duplicate/canonical ipd.) za ključne strani + članke
 - [ ] **[14]** Cloudflare: potrditi, da je `www` → non-`www` preusmeritev vedno `301` (ne `302`) za home in tipične podstrani
