@@ -1478,7 +1478,7 @@ function formatPercentSI(num) {
 
 function initGa4Base() {
     const measurementId = "G-D5JQ8PB9MC";
-    const tagLoaderId = measurementId;
+    const tagLoaderId = "GT-KFHHWMP7";
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
@@ -1508,10 +1508,17 @@ function initGa4Base() {
 
     window.gtag('js', new Date());
 
-    // Configure production GA4 stream
+    // Configure the loaded Google tag ID (diagnostics expects a matching config for the tag we load)
     try {
-        window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+        window.gtag('config', tagLoaderId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
     } catch (e) { }
+
+    // Also configure the GA4 destination
+    if (measurementId && measurementId !== tagLoaderId) {
+        try {
+            window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+        } catch (e) { }
+    }
 
     const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}"]`);
     if (existing) return;
@@ -1532,8 +1539,14 @@ function enableGa4Analytics() {
 
         try {
             const mid = String(window.__fpGa4MeasurementId || "").trim();
+            const tid = String(window.__fpGa4TagLoaderId || "").trim();
             if (mid) {
                 const dbg = window.__fpGa4DebugMode ? true : undefined;
+                if (tid) {
+                    try {
+                        window.gtag('config', tid, { cookie_expires: 7776000, debug_mode: dbg });
+                    } catch (e) { }
+                }
                 window.gtag('config', mid, { cookie_expires: 7776000, debug_mode: dbg });
                 try {
                     window.gtag('event', 'page_view', { send_to: mid, debug_mode: dbg });
