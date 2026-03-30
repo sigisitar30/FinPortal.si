@@ -1478,7 +1478,7 @@ function formatPercentSI(num) {
 
 function initGa4Base() {
     const measurementId = "G-D5JQ8PB9MC";
-    const tagLoaderId = "G-1G82TV8KFZ";
+    const tagLoaderId = measurementId;
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
@@ -1508,17 +1508,10 @@ function initGa4Base() {
 
     window.gtag('js', new Date());
 
-    // Configure the loaded Google tag ID (diagnostics expects a matching config for the tag we load)
+    // Configure production GA4 stream
     try {
-        window.gtag('config', tagLoaderId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+        window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
     } catch (e) { }
-
-    // Also configure the GA4 destination if it's different
-    if (measurementId && measurementId !== tagLoaderId) {
-        try {
-            window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
-        } catch (e) { }
-    }
 
     const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}"]`);
     if (existing) return;
