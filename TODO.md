@@ -6,7 +6,7 @@
 - [x] **[50]** Jutri ponovno preveri Google Tag diagnostiko/pokritost oznake: ali je "Ni označeno" padlo na 0 po www→non-www 301 redirectu
 - [ ] **[13]** GSC: pregled “Pages/Strani” (Indexed vs Not indexed) in odprava glavnih razlogov za neindeksiranje (Discovered/Crawled currently not indexed, duplicate/canonical ipd.) za ključne strani + članke
 - [ ] **[14]** Cloudflare: potrditi, da je `www` → non-`www` preusmeritev vedno `301` (ne `302`) za home in tipične podstrani
-- [ ] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
+- [x] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
 
 ## UX + konverzije (hitri win-i)
 - [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
