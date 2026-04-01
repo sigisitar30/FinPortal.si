@@ -1,31 +1,23 @@
 # FinPortal.si TODO
 
-## Najprej (tracking + SEO: največji ROI)
-- [x] **[15]** GA4: označiti `lead_form_submit` kot Conversion v GA4 (po tem ko se event vsaj enkrat sproži)
-- [x] **[40]** kako iz ga4 analitike izločim sebe?
-- [x] **[50]** Jutri ponovno preveri Google Tag diagnostiko/pokritost oznake: ali je "Ni označeno" padlo na 0 po www→non-www 301 redirectu
-- [x] **[13]** GSC: pregled “Pages/Strani” (Indexed vs Not indexed) in odprava glavnih razlogov za neindeksiranje (Discovered/Crawled currently not indexed, duplicate/canonical ipd.) za ključne strani + članke
-- [x] **[14]** Cloudflare: potrditi, da je `www` → non-`www` preusmeritev vedno `301` (ne `302`) za home in tipične podstrani
-- [x] **[23]** Preveri ali so na vseh straneh meta opisi, naslovi in slike
-
-## UX + konverzije (hitri win-i)
-- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
+## Naslednje (prioriteta / največji ROI)
 - [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
 - [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
-- [x] **[41]** Dropdown “Kalkulatorji” je predolg - morda narediva raje ločnico med krediti/varčevanje/investicije?
+- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
+- [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
+- [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
+- [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
 - [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
 
-## Vsebina + deljenje (rast)
-- [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
-- [x] **[27]** Dodaj "share" gumb na člankih
-- [ ] **[32]** Dodaj Članke, FAQ vsebino
-- [ ] **[33]** Dodaj slike in grafe k člankom
-- [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
+## Predlogi (novi hitri win-i)
+- [ ] **[51]** GSC: pregled in odprava 404 URL-jev (301 redirect na pravilne strani ali odstranitev notranjih linkov)
+- [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
+- [ ] **[53]** FAQ + FAQPage schema na ključnih straneh (kreditni kalkulator, kreditna sposobnost, primerjava depozitov)
+- [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
 
 ## Tehnično (perf + struktura)
-- [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
 - [ ] **[9]** Poenotiti structured data (JSON-LD) še na vseh ostalih “legal/info” straneh inline (brez odvisnosti od JS)
 - [ ] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
 
