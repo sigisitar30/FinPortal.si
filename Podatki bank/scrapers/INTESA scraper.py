@@ -5,6 +5,23 @@ import csv
 from datetime import datetime
 from io import BytesIO
 import os
+import sys
+
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
+try:
+    import certifi
+except Exception:
+    certifi = None
+
+try:
+    import urllib3
+except Exception:
+    urllib3 = None
 
 PDF_URL = "https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf"
 
@@ -56,9 +73,22 @@ def extract_dynamic_breakpoint(lines):
 
 def scrape_intesa():
     print("Prenos PDF...")
-    r = requests.get(PDF_URL)
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36",
+    }
+    verify = certifi.where() if certifi is not None else True
+    try:
+        r = requests.get(PDF_URL, headers=headers, timeout=45, verify=verify)
+    except requests.exceptions.SSLError:
+        if urllib3 is not None:
+            try:
+                urllib3.disable_warnings(
+                    urllib3.exceptions.InsecureRequestWarning)
+            except Exception:
+                pass
+        r = requests.get(PDF_URL, headers=headers, timeout=45, verify=False)
     r.raise_for_status()
-    print("✓ PDF prenesen.")
+    print("OK PDF prenesen.")
 
     pdf_bytes = BytesIO(r.content)
 
@@ -79,11 +109,11 @@ def scrape_intesa():
     if "100.000,00 EUR" not in pdf_text:
         raise ValueError("PDF ne vsebuje maksimalnega zneska 100.000 EUR.")
 
-    print("✓ Preverjeni minimalni in maksimalni zneski (300–100000 EUR).")
+    print("OK Preverjeni minimalni in maksimalni zneski (300-100000 EUR).")
 
     # --- DINAMIČNI ZNESKOVNI PRAG ---
     AMOUNT_BREAKPOINT = extract_dynamic_breakpoint(lines)
-    print(f"✓ Dinamični zneskovni prag: {AMOUNT_BREAKPOINT} EUR")
+    print(f"OK Dinamicni zneskovni prag: {AMOUNT_BREAKPOINT} EUR")
 
     # --- GENERIRANJE CSV ---
     results = []
@@ -216,7 +246,7 @@ def scrape_intesa():
                         "notes": "posebna ponudba",
                     })
 
-    print(f"✓ Najdenih zapisov: {len(results)}")
+    print(f"OK Najdenih zapisov: {len(results)}")
     return results
 
 
@@ -246,7 +276,7 @@ def save_to_csv(rows, filename="intesa_depoziti.csv"):
         writer.writeheader()
         writer.writerows(rows)
 
-    print(f"✓ CSV zapisan v: {filename}")
+    print(f"OK CSV zapisan v: {filename}")
 
 
 if __name__ == "__main__":
