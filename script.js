@@ -4615,7 +4615,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
         if (!nav) return;
 
-        const existing = nav.querySelector('a[href="financni-leksikon.html"], a[href="./financni-leksikon.html"], a[href="/financni-leksikon.html"]');
+        const existing = nav.querySelector('a[href="financni-leksikon.html"], a[href="./financni-leksikon.html"], a[href="../financni-leksikon.html"], a[href="/financni-leksikon.html"]');
         if (existing) return;
 
         const link = document.createElement("a");
