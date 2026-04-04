@@ -51,6 +51,7 @@
 - [x] **[16]** GA4: zagotoviti, da se `lead_form_submit` dejansko sproži (trenutno je submit gumb na `povprasevanje.html` `disabled`) – omogočiti testni submit ali sprožiti event na alternativni akciji
 - [x] **[43]** faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju - ODLOČITEV: “ne delamo WebP za favicon”
 - [x] **[47]** Dodati v kalkulator za kredit, da bi lahko dolocil še mesecna/letna vplačila za predhodno poplačilo kredita. Predlog? na tej strani je ena ideja https://jsfiddle.net/bjs475gw/
+- [x] **[56]** template članka ima zdaj [[...]] placeholderje + [[KATEGORIJA]] + articleSection v JSON-LD.
 
 
 <!-- SOCIAL PROOF BAR -->
