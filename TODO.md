@@ -20,7 +20,7 @@
 
 ## Tehnično (perf + struktura)
 - [ ] **[9]** Poenotiti structured data (JSON-LD) še na vseh ostalih “legal/info” straneh inline (brez odvisnosti od JS)
-- [ ] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
+- [x] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
 
 ## Večji projekti / kasneje
 - [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
