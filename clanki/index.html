@@ -123,117 +123,169 @@
             </p>
         </div>
 
+        <section class="mt-8 max-w-3xl mx-auto">
+            <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                <label for="articleSearch" class="sr-only">Išči članke</label>
+                <input id="articleSearch" type="search" placeholder="Išči po naslovu ali opisu..."
+                    class="w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#0B6B3A]" />
+
+                <div class="mt-3 flex flex-wrap gap-2">
+                    <button type="button" data-category-filter="all"
+                        class="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0B6B3A]">
+                        Vsi
+                    </button>
+                    <button type="button" data-category-filter="krediti"
+                        class="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0B6B3A]">
+                        Krediti
+                    </button>
+                    <button type="button" data-category-filter="varcevanje"
+                        class="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0B6B3A]">
+                        Varčevanje
+                    </button>
+                    <button type="button" data-category-filter="investicije"
+                        class="rounded-full border border-gray-200 bg-white px-3 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0B6B3A]">
+                        Investicije
+                    </button>
+                </div>
+
+                <div id="noResults"
+                    class="mt-4 hidden rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700">
+                    Ni zadetkov. Poskusi z drugim iskalnim nizom ali izberi drugo kategorijo.
+                </div>
+            </div>
+        </section>
+
         <section class="mt-10">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <a href="psihologija-investiranja.html"
+                <a href="psihologija-investiranja.html" data-article-card data-category="investicije"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Investicije</div>
-                    <div class="mt-2 text-xl font-bold">Psihologija investiranja – skriti vplivi, ki odločajo o vašem
+                    <div class="mt-2 text-xl font-bold" data-article-title>Psihologija investiranja – skriti vplivi, ki
+                        odločajo o vašem
                         finančnem uspehu</div>
-                    <div class="mt-2 text-gray-700">Psihološki mehanizmi, ki tiho oblikujejo naše investicijske
+                    <div class="mt-2 text-gray-700" data-article-desc>Psihološki mehanizmi, ki tiho oblikujejo naše
+                        investicijske
                         odločitve, razkrivajo, zakaj je razumevanje sebe pogosto pomembnejše od razumevanja trgov.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="vrednost-denarja-v-casu.html"
+                <a href="vrednost-denarja-v-casu.html" data-article-card data-category="varcevanje"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Vrednost denarja v času</div>
-                    <div class="mt-2 text-gray-700">Kaj pomeni inflacija, kako vpliva na prihranke in kako razmišljati o
+                    <div class="mt-2 text-xl font-bold" data-article-title>Vrednost denarja v času</div>
+                    <div class="mt-2 text-gray-700" data-article-desc>Kaj pomeni inflacija, kako vpliva na prihranke in
+                        kako razmišljati o
                         depozitih ter dolgoročnih ciljih.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="kredit-2026.html"
+                <a href="kredit-2026.html" data-article-card data-category="krediti"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Krediti 2026 – najcenejši ponudniki in priporočena obrestna
+                    <div class="mt-2 text-xl font-bold" data-article-title>Krediti 2026 – najcenejši ponudniki in
+                        priporočena obrestna
                         mera</div>
-                    <div class="mt-2 text-gray-700">Primerjava fiksnih in variabilnih obrestnih mer, aktualni EOM med
+                    <div class="mt-2 text-gray-700" data-article-desc>Primerjava fiksnih in variabilnih obrestnih mer,
+                        aktualni EOM med
                         slovenskimi bankami, vpliv EURIBOR‑ja ter realni izračuni mesečnih obrokov.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="kreditna-sposobnost-kako-banke-racunajo.html"
+                <a href="kreditna-sposobnost-kako-banke-racunajo.html" data-article-card data-category="krediti"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Kreditna sposobnost: kako jo banke v Sloveniji računajo in kako
+                    <div class="mt-2 text-xl font-bold" data-article-title>Kreditna sposobnost: kako jo banke v
+                        Sloveniji računajo in kako
                         jo
                         izboljšaš</div>
-                    <div class="mt-2 text-gray-700">Praktičen vodič za stanovanjski in potrošniški kredit: kaj banke
+                    <div class="mt-2 text-gray-700" data-article-desc>Praktičen vodič za stanovanjski in potrošniški
+                        kredit: kaj banke
                         gledajo, kaj ti znižuje kreditno sposobnost in kako jo lahko izboljšaš. Vključen primer in
                         kalkulator.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="najcenejsi-potrosniski-kredit.html"
+                <a href="najcenejsi-potrosniski-kredit.html" data-article-card data-category="krediti"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Kaj je EOM in zakaj je pomembnejša od nominalne obrestne
+                    <div class="mt-2 text-xl font-bold" data-article-title>Kaj je EOM in zakaj je pomembnejša od
+                        nominalne obrestne
                         mere?</div>
-                    <div class="mt-2 text-gray-700">Kratek vodič kaj je EOM, kakšna je razlika z nominalno
+                    <div class="mt-2 text-gray-700" data-article-desc>Kratek vodič kaj je EOM, kakšna je razlika z
+                        nominalno
                         obrestno mero in na kaj morate biti pozorni pri izbiri kredita.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="prednosti-bancnega-varcevanja.html"
+                <a href="prednosti-bancnega-varcevanja.html" data-article-card data-category="varcevanje"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Prednosti bančnega varčevanja</div>
-                    <div class="mt-2 text-gray-700">Kako negotovost oblikuje vedenje varčevalcev in zakaj depoziti
+                    <div class="mt-2 text-xl font-bold" data-article-title>Prednosti bančnega varčevanja</div>
+                    <div class="mt-2 text-gray-700" data-article-desc>Kako negotovost oblikuje vedenje varčevalcev in
+                        zakaj depoziti
                         ostajajo temelj osebnih financ.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="najboljsi-depozit.html"
+                <a href="najboljsi-depozit.html" data-article-card data-category="varcevanje"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Najboljši depozit v Sloveniji 2026 – kako izbrati in primerjati
+                    <div class="mt-2 text-xl font-bold" data-article-title>Najboljši depozit v Sloveniji 2026 – kako
+                        izbrati in primerjati
                         ponudbe</div>
-                    <div class="mt-2 text-gray-700">Primerjava depozitov v Sloveniji: na kaj moraš paziti pri obrestih,
+                    <div class="mt-2 text-gray-700" data-article-desc>Primerjava depozitov v Sloveniji: na kaj moraš
+                        paziti pri obrestih,
                         davkih, ročnosti in inflaciji ter kako izbrati depozit z najboljšim donosom.
                     </div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="zakaj-bodo-obrestne-mere-na-bankah-rasle.html"
+                <a href="zakaj-bodo-obrestne-mere-na-bankah-rasle.html" data-article-card data-category="varcevanje"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Zakaj bodo obrestne mere na bankah rasle, ko bo rasel EURIBOR?
+                    <div class="mt-2 text-xl font-bold" data-article-title>Zakaj bodo obrestne mere na bankah rasle, ko
+                        bo rasel EURIBOR?
                     </div>
-                    <div class="mt-2 text-gray-700">Rast EURIBOR-ja ne vpliva le na kredite, temveč tudi na depozite.
+                    <div class="mt-2 text-gray-700" data-article-desc>Rast EURIBOR-ja ne vpliva le na kredite, temveč
+                        tudi na depozite.
                         Odkrij, zakaj obrestne mere na bankah rastejo in kako lahko to izkoristiš.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="jamstvo-vlog-100000.html"
+                <a href="jamstvo-vlog-100000.html" data-article-card data-category="varcevanje"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Varčevanje</div>
-                    <div class="mt-2 text-xl font-bold">Jamstvo za vloge do 100.000 € – kako deluje in kaj je dejansko
+                    <div class="mt-2 text-xl font-bold" data-article-title>Jamstvo za vloge do 100.000 € – kako deluje
+                        in kaj je dejansko
                         zaščiteno</div>
-                    <div class="mt-2 text-gray-700">Kaj pomeni jamstvo za vloge do 100.000 €, kaj je vključeno in kaj
+                    <div class="mt-2 text-gray-700" data-article-desc>Kaj pomeni jamstvo za vloge do 100.000 €, kaj je
+                        vključeno in kaj
                         ne,
                         kako se šteje limit pri več računih in skupnih računih ter kaj narediti, če imaš več kot 100.000
                         €.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="kako-banke-izracunajo-kreditno-sposobnost.html"
+                <a href="kako-banke-izracunajo-kreditno-sposobnost.html" data-article-card data-category="krediti"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Kako banke izračunajo kreditno sposobnost – razlaga za vsakdanje
+                    <div class="mt-2 text-xl font-bold" data-article-title>Kako banke izračunajo kreditno sposobnost –
+                        razlaga za vsakdanje
                         uporabnike</div>
-                    <div class="mt-2 text-gray-700">Kako banke izračunajo kreditno sposobnost, kaj vpliva na znesek
+                    <div class="mt-2 text-gray-700" data-article-desc>Kako banke izračunajo kreditno sposobnost, kaj
+                        vpliva na znesek
                         kredita in kako se izogniti zavrnjeni prijavi.</div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="predcasno-poplacilo-kredita.html"
+                <a href="predcasno-poplacilo-kredita.html" data-article-card data-category="krediti"
                     class="block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition">
                     <div class="text-sm font-semibold text-[#0B6B3A]">Krediti</div>
-                    <div class="mt-2 text-xl font-bold">Predčasno plačilo kredita – kaj je dobro, kaj slabo in kako
+                    <div class="mt-2 text-xl font-bold" data-article-title>Predčasno plačilo kredita – kaj je dobro, kaj
+                        slabo in kako
                         izračunati koristi</div>
-                    <div class="mt-2 text-gray-700">Predčasno plačilo kredita ti lahko prihrani veliko denarja, a
+                    <div class="mt-2 text-gray-700" data-article-desc>Predčasno plačilo kredita ti lahko prihrani veliko
+                        denarja, a
                         obstajajo tudi neželeni učinki. Razberi, kaj moraš vedeti preden odločiš za preklic kredita.
                     </div>
                     <div class="mt-4 text-sm font-semibold text-gray-900">Preberi članek →</div>
@@ -298,6 +350,74 @@
             nepravilne finančne ter druge odločitve.
         </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('articleSearch');
+            const noResults = document.getElementById('noResults');
+            const buttons = Array.from(document.querySelectorAll('[data-category-filter]'));
+            const cards = Array.from(document.querySelectorAll('[data-article-card]'));
+
+            if (!searchInput || !noResults || buttons.length === 0 || cards.length === 0) return;
+
+            let activeCategory = 'all';
+
+            const normalize = (s) => String(s || '').toLowerCase().trim();
+
+            const setActiveButton = () => {
+                buttons.forEach((btn) => {
+                    const isActive = btn.getAttribute('data-category-filter') === activeCategory;
+                    btn.classList.toggle('bg-[#0B6B3A]', isActive);
+                    btn.classList.toggle('text-white', isActive);
+                    btn.classList.toggle('border-[#0B6B3A]', isActive);
+
+                    btn.classList.toggle('bg-white', !isActive);
+                    btn.classList.toggle('text-gray-900', !isActive);
+                    btn.classList.toggle('border-gray-200', !isActive);
+
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+            };
+
+            const getSearchText = (card) => {
+                const title = card.querySelector('[data-article-title]')?.textContent ?? '';
+                const desc = card.querySelector('[data-article-desc]')?.textContent ?? '';
+                return normalize(`${title} ${desc}`);
+            };
+
+            const applyFilter = () => {
+                const q = normalize(searchInput.value);
+                let visibleCount = 0;
+
+                cards.forEach((card) => {
+                    const cat = normalize(card.getAttribute('data-category'));
+                    const inCategory = activeCategory === 'all' || cat === activeCategory;
+                    const matchesQuery = q === '' || getSearchText(card).includes(q);
+                    const show = inCategory && matchesQuery;
+
+                    card.classList.toggle('hidden', !show);
+                    if (show) visibleCount += 1;
+                });
+
+                noResults.classList.toggle('hidden', visibleCount !== 0);
+            };
+
+            buttons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    activeCategory = btn.getAttribute('data-category-filter') || 'all';
+                    setActiveButton();
+                    applyFilter();
+                });
+            });
+
+            searchInput.addEventListener('input', () => {
+                applyFilter();
+            });
+
+            setActiveButton();
+            applyFilter();
+        });
+    </script>
 
     <script src="../script.js?v=2026-03-29-1" defer></script>
 </body>
