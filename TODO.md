@@ -32,7 +32,7 @@
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
 - [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
 - [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
-- [ ] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+- [x] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
 - [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? Odloženo do sestanka z banko: implementacija audit log + 90-dnevna hramba.
 - [x] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
