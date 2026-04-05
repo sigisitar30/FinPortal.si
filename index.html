@@ -930,6 +930,12 @@
     <!-- JavaScript -->
     <script src="script.js?v=2026-03-29-1" type="text/javascript"></script>
 
+    <button id="backToTop"
+        class="fixed bottom-6 right-6 z-50 hidden items-center justify-center rounded-full bg-[#0B6B3A] text-white shadow-lg hover:bg-[#095a32] focus:outline-none focus:ring-2 focus:ring-[#0B6B3A] focus:ring-offset-2 transition w-12 h-12"
+        type="button" aria-label="Nazaj na vrh">
+        <span aria-hidden="true" class="text-2xl font-extrabold leading-none">↑</span>
+    </button>
+
     <script type="text/javascript">
         (function () {
             var linkEl = document.getElementById("hero-image-link");
@@ -1035,6 +1041,28 @@
             });
 
             startInterval();
+        })();
+    </script>
+
+    <script type="text/javascript">
+        (function () {
+            var btn = document.getElementById('backToTop');
+            if (!btn) return;
+
+            var threshold = 400;
+
+            function updateVisibility() {
+                var show = (window.scrollY || document.documentElement.scrollTop || 0) > threshold;
+                btn.classList.toggle('hidden', !show);
+                btn.classList.toggle('flex', show);
+            }
+
+            btn.addEventListener('click', function () {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            window.addEventListener('scroll', updateVisibility, { passive: true });
+            updateVisibility();
         })();
     </script>
 
