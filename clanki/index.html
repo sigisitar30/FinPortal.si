@@ -155,6 +155,25 @@
             </div>
         </section>
 
+        <section id="featuredBlocks" class="mt-10 hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <div class="text-sm font-extrabold text-gray-900">⭐ Najbolj brano</div>
+                    <div id="featured-most-read" class="mt-4 grid gap-4"></div>
+                </div>
+
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <div class="text-sm font-extrabold text-gray-900">⭐ Priporočamo</div>
+                    <div id="featured-recommended" class="mt-4 grid gap-4"></div>
+                </div>
+
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <div class="text-sm font-extrabold text-gray-900">⭐ Za začetnike</div>
+                    <div id="featured-beginners" class="mt-4 grid gap-4"></div>
+                </div>
+            </div>
+        </section>
+
         <section class="mt-10">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <a href="psihologija-investiranja.html" data-article-card data-category="investicije"
@@ -171,6 +190,7 @@
                 </a>
 
                 <a href="vrednost-denarja-v-casu.html" data-article-card data-category="varcevanje"
+                    data-featured="beginners"
                     class="block rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
                     <div class="text-xs font-semibold text-[#0B6B3A]">Varčevanje</div>
                     <div class="mt-2 text-lg font-bold" data-article-title>Vrednost denarja v času</div>
@@ -181,7 +201,7 @@
                     <div class="mt-4 text-xs font-semibold text-gray-900">Preberi članek →</div>
                 </a>
 
-                <a href="kredit-2026.html" data-article-card data-category="krediti"
+                <a href="kredit-2026.html" data-article-card data-category="krediti" data-featured="most_read"
                     class="block rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
                     <div class="text-xs font-semibold text-[#0B6B3A]">Krediti</div>
                     <div class="mt-2 text-lg font-bold" data-article-title>Krediti 2026 - najcenejši ponudniki in
@@ -303,6 +323,7 @@
                 </a>
 
                 <a href="revolut-flexible-account-furs.html" data-article-card data-category="varcevanje"
+                    data-featured="recommended"
                     class="block rounded-2xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md transition">
                     <div class="text-xs font-semibold text-[#0B6B3A]">Varčevanje</div>
                     <div class="mt-2 text-lg font-bold" data-article-title>Revolut in davki 2026: Kako prijaviti obresti
@@ -381,11 +402,50 @@
             const buttons = Array.from(document.querySelectorAll('[data-category-filter]'));
             const cards = Array.from(document.querySelectorAll('[data-article-card]'));
 
+            const featuredSection = document.getElementById('featuredBlocks');
+            const featuredMostRead = document.getElementById('featured-most-read');
+            const featuredRecommended = document.getElementById('featured-recommended');
+            const featuredBeginners = document.getElementById('featured-beginners');
+
             if (!searchInput || !noResults || buttons.length === 0 || cards.length === 0) return;
 
             let activeCategory = 'all';
 
             const normalize = (s) => String(s || '').toLowerCase().trim();
+
+            const featuredContainers = {
+                most_read: featuredMostRead,
+                recommended: featuredRecommended,
+                beginners: featuredBeginners,
+            };
+
+            const featuredCards = cards.filter((c) => Boolean(c.getAttribute('data-featured')));
+
+            const buildFeatured = () => {
+                if (!featuredSection || !featuredMostRead || !featuredRecommended || !featuredBeginners) return;
+
+                featuredMostRead.innerHTML = '';
+                featuredRecommended.innerHTML = '';
+                featuredBeginners.innerHTML = '';
+
+                featuredCards.forEach((card) => {
+                    const key = normalize(card.getAttribute('data-featured'));
+                    const container = featuredContainers[key];
+                    if (!container) return;
+
+                    const clone = card.cloneNode(true);
+                    clone.removeAttribute('data-article-card');
+                    clone.removeAttribute('data-featured');
+                    container.appendChild(clone);
+                });
+
+                const hasAny =
+                    featuredMostRead.children.length > 0 ||
+                    featuredRecommended.children.length > 0 ||
+                    featuredBeginners.children.length > 0;
+
+                featuredSection.classList.toggle('hidden', !hasAny);
+            };
 
             const setActiveButton = () => {
                 buttons.forEach((btn) => {
@@ -415,11 +475,18 @@
                 const q = normalize(searchInput.value);
                 let visibleCount = 0;
 
+                const isDefaultView = q === '' && activeCategory === 'all';
+
+                if (featuredSection) {
+                    featuredSection.classList.toggle('hidden', !isDefaultView);
+                }
+
                 cards.forEach((card) => {
                     const cat = normalize(card.getAttribute('data-category'));
                     const inCategory = activeCategory === 'all' || cat === activeCategory;
                     const matchesQuery = q === '' || getSearchText(card).includes(q);
-                    const show = inCategory && matchesQuery;
+                    const isFeaturedOriginal = isDefaultView && Boolean(card.getAttribute('data-featured'));
+                    const show = inCategory && matchesQuery && !isFeaturedOriginal;
 
                     card.classList.toggle('hidden', !show);
                     if (show) visibleCount += 1;
@@ -440,6 +507,7 @@
                 applyFilter();
             });
 
+            buildFeatured();
             setActiveButton();
             applyFilter();
         });
