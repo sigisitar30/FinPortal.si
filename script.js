@@ -1875,11 +1875,18 @@ function fpLeadValidateContact() {
     const phoneRaw = fpLeadReadText("lead-phone");
     const emailRaw = fpLeadReadText("lead-email");
 
+    const phoneEl = document.getElementById("lead-phone");
+    const phoneHadInvalid = phoneEl?.dataset?.fpPhoneHadInvalid === "1";
+
     const phoneDigits = phoneRaw.replace(/\D+/g, "");
     const hasPhone = phoneDigits.length > 0;
     const hasEmail = emailRaw.length > 0;
 
     const errors = [];
+
+    if (phoneHadInvalid) {
+        errors.push("Telefon lahko vsebuje samo številke, znak '+' in presledke.");
+    }
 
     if (!hasPhone && !hasEmail) {
         errors.push("Vnesi vsaj telefon ali e-pošto.");
@@ -3049,6 +3056,38 @@ function initInputGuards() {
         validate();
     };
 
+    const bindNumberLikeSanitizeOnly = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const sanitize = (raw) => {
+            const s = String(raw ?? "");
+            return s
+                .replace(/\s+/g, "")
+                .replace(/[^0-9.,\-]/g, "")
+                .replace(/(?!^)-/g, "");
+        };
+
+        el.addEventListener("input", () => {
+            const next = sanitize(el.value);
+            if (next !== el.value) el.value = next;
+        });
+    };
+
+    const bindNameSanitizeOnly = (el) => {
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const sanitize = (raw) => String(raw ?? "").replace(/[^A-Za-zÀ-ÖØ-öø-ÿČŠŽčšžĐđĆćŔŕŐőŰű'\-\s]/gu, "");
+        el.addEventListener("input", () => {
+            const next = sanitize(el.value);
+            if (next !== el.value) el.value = next;
+        });
+    };
+
     const bindName = (el) => {
         if (!el) return;
         if (el.dataset.fpGuardBound === "1") return;
@@ -3086,44 +3125,7 @@ function initInputGuards() {
         if (el.dataset.fpGuardBound === "1") return;
         el.dataset.fpGuardBound = "1";
 
-        const inlineErrorEl = document.getElementById("lead-phone-error");
-
-        const setInlineError = (text) => {
-            if (!inlineErrorEl) return;
-            const t = String(text ?? "").trim();
-            if (t) {
-                inlineErrorEl.textContent = t;
-                inlineErrorEl.classList.remove("hidden");
-            } else {
-                inlineErrorEl.textContent = "";
-                inlineErrorEl.classList.add("hidden");
-            }
-        };
-
         const sanitize = (raw) => String(raw ?? "").replace(/[^0-9+\s]/g, "");
-        const validate = () => {
-            const hadInvalid = el.dataset.fpPhoneHadInvalid === "1";
-            if (hadInvalid) {
-                setInlineError("Telefon lahko vsebuje samo številke, znak '+' in presledke.");
-                setValidity(el, "");
-                return;
-            }
-            const v = String(el.value ?? "").trim();
-            if (!v) {
-                setInlineError("");
-                setValidity(el, "");
-                return;
-            }
-            const digits = v.replace(/\D+/g, "");
-            if (digits.length < 8) {
-                setInlineError("Telefonska številka je prekratka (vsaj 8 številk). ");
-                setValidity(el, "");
-                return;
-            }
-
-            setInlineError("");
-            setValidity(el, "");
-        };
 
         el.addEventListener("input", () => {
             const raw = String(el.value ?? "");
@@ -3131,13 +3133,7 @@ function initInputGuards() {
             const hadInvalid = next !== raw;
             el.dataset.fpPhoneHadInvalid = hadInvalid ? "1" : "0";
             if (hadInvalid) el.value = next;
-            validate();
         });
-        el.addEventListener("blur", () => {
-            validate();
-            reportIfInvalid(el);
-        });
-        validate();
     };
 
     const bindEmail = (el) => {
@@ -3163,6 +3159,16 @@ function initInputGuards() {
         validate();
     };
 
+    const bindEmailSanitizeOnly = (el) => {
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        el.addEventListener("input", () => {
+            el.value = String(el.value ?? "").replace(/\s+/g, "");
+        });
+    };
+
     bindNumberLike("loan-amount", { allowEmpty: false, min: 1, max: 100000000 });
     bindNumberLike("loan-years", { allowEmpty: false, min: 1, max: 40 });
 
@@ -3172,16 +3178,16 @@ function initInputGuards() {
     bindNumberLike("deposit-compare-amount", { allowEmpty: false, min: 1, max: 100000000 });
     bindNumberLike("deposit-compare-term", { allowEmpty: false, min: 1, max: 360 });
 
-    bindNumberLike("lead-deposit-amount", { allowEmpty: true, min: 1, max: 100000000 });
-    bindNumberLike("lead-deposit-months", { allowEmpty: true, min: 1, max: 360 });
-    bindNumberLike("lead-loan-amount", { allowEmpty: true, min: 1, max: 100000000 });
-    bindNumberLike("lead-loan-years", { allowEmpty: true, min: 1, max: 40 });
+    bindNumberLikeSanitizeOnly("lead-deposit-amount");
+    bindNumberLikeSanitizeOnly("lead-deposit-months");
+    bindNumberLikeSanitizeOnly("lead-loan-amount");
+    bindNumberLikeSanitizeOnly("lead-loan-years");
 
     const leadNameEl = document.getElementById("lead-name");
-    if (leadNameEl) bindName(leadNameEl);
+    if (leadNameEl) bindNameSanitizeOnly(leadNameEl);
     bindPhone("lead-phone");
     const leadEmailEl = document.getElementById("lead-email");
-    if (leadEmailEl) bindEmail(leadEmailEl);
+    if (leadEmailEl) bindEmailSanitizeOnly(leadEmailEl);
 
     const contactForm = document.getElementById("contact-form");
     if (contactForm) {
