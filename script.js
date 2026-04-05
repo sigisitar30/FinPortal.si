@@ -3089,6 +3089,11 @@ function initInputGuards() {
 
         const sanitize = (raw) => String(raw ?? "").replace(/[^0-9+\s]/g, "");
         const validate = () => {
+            const hadInvalid = el.dataset.fpPhoneHadInvalid === "1";
+            if (hadInvalid) {
+                setValidity(el, "Telefon lahko vsebuje samo številke, znak '+' in presledke. ");
+                return;
+            }
             const v = String(el.value ?? "").trim();
             if (!v) {
                 setValidity(el, "");
@@ -3103,8 +3108,11 @@ function initInputGuards() {
         };
 
         el.addEventListener("input", () => {
-            const next = sanitize(el.value);
-            if (next !== el.value) el.value = next;
+            const raw = String(el.value ?? "");
+            const next = sanitize(raw);
+            const hadInvalid = next !== raw;
+            el.dataset.fpPhoneHadInvalid = hadInvalid ? "1" : "0";
+            if (hadInvalid) el.value = next;
             validate();
         });
         el.addEventListener("blur", () => {
