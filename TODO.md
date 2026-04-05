@@ -18,6 +18,7 @@
   - [ ] Čez 3–7 dni preveri, da se število 404 zmanjšuje (validating/passed)
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
 - [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
+- [ ] **[59]** Internal linking: dodaj povezave iz kalkulatorjev → relevantni članki (modul "Povezani članki" na kalkulatorjih; po potrebi tudi članki → kalkulatorji)
 - [ ] **[53]** FAQ + FAQPage schema na ključnih straneh (kreditni kalkulator, kreditna sposobnost, primerjava depozitov)
 - [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
 - [x] **[55]** Članki (`clanki/index.html`): dodaj iskalnik + client-side filtriranje po kategorijah prek `data-category` (zaenkrat: `krediti`, `varcevanje`, `investicije`) + stanje "ni zadetkov" + fallback, da je brez JS seznam še vedno viden
