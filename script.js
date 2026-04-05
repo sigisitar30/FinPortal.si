@@ -2970,6 +2970,200 @@ function showError(message) {
     // Could be extended to show user-friendly error messages in the UI
 }
 
+function initInputGuards() {
+    const setValidity = (el, msg) => {
+        if (!el) return;
+        try {
+            el.setCustomValidity(msg || "");
+        } catch { }
+    };
+
+    const reportIfInvalid = (el) => {
+        if (!el) return;
+        try {
+            if (typeof el.reportValidity === "function") el.reportValidity();
+        } catch { }
+    };
+
+    const bindNumberLike = (id, opts = {}) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const allowEmpty = opts.allowEmpty !== false;
+        const min = Number.isFinite(opts.min) ? opts.min : null;
+        const max = Number.isFinite(opts.max) ? opts.max : null;
+
+        const sanitize = (raw) => {
+            const s = String(raw ?? "");
+            return s
+                .replace(/\s+/g, "")
+                .replace(/[^0-9.,\-]/g, "")
+                .replace(/(?!^)-/g, "");
+        };
+
+        const parse = (raw) => {
+            const cleaned = sanitize(raw).replace(/\./g, "").replace(",", ".");
+            if (!cleaned) return NaN;
+            const n = Number(cleaned);
+            return Number.isFinite(n) ? n : NaN;
+        };
+
+        const validate = () => {
+            const raw = String(el.value ?? "");
+            const trimmed = raw.trim();
+            if (!trimmed) {
+                setValidity(el, allowEmpty ? "" : "Vnesi vrednost.");
+                return;
+            }
+            const n = parse(trimmed);
+            if (!Number.isFinite(n)) {
+                setValidity(el, "Vnesi številko.");
+                return;
+            }
+            if (min !== null && n < min) {
+                setValidity(el, `Vrednost je prenizka (min. ${min}).`);
+                return;
+            }
+            if (max !== null && n > max) {
+                setValidity(el, `Vrednost je previsoka (max. ${max}).`);
+                return;
+            }
+            setValidity(el, "");
+        };
+
+        el.addEventListener("input", () => {
+            const next = sanitize(el.value);
+            if (next !== el.value) {
+                el.value = next;
+            }
+            validate();
+        });
+
+        el.addEventListener("blur", () => {
+            validate();
+            reportIfInvalid(el);
+        });
+
+        validate();
+    };
+
+    const bindName = (el) => {
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const sanitize = (raw) => String(raw ?? "").replace(/[^A-Za-zÀ-ÖØ-öø-ÿČŠŽčšžĐđĆćŔŕŐőŰű'\-\s]/gu, "");
+
+        const validate = () => {
+            const v = String(el.value ?? "").trim();
+            if (!v) {
+                setValidity(el, "Vnesi ime in priimek.");
+                return;
+            }
+            if (v.replace(/\s+/g, " ").split(" ").filter(Boolean).length < 2) {
+                setValidity(el, "Vnesi ime in priimek (vsaj 2 besedi). ");
+                return;
+            }
+            setValidity(el, "");
+        };
+
+        el.addEventListener("input", () => {
+            const next = sanitize(el.value);
+            if (next !== el.value) el.value = next;
+            validate();
+        });
+        el.addEventListener("blur", () => {
+            validate();
+            reportIfInvalid(el);
+        });
+        validate();
+    };
+
+    const bindPhone = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const sanitize = (raw) => String(raw ?? "").replace(/[^0-9+\s]/g, "");
+        const validate = () => {
+            const v = String(el.value ?? "").trim();
+            if (!v) {
+                setValidity(el, "");
+                return;
+            }
+            const digits = v.replace(/\D+/g, "");
+            if (digits.length < 8) {
+                setValidity(el, "Telefonska številka je prekratka (vsaj 8 številk). ");
+                return;
+            }
+            setValidity(el, "");
+        };
+
+        el.addEventListener("input", () => {
+            const next = sanitize(el.value);
+            if (next !== el.value) el.value = next;
+            validate();
+        });
+        el.addEventListener("blur", () => {
+            validate();
+            reportIfInvalid(el);
+        });
+        validate();
+    };
+
+    const bindEmail = (el) => {
+        if (!el) return;
+        if (el.dataset.fpGuardBound === "1") return;
+        el.dataset.fpGuardBound = "1";
+
+        const validate = () => {
+            const v = String(el.value ?? "").trim();
+            if (!v) {
+                setValidity(el, "");
+                return;
+            }
+            const ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(v);
+            setValidity(el, ok ? "" : "E-pošta ni v pravilnem formatu (npr. ime@domena.si). ");
+        };
+
+        el.addEventListener("input", validate);
+        el.addEventListener("blur", () => {
+            validate();
+            reportIfInvalid(el);
+        });
+        validate();
+    };
+
+    bindNumberLike("loan-amount", { allowEmpty: false, min: 1, max: 100000000 });
+    bindNumberLike("loan-years", { allowEmpty: false, min: 1, max: 40 });
+
+    bindNumberLike("interest-amount", { allowEmpty: false, min: 1, max: 100000000 });
+    bindNumberLike("interest-months", { allowEmpty: false, min: 1, max: 360 });
+
+    bindNumberLike("deposit-compare-amount", { allowEmpty: false, min: 1, max: 100000000 });
+    bindNumberLike("deposit-compare-term", { allowEmpty: false, min: 1, max: 360 });
+
+    bindNumberLike("lead-deposit-amount", { allowEmpty: true, min: 1, max: 100000000 });
+    bindNumberLike("lead-deposit-months", { allowEmpty: true, min: 1, max: 360 });
+    bindNumberLike("lead-loan-amount", { allowEmpty: true, min: 1, max: 100000000 });
+    bindNumberLike("lead-loan-years", { allowEmpty: true, min: 1, max: 40 });
+
+    const leadNameEl = document.getElementById("lead-name");
+    if (leadNameEl) bindName(leadNameEl);
+    bindPhone("lead-phone");
+    const leadEmailEl = document.getElementById("lead-email");
+    if (leadEmailEl) bindEmail(leadEmailEl);
+
+    const contactForm = document.getElementById("contact-form");
+    if (contactForm) {
+        bindName(contactForm.querySelector('input[name="name"]'));
+        bindEmail(contactForm.querySelector('input[name="email"]'));
+    }
+}
+
 function getElementValue(id) {
     const element = document.getElementById(id);
     if (!element) return 0;
@@ -4605,6 +4799,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     safeInit("initCookieBanner", initCookieBanner);
     safeInit("initContactForm", initContactForm);
+    safeInit("initInputGuards", initInputGuards);
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
