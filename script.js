@@ -3076,7 +3076,6 @@ function initInputGuards() {
         });
         el.addEventListener("blur", () => {
             validate();
-            reportIfInvalid(el);
         });
         validate();
     };
@@ -3087,23 +3086,42 @@ function initInputGuards() {
         if (el.dataset.fpGuardBound === "1") return;
         el.dataset.fpGuardBound = "1";
 
+        const inlineErrorEl = document.getElementById("lead-phone-error");
+
+        const setInlineError = (text) => {
+            if (!inlineErrorEl) return;
+            const t = String(text ?? "").trim();
+            if (t) {
+                inlineErrorEl.textContent = t;
+                inlineErrorEl.classList.remove("hidden");
+            } else {
+                inlineErrorEl.textContent = "";
+                inlineErrorEl.classList.add("hidden");
+            }
+        };
+
         const sanitize = (raw) => String(raw ?? "").replace(/[^0-9+\s]/g, "");
         const validate = () => {
             const hadInvalid = el.dataset.fpPhoneHadInvalid === "1";
             if (hadInvalid) {
-                setValidity(el, "Telefon lahko vsebuje samo številke, znak '+' in presledke. ");
+                setInlineError("Telefon lahko vsebuje samo številke, znak '+' in presledke.");
+                setValidity(el, "");
                 return;
             }
             const v = String(el.value ?? "").trim();
             if (!v) {
+                setInlineError("");
                 setValidity(el, "");
                 return;
             }
             const digits = v.replace(/\D+/g, "");
             if (digits.length < 8) {
-                setValidity(el, "Telefonska številka je prekratka (vsaj 8 številk). ");
+                setInlineError("Telefonska številka je prekratka (vsaj 8 številk). ");
+                setValidity(el, "");
                 return;
             }
+
+            setInlineError("");
             setValidity(el, "");
         };
 
