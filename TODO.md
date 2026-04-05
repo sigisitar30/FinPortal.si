@@ -3,11 +3,11 @@
 ## Naslednje (prioriteta / največji ROI)
 - [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
 - [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
-- [ ] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
+- [x] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
 - [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
 - [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
 - [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
-- [ ] **[26]** Dodaj "back to top" gumb na dolgih straneh
+- [x] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
 
@@ -35,6 +35,7 @@
 - [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
 - [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
 - [x] **[49]** Prihranek obresti: primerjava obresti po rednem amortizacijskem načrtu vs z predčasnimi vplačili (razlika 2 amortizacij). Dodan prikaz baseline obresti in pravilno osveževanje rezultatov.
+- [ ] **[57]** Cache rate dvigniti na 60-80 %
 
 ## Completed
 - [x] **[19]** Modernizirati Home page (index.html): hero + sekcije + tipografija + spacing + CTA (minimalen redesign)
