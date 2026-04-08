@@ -4812,7 +4812,11 @@ function initArticlePrevNext() {
         const file = (() => {
             const p = path.split("?")[0].split("#")[0];
             const last = p.split("/").filter(Boolean).pop() || "";
-            return String(last || "").trim();
+            let f = String(last || "").trim();
+            if (f !== "" && !f.toLowerCase().endsWith(".html")) {
+                f = `${f}.html`;
+            }
+            return f;
         })();
 
         if (!file || file === "template-clanek.html") return;
