@@ -1718,6 +1718,13 @@ function fpLeadBuildPrefillPayload(source) {
         deposit: null,
     };
 
+    const readNumberFromText = (id) => {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        const raw = String(el.textContent ?? "").trim();
+        return fpLeadParseNumber(raw);
+    };
+
     const hasLoan = !!document.getElementById("loan-amount") || !!document.getElementById("loan-years");
     if (hasLoan) {
         const amount = fpLeadReadNumber("loan-amount");
@@ -1731,6 +1738,32 @@ function fpLeadBuildPrefillPayload(source) {
             years: years,
             rate_type: rateType || undefined,
             purpose: purposeVal || undefined,
+        };
+    }
+
+    const hasEom = !!document.getElementById("eom-amount") || !!document.getElementById("eom-months");
+    if (!payload.loan && hasEom) {
+        const amount = fpLeadReadNumber("eom-amount");
+        const months = fpLeadReadNumber("eom-months");
+
+        const years = Number.isFinite(months) ? Math.max(1, Math.round(months / 12)) : null;
+        payload.loan = {
+            amount_eur: amount,
+            years: years,
+            rate_type: "fixed",
+        };
+    }
+
+    const hasCreditworthiness = !!document.getElementById("cs-income") || !!document.getElementById("cs-years");
+    if (!payload.loan && hasCreditworthiness) {
+        const income = fpLeadReadNumber("cs-income");
+        const years = fpLeadReadNumber("cs-years");
+
+        const maxLoan = readNumberFromText("cs-max-loan");
+        payload.loan = {
+            amount_eur: Number.isFinite(maxLoan) ? maxLoan : null,
+            years: years,
+            income_eur: income,
         };
     }
 
@@ -1748,7 +1781,10 @@ function fpLeadBuildPrefillPayload(source) {
 }
 
 function initLeadPrefillCapture() {
-    document.querySelectorAll('a[href="povprasevanje.html"][data-lead-source]').forEach((btn) => {
+    document.querySelectorAll('a[data-lead-source]').forEach((btn) => {
+        const hrefRaw = String(btn.getAttribute("href") ?? "").trim();
+        if (!hrefRaw) return;
+        if (!hrefRaw.includes("povprasevanje.html")) return;
         if (btn.dataset.fpPrefillBound === "1") return;
         btn.dataset.fpPrefillBound = "1";
 
@@ -2113,6 +2149,7 @@ function initLeadFormPrefill() {
         if (payload.loan.purpose) fpLeadWriteText("lead-loan-type", String(payload.loan.purpose));
         if (payload.loan.rate_type === "fixed") fpLeadWriteText("lead-loan-rate-type", "fixed");
         if (payload.loan.rate_type === "euribor") fpLeadWriteText("lead-loan-rate-type", "variable");
+        if (Number.isFinite(payload.loan.income_eur)) fpLeadWriteText("lead-loan-income", fpLeadFormatThousandsSiNumber(payload.loan.income_eur));
     }
 
     if (payload.deposit && (payload.deposit.amount_eur || payload.deposit.months)) {
