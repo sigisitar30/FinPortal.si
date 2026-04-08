@@ -4830,10 +4830,10 @@ function initArticlePrevNext() {
             });
 
         const idx = items.findIndex((a) => a.slug === file);
-        if (idx < 0) return;
+        const inRegistry = idx >= 0;
 
-        const prev = items.length > 1 ? (idx > 0 ? items[idx - 1] : items[items.length - 1]) : null;
-        const next = items.length > 1 ? (idx < items.length - 1 ? items[idx + 1] : items[0]) : null;
+        const prev = inRegistry && items.length > 1 ? (idx > 0 ? items[idx - 1] : items[items.length - 1]) : null;
+        const next = inRegistry && items.length > 1 ? (idx < items.length - 1 ? items[idx + 1] : items[0]) : null;
 
         const norm = (s) => String(s || "").replace(/\s+/g, " ").trim();
         const links = Array.from(document.querySelectorAll("a"));
@@ -4907,12 +4907,13 @@ function initArticlePrevNext() {
             }
         });
 
-        if (prev) {
-            row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
-        }
-
-        if (next) {
-            row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
+        if (!inRegistry) {
+            console.warn("initArticlePrevNext: article not found in FP_ARTICLES", { file });
+            row.appendChild(ensureNavLink({ kind: "prev", href: "/clanki/" }));
+            row.appendChild(ensureNavLink({ kind: "next", href: "/clanki/" }));
+        } else {
+            if (prev) row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
+            if (next) row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
         }
 
         // If only one link exists for some reason, keep layout nice.
@@ -4922,6 +4923,10 @@ function initArticlePrevNext() {
         } else {
             row.classList.remove("justify-end");
             row.classList.add("justify-between");
+        }
+
+        if (inRegistry) {
+            console.log("initArticlePrevNext: wired", { file, prev: prev ? prev.slug : null, next: next ? next.slug : null });
         }
     } catch (e) {
         console.warn("initArticlePrevNext failed", e);
