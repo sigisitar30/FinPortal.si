@@ -5027,7 +5027,10 @@ function initCalculatorRelatedArticles() {
     try {
         const path = String(window.location.pathname || "");
         const last = path.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
-        const file = String(last || "").trim();
+        let file = String(last || "").trim();
+        if (file !== "" && !file.toLowerCase().endsWith(".html")) {
+            file = `${file}.html`;
+        }
         if (!file) return;
         if (file.startsWith("clanki")) return;
         if (file === "index.html" || file === "") return;
@@ -5035,16 +5038,36 @@ function initCalculatorRelatedArticles() {
         const slugs = FP_CALC_RELATED_ARTICLES[file];
         if (!Array.isArray(slugs) || slugs.length === 0) return;
 
-        if (document.getElementById("fp-related-articles")) return;
-
         const main = document.querySelector("main");
         const footer = document.querySelector("footer");
         const anchor = footer || null;
         if (!main && !anchor) return;
 
-        const section = document.createElement("section");
+        const normalize = (s) => String(s || "").replace(/\s+/g, " ").trim().toLowerCase();
+
+        // Prefer reusing an existing hardcoded section to keep layout consistent across pages.
+        const existingSections = Array.from(document.querySelectorAll("section")).filter((s) => {
+            const text = normalize(s.textContent);
+            return text.includes("povezani članki");
+        });
+
+        let section = document.getElementById("fp-related-articles") || existingSections[0] || null;
+
+        // Remove duplicates (keep the first).
+        existingSections.slice(1).forEach((s) => {
+            if (s === section) return;
+            s.remove();
+        });
+
+        if (!section) {
+            section = document.createElement("section");
+            section.className = "bg-white border-t border-gray-200";
+        }
+
         section.id = "fp-related-articles";
-        section.className = "bg-white border-t border-gray-200";
+
+        // Normalize section content: always render our JS pills.
+        section.innerHTML = "";
 
         const wrap = document.createElement("div");
         wrap.className = "max-w-7xl mx-auto px-6 py-8";
@@ -5077,13 +5100,16 @@ function initCalculatorRelatedArticles() {
         wrap.appendChild(row);
         section.appendChild(wrap);
 
-        if (anchor && anchor.parentNode) {
-            anchor.parentNode.insertBefore(section, anchor);
-            return;
-        }
+        // If section was newly created, insert it before footer.
+        if (!section.parentNode) {
+            if (anchor && anchor.parentNode) {
+                anchor.parentNode.insertBefore(section, anchor);
+                return;
+            }
 
-        if (main) {
-            main.insertAdjacentElement("afterend", section);
+            if (main) {
+                main.insertAdjacentElement("afterend", section);
+            }
         }
     } catch (e) {
         console.warn("initCalculatorRelatedArticles failed", e);
