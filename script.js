@@ -4822,15 +4822,16 @@ function initArticlePrevNext() {
         if (!file || file === "template-clanek.html") return;
 
         const items = FP_ARTICLES
-            .map((a) => ({
+            .map((a, i) => ({
                 ...a,
+                _idx: i,
                 _ts: Date.parse(`${String(a.datePublished || "").slice(0, 10)}T00:00:00Z`),
             }))
             .filter((a) => a.slug && Number.isFinite(a._ts))
             .sort((a, b) => {
                 const dt = a._ts - b._ts;
                 if (dt !== 0) return dt;
-                return String(a.slug).localeCompare(String(b.slug));
+                return a._idx - b._idx;
             });
 
         const idx = items.findIndex((a) => a.slug === file);
