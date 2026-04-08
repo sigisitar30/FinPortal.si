@@ -29,6 +29,7 @@
 
 ## Večji projekti / kasneje
 - [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
+- [ ] **[25C]** Mobilni pilot: izberi 1 kalkulator in tam najprej uredi mobile quick wins (sticky CTA + tap targeti + overflow), nato razširi na ostale.
 - [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
 - [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika

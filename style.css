@@ -540,6 +540,41 @@ button[id$="-calc-btn"]:hover,
     }
 }
 
+@media (max-width: 639px) {
+    .fp-has-mobile-sticky-cta {
+        padding-bottom: 92px;
+    }
+
+    .fp-mobile-sticky-lead-cta {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 50;
+        padding: 12px 16px;
+        background: rgba(255, 255, 255, 0.92);
+        border-top: 1px solid var(--border-medium);
+        backdrop-filter: blur(10px);
+    }
+
+    .fp-mobile-sticky-lead-cta__btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        min-height: 44px;
+        padding-top: 0.85rem;
+        padding-bottom: 0.85rem;
+        border-radius: 0.9rem;
+        font-weight: 800;
+    }
+}
+
+@media (min-width: 640px) {
+    .fp-mobile-sticky-lead-cta {
+        display: none !important;
+    }
+}
+
 @media (max-width: 640px) {
     .px-6 {
         padding-left: 1rem !important;

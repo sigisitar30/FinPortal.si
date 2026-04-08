@@ -2706,6 +2706,48 @@ function initMobileMenu() {
     applyVisibility();
 }
 
+function initMobileStickyLeadCta() {
+    if (window.__fpMobileStickyLeadCtaInit) return;
+    window.__fpMobileStickyLeadCtaInit = true;
+
+    try {
+        const path = String(window.location.pathname || "");
+        const last = path.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
+        let file = String(last || "").trim();
+        if (!file) file = "index.html";
+        if (!file.includes(".")) file = `${file}.html`;
+
+        const isArticle = path.includes("/clanki/");
+        if (isArticle) return;
+        if (file === "index.html") return;
+        if (file === "povprasevanje.html") return;
+
+        const isCalculator = Object.prototype.hasOwnProperty.call(FP_CALC_RELATED_ARTICLES || {}, file);
+        if (!isCalculator) return;
+
+        if (document.getElementById("fp-mobile-sticky-lead-cta")) return;
+
+        const existing = document.querySelector('a.lead-beta-btn[href*="povprasevanje.html"], a[data-lead-source][href*="povprasevanje.html"]');
+        if (!existing) return;
+
+        const wrap = document.createElement("div");
+        wrap.id = "fp-mobile-sticky-lead-cta";
+        wrap.className = "fp-mobile-sticky-lead-cta";
+
+        const btn = document.createElement("a");
+        btn.href = "povprasevanje.html";
+        btn.setAttribute("data-lead-source", `${file.replace(/\.html$/i, "")}_sticky_cta`);
+        btn.className = "lead-beta-btn pridobi-btn fp-mobile-sticky-lead-cta__btn";
+        btn.textContent = "Pošlji povpraševanje banki";
+
+        wrap.appendChild(btn);
+        document.body.appendChild(wrap);
+        document.body.classList.add("fp-has-mobile-sticky-cta");
+    } catch (e) {
+        console.warn("initMobileStickyLeadCta failed", e);
+    }
+}
+
 function initMobileBanners() {
     if (window.__fpMobileBannersInit) return;
     window.__fpMobileBannersInit = true;
@@ -5169,6 +5211,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initInputGuards", initInputGuards);
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
+    safeInit("initMobileStickyLeadCta", initMobileStickyLeadCta);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
     safeInit("groupKalkulatorjiDropdown", groupKalkulatorjiDropdown);
     safeInit("initArticleInlineLinks", initArticleInlineLinks);
