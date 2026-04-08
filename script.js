@@ -4828,9 +4828,10 @@ function initArticlePrevNext() {
         const prev = idx > 0 ? items[idx - 1] : null;
         const next = idx < items.length - 1 ? items[idx + 1] : null;
 
+        const norm = (s) => String(s || "").replace(/\s+/g, " ").trim();
         const links = Array.from(document.querySelectorAll("a"));
-        const prevLink = links.find((a) => String(a.textContent || "").trim() === "Prejšnji članek") || null;
-        const nextLink = links.find((a) => String(a.textContent || "").trim() === "Naslednji članek") || null;
+        const prevLink = links.find((a) => norm(a.textContent).includes("Prejšnji članek")) || null;
+        const nextLink = links.find((a) => norm(a.textContent).includes("Naslednji članek")) || null;
 
         if (prevLink) {
             if (prev) {
