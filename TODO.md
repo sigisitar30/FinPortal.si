@@ -29,6 +29,10 @@
 
 ## Večji projekti / kasneje
 - [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
+   - [x] Sticky mobilni lead CTA na kalkulatorjih ("Pošlji povpraševanje banki")
+   - [x] Po kliku na "Izračunaj": auto-scroll na rezultate + pulse highlight na modrem CTA
+   - [x] Cache-busting: `style.css?v=2026-04-08-1` + `script.js?v=2026-04-08-1` (da se spremembe vidijo tudi na telefonu)
+   - [ ] B: tap targeti + odstrani horizontal overflow (če/ko opazimo na mobilnem)
 - [ ] **[25C]** Mobilni pilot: izberi 1 kalkulator in tam najprej uredi mobile quick wins (sticky CTA + tap targeti + overflow), nato razširi na ostale.
 - [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
