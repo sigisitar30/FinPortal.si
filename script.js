@@ -4806,6 +4806,9 @@ function initArticlePrevNext() {
         const looksLikeArticle = path.includes("/clanki/") && !path.endsWith("/clanki/") && !path.endsWith("/clanki/index.html");
         if (!looksLikeArticle) return;
 
+        const article = document.querySelector("article");
+        if (!article) return;
+
         const file = (() => {
             const p = path.split("?")[0].split("#")[0];
             const last = p.split("/").filter(Boolean).pop() || "";
@@ -4837,20 +4840,88 @@ function initArticlePrevNext() {
         const prevLink = links.find((a) => norm(a.textContent).includes("Prejšnji članek")) || null;
         const nextLink = links.find((a) => norm(a.textContent).includes("Naslednji članek")) || null;
 
-        if (prevLink) {
-            if (prev) {
-                prevLink.setAttribute("href", prev.slug);
-                prevLink.removeAttribute("aria-disabled");
-                prevLink.classList.remove("opacity-60", "cursor-not-allowed");
+        const ensureNavLink = ({ kind, href }) => {
+            const isPrev = kind === "prev";
+            const label = isPrev ? "Prejšnji članek" : "Naslednji članek";
+
+            const a = document.createElement("a");
+            a.setAttribute("href", href);
+            a.className = "inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 font-semibold text-gray-900 hover:bg-gray-50 transition glow-hover";
+
+            if (isPrev) {
+                const arrow = document.createElement("span");
+                arrow.setAttribute("aria-hidden", "true");
+                arrow.className = "text-2xl font-extrabold leading-none";
+                arrow.textContent = "←";
+                a.appendChild(arrow);
+
+                const text = document.createElement("span");
+                text.textContent = label;
+                a.appendChild(text);
+            } else {
+                const text = document.createElement("span");
+                text.textContent = label;
+                a.appendChild(text);
+
+                const arrow = document.createElement("span");
+                arrow.setAttribute("aria-hidden", "true");
+                arrow.className = "text-2xl font-extrabold leading-none";
+                arrow.textContent = "→";
+                a.appendChild(arrow);
             }
+
+            return a;
+        };
+
+        const ensureNavSection = () => {
+            const existingAny = prevLink || nextLink;
+            if (existingAny) {
+                const section = existingAny.closest("section") || existingAny.parentElement;
+                if (section && section.tagName && section.tagName.toLowerCase() === "section") return section;
+            }
+
+            const section = document.createElement("section");
+            section.className = "mt-10";
+
+            const row = document.createElement("div");
+            row.className = "flex items-stretch justify-between gap-3";
+            section.appendChild(row);
+
+            article.appendChild(section);
+            return section;
+        };
+
+        const section = ensureNavSection();
+        const row = section.querySelector("div") || (() => {
+            const d = document.createElement("div");
+            d.className = "flex items-stretch justify-between gap-3";
+            section.appendChild(d);
+            return d;
+        })();
+
+        // Remove any existing prev/next links inside the row to avoid duplicates and enforce consistent markup.
+        Array.from(row.querySelectorAll("a")).forEach((a) => {
+            const t = norm(a.textContent);
+            if (t.includes("Prejšnji članek") || t.includes("Naslednji članek")) {
+                a.remove();
+            }
+        });
+
+        if (prev) {
+            row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
         }
 
-        if (nextLink) {
-            if (next) {
-                nextLink.setAttribute("href", next.slug);
-                nextLink.removeAttribute("aria-disabled");
-                nextLink.classList.remove("opacity-60", "cursor-not-allowed");
-            }
+        if (next) {
+            row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
+        }
+
+        // If only one link exists for some reason, keep layout nice.
+        if (row.children.length === 1) {
+            row.classList.remove("justify-between");
+            row.classList.add("justify-end");
+        } else {
+            row.classList.remove("justify-end");
+            row.classList.add("justify-between");
         }
     } catch (e) {
         console.warn("initArticlePrevNext failed", e);
