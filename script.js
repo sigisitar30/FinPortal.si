@@ -4975,6 +4975,121 @@ function initArticlePrevNext() {
     }
 }
 
+const FP_CALC_RELATED_ARTICLES = {
+    "kreditni-kalkulator.html": [
+        "enaka-obrestna-mera-ni-enak-kredit.html",
+        "eom-zakaj-ti-banka-o-tem-ne-govori.html",
+        "predcasno-poplacilo-kredita.html",
+        "kredit-2026.html",
+        "kreditna-sposobnost-kako-banke-racunajo.html",
+    ],
+    "eom-kalkulator.html": [
+        "najcenejsi-potrosniski-kredit.html",
+        "eom-zakaj-ti-banka-o-tem-ne-govori.html",
+        "enaka-obrestna-mera-ni-enak-kredit.html",
+        "kredit-2026.html",
+    ],
+    "kreditna-sposobnost.html": [
+        "kako-banke-izracunajo-kreditno-sposobnost.html",
+        "kreditna-sposobnost-kako-banke-racunajo.html",
+        "kredit-2026.html",
+        "enaka-obrestna-mera-ni-enak-kredit.html",
+    ],
+    "depozitni-kalkulator.html": [
+        "najboljsi-depozit.html",
+        "prednosti-bancnega-varcevanja.html",
+        "jamstvo-vlog-100000.html",
+        "zakaj-bodo-obrestne-mere-na-bankah-rasle.html",
+    ],
+    "primerjava-depozitov.html": [
+        "najboljsi-depozit.html",
+        "prednosti-bancnega-varcevanja.html",
+        "jamstvo-vlog-100000.html",
+        "zakaj-bodo-obrestne-mere-na-bankah-rasle.html",
+    ],
+    "investicijski-kalkulator.html": [
+        "psihologija-investiranja.html",
+        "vrednost-denarja-v-casu.html",
+    ],
+    "izgubljene-obresti.html": [
+        "vrednost-denarja-v-casu.html",
+        "prednosti-bancnega-varcevanja.html",
+        "psihologija-investiranja.html",
+    ],
+    "leasing-vs-kredit.html": [
+        "enaka-obrestna-mera-ni-enak-kredit.html",
+        "kredit-2026.html",
+        "najcenejsi-potrosniski-kredit.html",
+    ],
+};
+
+function initCalculatorRelatedArticles() {
+    try {
+        const path = String(window.location.pathname || "");
+        const last = path.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
+        const file = String(last || "").trim();
+        if (!file) return;
+        if (file.startsWith("clanki")) return;
+        if (file === "index.html" || file === "") return;
+
+        const slugs = FP_CALC_RELATED_ARTICLES[file];
+        if (!Array.isArray(slugs) || slugs.length === 0) return;
+
+        if (document.getElementById("fp-related-articles")) return;
+
+        const main = document.querySelector("main");
+        const footer = document.querySelector("footer");
+        const anchor = footer || null;
+        if (!main && !anchor) return;
+
+        const section = document.createElement("section");
+        section.id = "fp-related-articles";
+        section.className = "bg-white border-t border-gray-200";
+
+        const wrap = document.createElement("div");
+        wrap.className = "max-w-7xl mx-auto px-6 py-8";
+
+        const title = document.createElement("div");
+        title.className = "text-sm font-semibold text-gray-900 mb-3";
+        title.textContent = "Povezani članki";
+        wrap.appendChild(title);
+
+        const row = document.createElement("div");
+        row.className = "flex flex-wrap gap-2 text-sm";
+
+        const bySlug = new Map(FP_ARTICLES.map((a) => [a.slug, a]));
+
+        for (const slug of slugs) {
+            const meta = bySlug.get(slug);
+            const a = document.createElement("a");
+            a.href = `/clanki/${slug}`;
+            a.className = "px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100";
+            a.textContent = meta?.title ? String(meta.title) : slug;
+            row.appendChild(a);
+        }
+
+        const all = document.createElement("a");
+        all.href = "/clanki/";
+        all.className = "px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-900 hover:bg-blue-100";
+        all.textContent = "Vsi članki";
+        row.appendChild(all);
+
+        wrap.appendChild(row);
+        section.appendChild(wrap);
+
+        if (anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(section, anchor);
+            return;
+        }
+
+        if (main) {
+            main.insertAdjacentElement("afterend", section);
+        }
+    } catch (e) {
+        console.warn("initCalculatorRelatedArticles failed", e);
+    }
+}
+
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
@@ -5174,6 +5289,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initNumberFormatting", initNumberFormatting);
     safeInit("initArticleShare", initArticleShare);
     safeInit("initArticlePrevNext", initArticlePrevNext);
+    safeInit("initCalculatorRelatedArticles", initCalculatorRelatedArticles);
 
     // Normalize rate inputs to two decimals + decimal comma
     normalizeRateInput("loan-rate");
