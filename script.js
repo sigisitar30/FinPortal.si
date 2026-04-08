@@ -289,6 +289,72 @@ async function copyToClipboard(text) {
     }
 }
 
+function initAfterCalcRevealLeadCta() {
+    if (window.__fpAfterCalcRevealLeadCtaInit) return;
+    window.__fpAfterCalcRevealLeadCtaInit = true;
+
+    try {
+        const buttons = Array.from(document.querySelectorAll('button[id$="-calc-btn"]'));
+        if (!buttons.length) return;
+
+        const getHeaderOffset = () => {
+            const header = document.querySelector('header.sticky') || document.querySelector('header');
+            const height = header ? header.getBoundingClientRect().height : 0;
+            return Math.max(0, Math.round(height + 12));
+        };
+
+        const scrollToElWithOffset = (el) => {
+            if (!el) return false;
+            const top = el.getBoundingClientRect().top + window.pageYOffset - getHeaderOffset();
+            window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+            return true;
+        };
+
+        const findLeadCta = () => {
+            return document.querySelector('a.lead-beta-btn[href*="povprasevanje.html"], a[data-lead-source][href*="povprasevanje.html"]');
+        };
+
+        const findScrollTarget = () => {
+            const lead = findLeadCta();
+            if (lead) {
+                const card = lead.closest('.calc-result-card');
+                if (card) return card;
+                const section = lead.closest('section');
+                if (section) return section;
+                return lead;
+            }
+
+            return document.querySelector('.calc-result-card') || document.getElementById('results') || null;
+        };
+
+        const pulseLead = () => {
+            const lead = findLeadCta();
+            if (!lead) return;
+
+            lead.classList.add('fp-lead-cta-pulse');
+            window.setTimeout(() => {
+                lead.classList.remove('fp-lead-cta-pulse');
+            }, 2200);
+        };
+
+        const onCalcClick = () => {
+            window.setTimeout(() => {
+                const target = findScrollTarget();
+                if (target) scrollToElWithOffset(target);
+                pulseLead();
+            }, 120);
+        };
+
+        buttons.forEach((btn) => {
+            if (btn.dataset.fpAfterCalcRevealBound === '1') return;
+            btn.dataset.fpAfterCalcRevealBound = '1';
+            btn.addEventListener('click', onCalcClick);
+        });
+    } catch (e) {
+        console.warn('initAfterCalcRevealLeadCta failed', e);
+    }
+}
+
 function pressAnimate(el) {
     if (!el) return;
     try {
@@ -5212,6 +5278,7 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("initMobileMenu", initMobileMenu);
     safeInit("initMobileBanners", initMobileBanners);
     safeInit("initMobileStickyLeadCta", initMobileStickyLeadCta);
+    safeInit("initAfterCalcRevealLeadCta", initAfterCalcRevealLeadCta);
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
     safeInit("groupKalkulatorjiDropdown", groupKalkulatorjiDropdown);
     safeInit("initArticleInlineLinks", initArticleInlineLinks);
