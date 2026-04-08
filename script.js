@@ -4783,6 +4783,79 @@ function initArticleShare() {
     }
 }
 
+const FP_ARTICLES = [
+    { slug: "psihologija-investiranja.html", datePublished: "2026-03-10", title: "Psihologija investiranja - skriti vplivi, ki odločajo o vašem finančnem uspehu" },
+    { slug: "vrednost-denarja-v-casu.html", datePublished: "2026-03-10", title: "Vrednost denarja v času" },
+    { slug: "najcenejsi-potrosniski-kredit.html", datePublished: "2026-03-10", title: "Kaj je EOM in zakaj je pomembnejša od nominalne obrestne mere?" },
+    { slug: "kredit-2026.html", datePublished: "2026-03-14", title: "Krediti 2026 - najcenejši ponudniki in priporočena obrestna mera" },
+    { slug: "prednosti-bancnega-varcevanja.html", datePublished: "2026-03-16", title: "Prednosti bančnega varčevanja" },
+    { slug: "najboljsi-depozit.html", datePublished: "2026-03-19", title: "Najboljši depozit v Sloveniji 2026 - kako izbrati in primerjati ponudbe" },
+    { slug: "jamstvo-vlog-100000.html", datePublished: "2026-03-22", title: "Jamstvo za vloge do 100.000 € - kako deluje in kaj je dejansko zaščiteno" },
+    { slug: "kreditna-sposobnost-kako-banke-racunajo.html", datePublished: "2026-03-23", title: "Kreditna sposobnost: kako jo banke v Sloveniji računajo in kako jo izboljšaš" },
+    { slug: "kako-banke-izracunajo-kreditno-sposobnost.html", datePublished: "2026-03-25", title: "Kako banke izračunajo kreditno sposobnost - razlaga za vsakdanje uporabnike" },
+    { slug: "predcasno-poplacilo-kredita.html", datePublished: "2026-03-30", title: "Predčasno plačilo kredita - kaj je dobro, kaj slabo in kako izračunati koristi" },
+    { slug: "zakaj-bodo-obrestne-mere-na-bankah-rasle.html", datePublished: "2026-04-03", title: "Zakaj bodo obrestne mere na bankah rasle, ko bo rasel EURIBOR?" },
+    { slug: "revolut-flexible-account-furs.html", datePublished: "2026-04-05", title: "Revolut in davki 2026: Kako prijaviti obresti iz Flexible Account" },
+    { slug: "enaka-obrestna-mera-ni-enak-kredit.html", datePublished: "2026-04-08", title: "Zakaj sta dva kredita z enako obrestno mero lahko več tisoč evrov različna?" },
+    { slug: "eom-zakaj-ti-banka-o-tem-ne-govori.html", datePublished: "2026-04-08", title: "EOM stanovanjskega kredita in zakaj ti banka o tem ne govori?" },
+];
+
+function initArticlePrevNext() {
+    try {
+        const path = String(window.location.pathname || "");
+        const looksLikeArticle = path.includes("/clanki/") && !path.endsWith("/clanki/") && !path.endsWith("/clanki/index.html");
+        if (!looksLikeArticle) return;
+
+        const file = (() => {
+            const p = path.split("?")[0].split("#")[0];
+            const last = p.split("/").filter(Boolean).pop() || "";
+            return String(last || "").trim();
+        })();
+
+        if (!file || file === "template-clanek.html") return;
+
+        const items = FP_ARTICLES
+            .map((a) => ({
+                ...a,
+                _ts: Date.parse(`${String(a.datePublished || "").slice(0, 10)}T00:00:00Z`),
+            }))
+            .filter((a) => a.slug && Number.isFinite(a._ts))
+            .sort((a, b) => a._ts - b._ts);
+
+        const idx = items.findIndex((a) => a.slug === file);
+        if (idx < 0) return;
+
+        const prev = idx > 0 ? items[idx - 1] : null;
+        const next = idx < items.length - 1 ? items[idx + 1] : null;
+
+        const links = Array.from(document.querySelectorAll("a"));
+        const prevLink = links.find((a) => String(a.textContent || "").trim() === "Prejšnji članek") || null;
+        const nextLink = links.find((a) => String(a.textContent || "").trim() === "Naslednji članek") || null;
+
+        if (prevLink) {
+            if (prev) {
+                prevLink.setAttribute("href", prev.slug);
+                prevLink.removeAttribute("aria-disabled");
+                prevLink.classList.remove("opacity-60", "cursor-not-allowed");
+            } else {
+                prevLink.setAttribute("href", "/clanki/");
+            }
+        }
+
+        if (nextLink) {
+            if (next) {
+                nextLink.setAttribute("href", next.slug);
+                nextLink.removeAttribute("aria-disabled");
+                nextLink.classList.remove("opacity-60", "cursor-not-allowed");
+            } else {
+                nextLink.setAttribute("href", "/clanki/");
+            }
+        }
+    } catch (e) {
+        console.warn("initArticlePrevNext failed", e);
+    }
+}
+
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
@@ -4981,6 +5054,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Initialize formatting for numeric inputs
     safeInit("initNumberFormatting", initNumberFormatting);
     safeInit("initArticleShare", initArticleShare);
+    safeInit("initArticlePrevNext", initArticlePrevNext);
 
     // Normalize rate inputs to two decimals + decimal comma
     normalizeRateInput("loan-rate");
