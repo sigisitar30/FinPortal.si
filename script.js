@@ -4820,13 +4820,17 @@ function initArticlePrevNext() {
                 _ts: Date.parse(`${String(a.datePublished || "").slice(0, 10)}T00:00:00Z`),
             }))
             .filter((a) => a.slug && Number.isFinite(a._ts))
-            .sort((a, b) => a._ts - b._ts);
+            .sort((a, b) => {
+                const dt = a._ts - b._ts;
+                if (dt !== 0) return dt;
+                return String(a.slug).localeCompare(String(b.slug));
+            });
 
         const idx = items.findIndex((a) => a.slug === file);
         if (idx < 0) return;
 
-        const prev = idx > 0 ? items[idx - 1] : null;
-        const next = idx < items.length - 1 ? items[idx + 1] : null;
+        const prev = items.length > 1 ? (idx > 0 ? items[idx - 1] : items[items.length - 1]) : null;
+        const next = items.length > 1 ? (idx < items.length - 1 ? items[idx + 1] : items[0]) : null;
 
         const norm = (s) => String(s || "").replace(/\s+/g, " ").trim();
         const links = Array.from(document.querySelectorAll("a"));
@@ -4838,8 +4842,6 @@ function initArticlePrevNext() {
                 prevLink.setAttribute("href", prev.slug);
                 prevLink.removeAttribute("aria-disabled");
                 prevLink.classList.remove("opacity-60", "cursor-not-allowed");
-            } else {
-                prevLink.setAttribute("href", "/clanki/");
             }
         }
 
@@ -4848,8 +4850,6 @@ function initArticlePrevNext() {
                 nextLink.setAttribute("href", next.slug);
                 nextLink.removeAttribute("aria-disabled");
                 nextLink.classList.remove("opacity-60", "cursor-not-allowed");
-            } else {
-                nextLink.setAttribute("href", "/clanki/");
             }
         }
     } catch (e) {
