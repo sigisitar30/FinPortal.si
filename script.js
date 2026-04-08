@@ -5047,6 +5047,7 @@ function initCalculatorRelatedArticles() {
 
         // Prefer reusing an existing hardcoded section to keep layout consistent across pages.
         const existingSections = Array.from(document.querySelectorAll("section")).filter((s) => {
+            if (s.querySelector("footer")) return false;
             const text = normalize(s.textContent);
             return text.includes("povezani članki");
         });
@@ -5065,6 +5066,7 @@ function initCalculatorRelatedArticles() {
         }
 
         section.id = "fp-related-articles";
+        section.className = "bg-white border-t border-gray-200";
 
         // Normalize section content: always render our JS pills.
         section.innerHTML = "";
