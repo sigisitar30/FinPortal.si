@@ -16,6 +16,7 @@
   - [x] Cloudflare Bulk Redirects: dodana lista `finportal_legacy_urls` + rule (301) za stare URL-je (/kalkulatorji/* → root, /clanki/primerjava-depozitov.html → /primerjava-depozitov.html)
   - [ ] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek”
   - [ ] Čez 3–7 dni preveri, da se število 404 zmanjšuje (validating/passed)
+- [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
 - [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
 - [ ] **[59]** Internal linking: dodaj povezave iz kalkulatorjev → relevantni članki (modul "Povezani članki" na kalkulatorjih; po potrebi tudi članki → kalkulatorji) + Dodaj “lead form” v članke Npr. pod člankom o EURIBOR.
