@@ -17,6 +17,42 @@ function formatSI(num) {
     return parts.join(',') + " €";
 }
 
+function renderLoanAmortizationTable(schedule) {
+    try {
+        const tbody = document.getElementById("loan-amortization-table");
+        if (!tbody) return;
+
+        if (!schedule || !Array.isArray(schedule.rows) || schedule.rows.length === 0) {
+            tbody.innerHTML = `<tr><td class="px-4 py-3" colspan="6">–</td></tr>`;
+            return;
+        }
+
+        const fmt = (n) => {
+            const v = Number(n);
+            if (!Number.isFinite(v)) return "–";
+            return formatSI(v);
+        };
+
+        const html = schedule.rows
+            .map((r) => {
+                return `
+<tr>
+  <td class="px-4 py-3 border-b border-gray-200">${r.month}</td>
+  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.payment)}</td>
+  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.interest)}</td>
+  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.principal)}</td>
+  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.extra)}</td>
+  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.balance)}</td>
+</tr>`;
+            })
+            .join("");
+
+        tbody.innerHTML = html;
+    } catch (e) {
+        console.warn("renderLoanAmortizationTable failed", e);
+    }
+}
+
 function escapeHtml(str) {
     const s = String(str ?? "");
     return s
@@ -4536,6 +4572,7 @@ function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, m
     const labels = [];
     const remainingPrincipal = [];
     const cumulativeInterest = [];
+    const rows = [];
 
     let effectiveMonths = 0;
 
@@ -4547,11 +4584,13 @@ function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, m
         let principalPaid = 0;
         let extraPaid = 0;
         let lumpPaid = 0;
+        let annuityPaid = 0;
 
         if (m > mor && amortMonths > 0) {
             principalPaid = annuity - interest;
             if (!Number.isFinite(principalPaid) || principalPaid < 0) principalPaid = 0;
             if (principalPaid > balance) principalPaid = balance;
+            annuityPaid = principalPaid + interest;
             balance -= principalPaid;
 
             const isExtraMonth = extra > 0 && (
@@ -4570,18 +4609,32 @@ function buildLoanAmortizationScheduleWithExtra(principal, months, annualRate, m
             balance -= lumpPaid;
         }
 
+        if (m <= mor) {
+            annuityPaid = interest;
+        }
+
         cumInterest += interest;
         totalPaid += (interest + principalPaid + extraPaid + lumpPaid);
 
         labels.push(m);
         remainingPrincipal.push(balance);
         cumulativeInterest.push(cumInterest);
+
+        rows.push({
+            month: m,
+            payment: annuityPaid,
+            interest,
+            principal: principalPaid,
+            extra: extraPaid + lumpPaid,
+            balance,
+        });
     }
 
     return {
         labels,
         remainingPrincipal,
         cumulativeInterest,
+        rows,
         annuity,
         amortMonths,
         moratoriumMonths: mor,
@@ -4848,6 +4901,10 @@ function calculateLoan() {
             scheduleWithExtra
         );
 
+        renderLoanAmortizationTable(
+            scheduleWithExtra
+        );
+
         fpTrack("calculator_used", {
             calculator: "loan",
             currency: "EUR",
@@ -4860,6 +4917,102 @@ function calculateLoan() {
     } catch (error) {
         console.error("Error in calculateLoan:", error);
         showError("Napaka pri izračunu kredita");
+    }
+}
+
+function exportLoanToPdf() {
+    try {
+        const origin = String(window.location.origin || "").trim();
+        const cssHref = origin ? `${origin}/style.css?v=2026-04-08-1` : "./style.css?v=2026-04-08-1";
+
+        const table = document.querySelector("table tbody#loan-amortization-table")?.closest("table");
+        const tableHtml = table ? table.outerHTML : "";
+
+        const getText = (id) => {
+            const el = document.getElementById(id);
+            return el ? String(el.textContent || "").trim() : "";
+        };
+
+        const summaryRows = [
+            ["Mesečni obrok", getText("loan-monthly")],
+            ["Skupaj obresti", getText("loan-interest")],
+            ["Skupaj obresti (brez predčasnih vplačil)", getText("loan-interest-base")],
+            ["Interkalarne obresti", getText("loan-intercalary")],
+            ["Glavnica po moratoriju", getText("loan-principal-after")],
+            ["Skupaj za plačilo", getText("loan-total")],
+            ["Efektivna ročnost", getText("loan-term-effective")],
+            ["Prihranek obresti", getText("loan-interest-saved")],
+        ].filter((r) => r[1] !== "" && r[1] !== "–");
+
+        const summaryHtml = `
+<table class="min-w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
+  <thead class="bg-gray-50">
+    <tr>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Postavka</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Vrednost</th>
+    </tr>
+  </thead>
+  <tbody class="bg-white">
+    ${summaryRows
+                .map(([k, v]) => `
+    <tr>
+      <td class="px-4 py-3 border-b border-gray-200">${k}</td>
+      <td class="px-4 py-3 border-b border-gray-200">${v}</td>
+    </tr>`)
+                .join("")}
+  </tbody>
+</table>`;
+
+        const w = window.open("", "_blank");
+        if (!w) return;
+
+        const today = new Date();
+        const dateText = today.toLocaleDateString("sl-SI");
+
+        w.document.open();
+        w.document.write(`<!doctype html>
+<html lang="sl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kreditni izračun – PDF</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="${cssHref}" />
+  <style>
+    @media print { button { display: none !important; } }
+  </style>
+</head>
+<body class="bg-white text-[#111111] font-inter">
+  <main class="max-w-4xl mx-auto px-6 py-10">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold">Kreditni izračun</h1>
+        <div class="mt-1 text-sm text-gray-600">Datum: ${dateText}</div>
+      </div>
+      <button type="button" class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white" onclick="window.print()">Natisni / Shrani v PDF</button>
+    </div>
+
+    <section class="mt-6">
+      <h2 class="text-lg font-semibold mb-3">Povzetek</h2>
+      ${summaryHtml}
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold mb-3">Amortizacijski načrt</h2>
+      <div class="overflow-x-auto">${tableHtml || "<div class=\"text-gray-600\">Tabela ni na voljo.</div>"}</div>
+    </section>
+  </main>
+  <script>
+    window.addEventListener('load', () => { setTimeout(() => { try { window.print(); } catch(e) {} }, 250); });
+  </script>
+</body>
+</html>`);
+        w.document.close();
+    } catch (e) {
+        console.warn("exportLoanToPdf failed", e);
     }
 }
 
@@ -5721,6 +5874,11 @@ function initLoanUiBindings() {
     if (yearsEl) {
         yearsEl.addEventListener("input", trackTerm);
         yearsEl.addEventListener("change", trackTerm);
+    }
+
+    const exportBtn = document.getElementById("loan-export-pdf");
+    if (exportBtn) {
+        exportBtn.addEventListener("click", exportLoanToPdf);
     }
 }
 

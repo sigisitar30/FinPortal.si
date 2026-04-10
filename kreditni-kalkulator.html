@@ -394,6 +394,12 @@
                                         povpraševanje banki</a>
                                 </div>
 
+                                <div class="mt-3">
+                                    <button id="loan-export-pdf" type="button"
+                                        class="w-full py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50 transition">Izvozi
+                                        v PDF</button>
+                                </div>
+
                                 <div class="fp-share-row mt-6">
                                     <div class="fp-share-scroll flex flex-nowrap gap-2 overflow-x-auto">
                                         <button id="fp-share-x" type="button"
@@ -418,95 +424,130 @@
                                     <canvas id="loan-amortization-chart"></canvas>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <section class="max-w-4xl mx-auto mt-10 text-left">
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Zakaj je izračun pomemben?</h2>
-                            <ul class="space-y-2 text-gray-700">
-                                <li>Primerjaš različne scenarije (ročno, ročnost, obrestna mera) in hitro vidiš, kako
-                                    spremembe vplivajo na mesečni obrok in skupni strošek.</li>
-                                <li>Lažje oceniš, ali je smiselna fiksna obrestna mera ali variabilna (EURIBOR +
-                                    pribitek)
-                                    ter koliko pomeni predčasno poplačilo ali dodatno vplačevanje.</li>
-                            </ul>
-                        </div>
-
-                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mt-6">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">FAQ</h2>
-                            <div class="space-y-3">
-                                <details class="group border border-gray-200 rounded-xl p-4">
-                                    <summary
-                                        class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
-                                        Ali kalkulator upošteva vse stroške kredita (zavarovanja, odobritve)?
-                                        <span class="text-gray-500 group-open:hidden">+</span>
-                                        <span class="text-gray-500 hidden group-open:inline">–</span>
-                                    </summary>
-                                    <div class="mt-2 text-gray-700">Ne. Izračun je poenostavljen in temelji na obrestni
-                                        meri,
-                                        ročnosti in dodatnih nastavitvah v kalkulatorju. Za natančnejšo primerjavo
-                                        ponudb uporabi
-                                        EOM in preveri stroške pri banki.</div>
-                                </details>
-
-                                <details class="group border border-gray-200 rounded-xl p-4">
-                                    <summary
-                                        class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
-                                        Kaj pomeni EURIBOR + pribitek?
-                                        <span class="text-gray-500 group-open:hidden">+</span>
-                                        <span class="text-gray-500 hidden group-open:inline">–</span>
-                                    </summary>
-                                    <div class="mt-2 text-gray-700">Skupna obrestna mera je vsota referenčne obrestne
-                                        mere
-                                        (EURIBOR, npr. 3M ali 6M) in pribitka banke. Ob spremembi EURIBOR se lahko
-                                        spremeni tudi obrok.</div>
-                                </details>
-
-                                <details class="group border border-gray-200 rounded-xl p-4">
-                                    <summary
-                                        class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
-                                        Zakaj se lahko obrok pri variabilni obrestni meri spremeni?
-                                        <span class="text-gray-500 group-open:hidden">+</span>
-                                        <span class="text-gray-500 hidden group-open:inline">–</span>
-                                    </summary>
-                                    <div class="mt-2 text-gray-700">Pri variabilni obrestni meri se obrestna mera
-                                        periodično
-                                        prilagaja (npr. na 3 ali 6 mesecev). Če EURIBOR zraste, se lahko zviša tudi
-                                        obrok ali skupni strošek.</div>
-                                </details>
-
-                                <details class="group border border-gray-200 rounded-xl p-4">
-                                    <summary
-                                        class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
-                                        Kako vplivajo predčasna vplačila?
-                                        <span class="text-gray-500 group-open:hidden">+</span>
-                                        <span class="text-gray-500 hidden group-open:inline">–</span>
-                                    </summary>
-                                    <div class="mt-2 text-gray-700">Predčasna vplačila zmanjšajo glavnico, zato se lahko
-                                        kredit
-                                        odplača prej in se skupne obresti znižajo. Pri banki preveri morebitne stroške
-                                        predčasnega poplačila.</div>
-                                </details>
-
-                                <details class="group border border-gray-200 rounded-xl p-4">
-                                    <summary
-                                        class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
-                                        Ali je izračun zavezujoč?
-                                        <span class="text-gray-500 group-open:hidden">+</span>
-                                        <span class="text-gray-500 hidden group-open:inline">–</span>
-                                    </summary>
-                                    <div class="mt-2 text-gray-700">Ne. Izračun je informativen. Končni pogoji so
-                                        odvisni od
-                                        ponudbe banke, tvoje bonitete, zavarovanj in drugih stroškov.</div>
-                                </details>
+                            <div class="calc-result-card bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                                <h3 class="text-xl font-semibold mb-6">Amortizacijski načrt</h3>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Mesec</th>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Obrok</th>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Obresti</th>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Glavnica</th>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Predčasno</th>
+                                                <th class="text-left px-4 py-3 border-b border-gray-200">Stanje</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="loan-amortization-table" class="bg-white">
+                                            <tr>
+                                                <td class="px-4 py-3" colspan="6">–</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
-                    </section>
 
+                        <section class="max-w-4xl mx-auto mt-10 text-left">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Zakaj je izračun pomemben?
+                                </h2>
+                                <ul class="space-y-2 text-gray-700">
+                                    <li>Primerjaš različne scenarije (ročno, ročnost, obrestna mera) in hitro
+                                        vidiš, kako
+                                        spremembe vplivajo na mesečni obrok in skupni strošek.</li>
+                                    <li>Lažje oceniš, ali je smiselna fiksna obrestna mera ali variabilna
+                                        (EURIBOR +
+                                        pribitek)
+                                        ter koliko pomeni predčasno poplačilo ali dodatno vplačevanje.</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mt-6">
+                                <h2 class="text-xl font-semibold text-gray-900 mb-4">FAQ</h2>
+                                <div class="space-y-3">
+                                    <details class="group border border-gray-200 rounded-xl p-4">
+                                        <summary
+                                            class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
+                                            Ali kalkulator upošteva vse stroške kredita (zavarovanja,
+                                            odobritve)?
+                                            <span class="text-gray-500 group-open:hidden">+</span>
+                                            <span class="text-gray-500 hidden group-open:inline">–</span>
+                                        </summary>
+                                        <div class="mt-2 text-gray-700">Ne. Izračun je poenostavljen in temelji
+                                            na obrestni
+                                            meri,
+                                            ročnosti in dodatnih nastavitvah v kalkulatorju. Za natančnejšo
+                                            primerjavo
+                                            ponudb uporabi
+                                            EOM in preveri stroške pri banki.</div>
+                                    </details>
+
+                                    <details class="group border border-gray-200 rounded-xl p-4">
+                                        <summary
+                                            class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
+                                            Kaj pomeni EURIBOR + pribitek?
+                                            <span class="text-gray-500 group-open:hidden">+</span>
+                                            <span class="text-gray-500 hidden group-open:inline">–</span>
+                                        </summary>
+                                        <div class="mt-2 text-gray-700">Skupna obrestna mera je vsota referenčne
+                                            obrestne
+                                            mere
+                                            (EURIBOR, npr. 3M ali 6M) in pribitka banke. Ob spremembi EURIBOR se
+                                            lahko
+                                            spremeni tudi obrok.</div>
+                                    </details>
+
+                                    <details class="group border border-gray-200 rounded-xl p-4">
+                                        <summary
+                                            class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
+                                            Zakaj se lahko obrok pri variabilni obrestni meri spremeni?
+                                            <span class="text-gray-500 group-open:hidden">+</span>
+                                            <span class="text-gray-500 hidden group-open:inline">–</span>
+                                        </summary>
+                                        <div class="mt-2 text-gray-700">Pri variabilni obrestni meri se obrestna
+                                            mera
+                                            periodično
+                                            prilagaja (npr. na 3 ali 6 mesecev). Če EURIBOR zraste, se lahko
+                                            zviša tudi
+                                            obrok ali skupni strošek.</div>
+                                    </details>
+
+                                    <details class="group border border-gray-200 rounded-xl p-4">
+                                        <summary
+                                            class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
+                                            Kako vplivajo predčasna vplačila?
+                                            <span class="text-gray-500 group-open:hidden">+</span>
+                                            <span class="text-gray-500 hidden group-open:inline">–</span>
+                                        </summary>
+                                        <div class="mt-2 text-gray-700">Predčasna vplačila zmanjšajo glavnico,
+                                            zato se lahko
+                                            kredit
+                                            odplača prej in se skupne obresti znižajo. Pri banki preveri
+                                            morebitne stroške
+                                            predčasnega poplačila.</div>
+                                    </details>
+
+                                    <details class="group border border-gray-200 rounded-xl p-4">
+                                        <summary
+                                            class="cursor-pointer font-semibold text-gray-900 flex items-center justify-between">
+                                            Ali je izračun zavezujoč?
+                                            <span class="text-gray-500 group-open:hidden">+</span>
+                                            <span class="text-gray-500 hidden group-open:inline">–</span>
+                                        </summary>
+                                        <div class="mt-2 text-gray-700">Ne. Izračun je informativen. Končni
+                                            pogoji so
+                                            odvisni od
+                                            ponudbe banke, tvoje bonitete, zavarovanj in drugih stroškov.</div>
+                                    </details>
+                                </div>
+                            </div>
+                        </section>
+
+                    </div>
                 </div>
             </div>
-        </div>
     </main>
 
     <section class="bg-white border-t border-gray-200">
