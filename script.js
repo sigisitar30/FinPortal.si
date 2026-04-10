@@ -5281,7 +5281,9 @@ function initCalculatorRelatedArticles() {
         for (const slug of slugs) {
             const meta = bySlug.get(slug);
             const a = document.createElement("a");
-            a.href = `/clanki/${slug}`;
+            const s = String(slug ?? "").trim();
+            const file = s !== "" && !s.endsWith(".html") ? `${s}.html` : s;
+            a.href = `/clanki/${file}`;
             a.className = "px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100";
             a.textContent = meta?.title ? String(meta.title) : slug;
             row.appendChild(a);
