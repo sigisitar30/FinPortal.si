@@ -1634,11 +1634,12 @@ function formatPercentSI(num) {
 
 function initGa4Base() {
     const measurementId = "G-D5JQ8PB9MC";
+    const tagLoaderId = "GT-KFHHWMP7";
     if (window.__fpGa4BaseInit) return;
     window.__fpGa4BaseInit = true;
 
     window.__fpGa4MeasurementId = measurementId;
-    window.__fpGa4TagLoaderId = measurementId;
+    window.__fpGa4TagLoaderId = tagLoaderId;
 
     let debugMode = false;
     try {
@@ -1664,15 +1665,19 @@ function initGa4Base() {
     window.gtag('js', new Date());
 
     try {
+        window.gtag('config', tagLoaderId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
+    } catch (e) { }
+
+    try {
         window.gtag('config', measurementId, { cookie_expires: 7776000, debug_mode: debugMode ? true : undefined });
     } catch (e) { }
 
-    const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${measurementId}"]`);
+    const existing = document.querySelector(`script[src="https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}"]`);
     if (existing) return;
 
     const s = document.createElement('script');
     s.async = true;
-    s.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+    s.src = `https://www.googletagmanager.com/gtag/js?id=${tagLoaderId}`;
     document.head.appendChild(s);
 }
 
@@ -1686,8 +1691,14 @@ function enableGa4Analytics() {
 
         try {
             const mid = String(window.__fpGa4MeasurementId || "").trim();
+            const tid = String(window.__fpGa4TagLoaderId || "").trim();
             if (mid) {
                 const dbg = window.__fpGa4DebugMode ? true : undefined;
+                if (tid) {
+                    try {
+                        window.gtag('config', tid, { cookie_expires: 7776000, debug_mode: dbg });
+                    } catch (e) { }
+                }
                 window.gtag('config', mid, { cookie_expires: 7776000, debug_mode: dbg });
                 try {
                     window.gtag('event', 'page_view', { send_to: mid, debug_mode: dbg });
