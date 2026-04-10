@@ -8,9 +8,12 @@ from urllib.request import Request, urlopen
 API_URL = "https://px.bsi.si/api/v1/sl/serije_slo/20_obrestne_mere/50_OBR_MERE_MFI_PG/i2_4_6as.px"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, ".."))
-OUT_LATEST = os.path.join(ROOT_DIR, "bs_mfi_obrestne_mere_posojila_latest.json")
-ARCHIVE_DIR = os.path.join(ROOT_DIR, "archive_bs")
+ROOT_DIR = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+OUT_DIR = os.path.join(ROOT_DIR, "Podatki makro", "BS")
+OUT_LATEST = os.path.join(OUT_DIR, "bs_mfi_obrestne_mere_posojila_latest.json")
+OUT_LATEST_HH = os.path.join(
+    OUT_DIR, "bs_mfi_obrestne_mere_posojila_gospodinjstva_latest.json")
+ARCHIVE_DIR = os.path.join(OUT_DIR, "arhiv")
 
 
 def _http_json(method: str, url: str, payload=None, timeout=30):
@@ -47,11 +50,13 @@ def _build_query(meta, period: str):
         }
 
     if "Datum" not in variables or "Frekvenca" not in variables or "Postavke" not in variables:
-        raise ValueError("PXWeb metadata missing one of required dimensions: Datum/Frekvenca/Postavke")
+        raise ValueError(
+            "PXWeb metadata missing one of required dimensions: Datum/Frekvenca/Postavke")
 
     date_vals = variables["Datum"].get("values") or []
     if period not in date_vals:
-        raise ValueError(f"Requested period not available in metadata: {period}")
+        raise ValueError(
+            f"Requested period not available in metadata: {period}")
 
     freq_vals = variables["Frekvenca"].get("values") or []
     if not freq_vals:
@@ -112,7 +117,8 @@ def _parse_jsonstat2(doc):
 
     # We requested 1 period and 1 frekvenca, so we can focus on Postavke positions
     if "Postavke" not in ids:
-        raise ValueError("Unexpected json-stat2 response: missing Postavke dimension")
+        raise ValueError(
+            "Unexpected json-stat2 response: missing Postavke dimension")
 
     post_i = ids.index("Postavke")
     post_size = int(sizes[post_i])
@@ -137,6 +143,7 @@ def _parse_jsonstat2(doc):
 
 
 def main():
+    os.makedirs(OUT_DIR, exist_ok=True)
     os.makedirs(ARCHIVE_DIR, exist_ok=True)
 
     meta = _get_meta()
@@ -153,6 +160,18 @@ def main():
 
     rows = _parse_jsonstat2(data)
 
+    hh_keep = {
+        "Gospodinjstva, obstoječa stanovanjska posojila",
+        "Gospodinjstva, obstoječa potrošniška posojila",
+        "Gospodinjstva, obstoječa druga posojila",
+        "Gospodinjstva, nova stanovanjska posojila",
+        "Gospodinjstva, nova potrošniška posojila",
+        "Gospodinjstva, nova druga posojila",
+        "Gospodinjstva, okvirna, revolving in p. po kred. k.",
+    }
+
+    hh_rows = [r for r in rows if Stringify(r.get("postavke_text")) in hh_keep]
+
     out = {
         "dataset": "i2_4_6as.px",
         "title": meta.get("title"),
@@ -165,15 +184,43 @@ def main():
     with open(OUT_LATEST, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
 
+    out_hh = {
+        "dataset": "i2_4_6as.px",
+        "title": meta.get("title"),
+        "period": latest_period,
+        "fetched_at": out.get("fetched_at"),
+        "source": "https://px.bsi.si/",
+        "rows": hh_rows,
+    }
+
+    with open(OUT_LATEST_HH, "w", encoding="utf-8") as f:
+        json.dump(out_hh, f, ensure_ascii=False, indent=2)
+
     stamp = datetime.today().strftime("%Y-%m-%d")
-    out_archive = os.path.join(ARCHIVE_DIR, f"bs_mfi_obrestne_mere_posojila_{stamp}.json")
+    out_archive = os.path.join(
+        ARCHIVE_DIR, f"bs_mfi_obrestne_mere_posojila_{stamp}.json")
     try:
         with open(out_archive, "w", encoding="utf-8") as f:
             json.dump(out, f, ensure_ascii=False, indent=2)
     except PermissionError:
         pass
 
-    print(f"OK BS PXWeb fetched period={latest_period} rows={len(rows)} -> {OUT_LATEST}")
+    out_archive_hh = os.path.join(
+        ARCHIVE_DIR, f"bs_mfi_obrestne_mere_posojila_gospodinjstva_{stamp}.json")
+    try:
+        with open(out_archive_hh, "w", encoding="utf-8") as f:
+            json.dump(out_hh, f, ensure_ascii=False, indent=2)
+    except PermissionError:
+        pass
+
+    print(
+        f"OK BS PXWeb fetched period={latest_period} rows={len(rows)} -> {OUT_LATEST}")
+    print(
+        f"OK BS PXWeb fetched period={latest_period} hh_rows={len(hh_rows)} -> {OUT_LATEST_HH}")
+
+
+def Stringify(v):
+    return "" if v is None else str(v)
 
 
 if __name__ == "__main__":
