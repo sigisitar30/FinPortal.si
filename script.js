@@ -303,9 +303,20 @@ async function loadBsLoanDefaults() {
     try {
         const url = "/Podatki%20makro/BS/bs_mfi_obrestne_mere_posojila_gospodinjstva_latest.json";
         const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) return;
+        if (!res.ok) {
+            const tipEl = document.getElementById("loan-purpose-bs-info");
+            if (tipEl) tipEl.textContent = "Vir: Banka Slovenije (px.bsi.si).";
+            return;
+        }
         const doc = await res.json();
         const rows = Array.isArray(doc?.rows) ? doc.rows : [];
+
+        const tipEl = document.getElementById("loan-purpose-bs-info");
+        if (tipEl) {
+            const period = String(doc?.period ?? "").trim();
+            const source = String(doc?.source ?? "https://px.bsi.si/").trim();
+            tipEl.textContent = `Privzeta OM temelji na podatkih Banke Slovenije (${source}${period ? `, obdobje ${period}` : ""}).`;
+        }
 
         const byCode = new Map(
             rows
@@ -336,6 +347,8 @@ async function loadBsLoanDefaults() {
         applyLoanDefaultRateFromBsPurpose();
     } catch (e) {
         console.warn("loadBsLoanDefaults failed", e);
+        const tipEl = document.getElementById("loan-purpose-bs-info");
+        if (tipEl) tipEl.textContent = "Vir: Banka Slovenije (px.bsi.si).";
     }
 }
 
