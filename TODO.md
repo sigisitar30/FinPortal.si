@@ -107,3 +107,41 @@
 
     </div>
 </div>
+
+
+
+
+- [] TODO prioriteta !!!! Tu sva končala in morava nadlajevati!
+ta trenutek vidim da so sekcije vse pravilno postavljene na strani... 
+
+Prebrati konec `main` v `kreditni-kalkulator.html` in najti napačno zapiranje wrapperjev (odvečni/primanjkujoči `</div>`), ki ruši layout.
+
+2
+Popraviti HTML strukturo: pravilno zapreti `flex-1` + `sm:flex` + `max-w` wrapperje, tako da calc-panel in Zakaj/FAQ stojita pravilno ob bannerju.
+
+1 more
+Super—če ti je v brskalniku vizualno zdaj OK, to je dober znak.
+
+Ampak: datoteka je še vedno HTML-invalid (po vsebini v kreditni-kalkulator.html)
+V trenutni verziji, ki jo vidim v projektu, je še vedno:
+
+prezgodaj zaprt <main> (takoj po Zakaj/FAQ sekciji je </main> brez zapiranja vseh wrapperjev), in
+pokvarjena sekcija “Povezani članki”: manjka <div class="flex flex-wrap gap-2 text-sm"> in prvi linki, zato se pojavi “gola” vrstica, ki se začne z class="px-3 py-1 ...">... (to je 100% broken markup).
+Browser to včasih “požre” in vseeno prikaže približno prav, ampak:
+
+CSS grid/flex se lahko ob naslednji spremembi spet sesuje
+“Povezani članki” linki so trenutno dejansko narobe v DOM-u
+Da ne bova delala v napačno smer: prosim preveri 1 stvar
+Naredi hard refresh (Ctrl+F5) in odpri View Source (ne “Inspect”, ampak view source).
+Povej mi, ali v source-u še vedno vidiš tole čudno vrstico, ki se začne samo z class="px-3 py-1 ... pod naslovom “Povezani članki”.
+Predlagan naslednji korak (minimalno in varno)
+Če potrdiš, da želiš “sanirati” HTML (tudi če zdaj izgleda OK), naredim en majhen patch, ki:
+
+pravilno zapre flex-1 / sm:flex / max-w pred </main>
+“Povezani članki” blok zamenja z identičnim vzorcem kot v eom-kalkulator.html (brez spreminjanja besedil)
+Napiši samo:
+
+“DA, popravi HTML” ali
+“NE, pusti kot je” (če ti je dovolj, da trenutno izgleda OK)
+Status
+Še vedno delam; trenutno sem v fazi popravka strukture wrapperjev + related-articles, ampak pred naslednjim patchom hočem tvojo potrditev, ker si rekel, da je vizualno že OK.
