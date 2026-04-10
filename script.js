@@ -4929,7 +4929,8 @@ function calculateLoan() {
         );
 
         renderLoanAmortizationTable(
-            scheduleWithExtra
+            scheduleWithExtra,
+            "full"
         );
 
         window.__fpLoanLastSchedule = scheduleWithExtra;
