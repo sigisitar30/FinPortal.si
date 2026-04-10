@@ -20,6 +20,7 @@
   - [ ] Čez 3–7 dni preveri, da se število 404 zmanjšuje (validating/passed)
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
 -   - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
+-   - [x] Cloudflare Redirect Rules: izjema za `https://www.finportal.si/index.html` → `https://finportal.si/` (redirect chain 2 → 1) + GSC “Preveri popravek” kliknjen
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
 - [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
 - [ ] **[59]** Internal linking: dodaj povezave iz kalkulatorjev → relevantni članki (modul "Povezani članki" na kalkulatorjih; po potrebi tudi članki → kalkulatorji) + Dodaj “lead form” v članke Npr. pod člankom o EURIBOR.
