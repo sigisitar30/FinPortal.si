@@ -10,6 +10,8 @@
 - [x] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
+- [ ] **[61]** Pri vrsti kredita naj se ob izbiri avtomatično izpiše neka pričakovana vrednost za OM (najdi podatek o povprečni OM pri BS) in dopiši nekam da je to pravilo in se lahko pe vedno spremeni vrednost ročno.
+- [ ] **[62]** Naredit tabelo pričakovanih OM za različne vreste kreditov in naredi članek iz tega in povezavo do kalkulatorja. Dodaj simulacijo ali neko dodatno analizo kaj se zgodi če se bo OM spremenila navzgor, kot je pričakovano zaradi EURIBORA.
 
 ## Predlogi (novi hitri win-i)
 - [ ] **[51]** GSC: pregled in odprava 404 URL-jev
@@ -17,10 +19,15 @@
   - [ ] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek”
   - [ ] Čez 3–7 dni preveri, da se število 404 zmanjšuje (validating/passed)
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
+-   - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
 - [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
 - [ ] **[59]** Internal linking: dodaj povezave iz kalkulatorjev → relevantni članki (modul "Povezani članki" na kalkulatorjih; po potrebi tudi članki → kalkulatorji) + Dodaj “lead form” v članke Npr. pod člankom o EURIBOR.
 - [ ] **[53]** FAQ + FAQPage schema na ključnih straneh (kreditni kalkulator, kreditna sposobnost, primerjava depozitov)
+-   - [x] `kreditni-kalkulator.html`: dodan `FAQPage` JSON-LD
+-   - [x] `kreditna-sposobnost.html`: dodan `FAQPage` JSON-LD
+-   - [x] `clanki/eom-zakaj-ti-banka-o-tem-ne-govori.html`: dodan `FAQPage` JSON-LD
+-   - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
 - [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
 - [x] **[55]** Članki (`clanki/index.html`): dodaj iskalnik + client-side filtriranje po kategorijah prek `data-category` (zaenkrat: `krediti`, `varcevanje`, `investicije`) + stanje "ni zadetkov" + fallback, da je brez JS seznam še vedno viden
 
