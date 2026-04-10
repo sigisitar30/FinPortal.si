@@ -289,6 +289,43 @@ async function copyToClipboard(text) {
     }
 }
 
+const FP_BS_LOAN_DEFAULT_RATES_FEB2026 = {
+    stanovanjski: 2.91,
+    gotovinski: 5.68,
+    avto: 5.84,
+    prenova: 5.84,
+    konsolidacija: 5.84,
+    izobrazevanje: 5.84,
+    drugo: 5.84,
+};
+
+function applyLoanDefaultRateFromBsPurpose() {
+    try {
+        const rateEl = document.getElementById("loan-rate");
+        if (!rateEl) return;
+
+        const rateTypeEl = document.getElementById("loan-rate-type");
+        const rateType = rateTypeEl ? String(rateTypeEl.value ?? "fixed").trim() : "fixed";
+        if (rateType === "euribor") return;
+
+        const purposeEl = document.getElementById("loan-purpose");
+        const purpose = purposeEl ? String(purposeEl.value ?? "").trim() : "";
+        if (!purpose) return;
+
+        const next = FP_BS_LOAN_DEFAULT_RATES_FEB2026[purpose];
+        if (!Number.isFinite(next)) return;
+
+        const overridden = String(rateEl.dataset.userOverride ?? "") === "1";
+        if (overridden) return;
+
+        rateEl.value = formatRateSI(next);
+        normalizeRateInput("loan-rate");
+        rateEl.dataset.autoRate = String(next);
+    } catch (e) {
+        console.warn("applyLoanDefaultRateFromBsPurpose failed", e);
+    }
+}
+
 function initAfterCalcRevealLeadCta() {
     if (window.__fpAfterCalcRevealLeadCtaInit) return;
     window.__fpAfterCalcRevealLeadCtaInit = true;
@@ -5451,6 +5488,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const loanRateEl = document.getElementById("loan-rate");
     if (loanRateEl) {
+        const markOverride = () => {
+            loanRateEl.dataset.userOverride = "1";
+        };
+        loanRateEl.addEventListener("input", markOverride);
+        loanRateEl.addEventListener("change", markOverride);
         loanRateEl.addEventListener("blur", () => normalizeRateInput("loan-rate"));
     }
 
@@ -5468,6 +5510,13 @@ document.addEventListener('DOMContentLoaded', function () {
     if (loanRateTypeEl) {
         loanRateTypeEl.addEventListener("change", updateLoanRateUi);
         loanRateTypeEl.addEventListener("input", updateLoanRateUi);
+    }
+
+    const loanPurposeEl = document.getElementById("loan-purpose");
+    if (loanPurposeEl) {
+        loanPurposeEl.addEventListener("change", applyLoanDefaultRateFromBsPurpose);
+        loanPurposeEl.addEventListener("input", applyLoanDefaultRateFromBsPurpose);
+        applyLoanDefaultRateFromBsPurpose();
     }
 
     const loanEuriborTenorEl = document.getElementById("loan-euribor-tenor");
