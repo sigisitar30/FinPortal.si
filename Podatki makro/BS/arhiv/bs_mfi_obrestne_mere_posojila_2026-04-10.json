@@ -1,0 +1,134 @@
+{
+  "dataset": "i2_4_6as.px",
+  "title": "Obrestne mere monetarnih finančnih institucij - posojila gospodinjstvom po vrsti posojila in nefinančnim družbam po velikosti družbe",
+  "period": "2026M02",
+  "fetched_at": "2026-04-10T09:01:28",
+  "source": "https://px.bsi.si/",
+  "rows": [
+    {
+      "postavke_code": "0",
+      "postavke_text": "Gospodinjstva, obstoječa stanovanjska posojila",
+      "rate": 2.99
+    },
+    {
+      "postavke_code": "1",
+      "postavke_text": "Gospodinjstva, obstoječa potrošniška posojila",
+      "rate": 6.17
+    },
+    {
+      "postavke_code": "2",
+      "postavke_text": "Gospodinjstva, obstoječa druga posojila",
+      "rate": 5.89
+    },
+    {
+      "postavke_code": "3",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, skupaj",
+      "rate": 3.51
+    },
+    {
+      "postavke_code": "4",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, velike",
+      "rate": 2.89
+    },
+    {
+      "postavke_code": "5",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, skupaj SME",
+      "rate": 4
+    },
+    {
+      "postavke_code": "6",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, mikro",
+      "rate": 4.56
+    },
+    {
+      "postavke_code": "7",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, majhne",
+      "rate": 3.96
+    },
+    {
+      "postavke_code": "8",
+      "postavke_text": "Nefinančne družbe, obstoječa posojila, srednje",
+      "rate": 3.5
+    },
+    {
+      "postavke_code": "9",
+      "postavke_text": "Gospodinjstva, nova stanovanjska posojila",
+      "rate": 2.91
+    },
+    {
+      "postavke_code": "10",
+      "postavke_text": "Gospodinjstva, nova potrošniška posojila",
+      "rate": 5.68
+    },
+    {
+      "postavke_code": "11",
+      "postavke_text": "Gospodinjstva, nova druga posojila",
+      "rate": 5.84
+    },
+    {
+      "postavke_code": "12",
+      "postavke_text": "Nefinančne družbe, nova posojila, skupaj",
+      "rate": 3.92
+    },
+    {
+      "postavke_code": "13",
+      "postavke_text": "Nefinančne družbe, nova posojila, velike",
+      "rate": 3.07
+    },
+    {
+      "postavke_code": "14",
+      "postavke_text": "Nefinančne družbe, nova posojila, skupaj SME",
+      "rate": 4.17
+    },
+    {
+      "postavke_code": "15",
+      "postavke_text": "Nefinančne družbe, nova posojila, mikro",
+      "rate": 4.9
+    },
+    {
+      "postavke_code": "16",
+      "postavke_text": "Nefinančne družbe, nova posojila, majhne",
+      "rate": 4.03
+    },
+    {
+      "postavke_code": "17",
+      "postavke_text": "Nefinančne družbe, nova posojila, srednje",
+      "rate": 3.47
+    },
+    {
+      "postavke_code": "18",
+      "postavke_text": "Gospodinjstva, okvirna, revolving in p. po kred. k.",
+      "rate": 6.87
+    },
+    {
+      "postavke_code": "19",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k., skupaj",
+      "rate": 3.71
+    },
+    {
+      "postavke_code": "20",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k. , velike",
+      "rate": 3.13
+    },
+    {
+      "postavke_code": "21",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k. , skupaj SME",
+      "rate": 4.18
+    },
+    {
+      "postavke_code": "22",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k. , mikro",
+      "rate": 5.95
+    },
+    {
+      "postavke_code": "23",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k. , majhne",
+      "rate": 4.18
+    },
+    {
+      "postavke_code": "24",
+      "postavke_text": "Nefinančne družbe, okvirna, revolving in p. po kred. k. , srednje",
+      "rate": 3.76
+    }
+  ]
+}

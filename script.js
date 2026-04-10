@@ -289,7 +289,7 @@ async function copyToClipboard(text) {
     }
 }
 
-const FP_BS_LOAN_DEFAULT_RATES_FEB2026 = {
+let fpBsLoanDefaults = {
     stanovanjski: 2.91,
     gotovinski: 5.68,
     avto: 5.84,
@@ -298,6 +298,46 @@ const FP_BS_LOAN_DEFAULT_RATES_FEB2026 = {
     izobrazevanje: 5.84,
     drugo: 5.84,
 };
+
+async function loadBsLoanDefaults() {
+    try {
+        const url = "/Podatki%20makro/BS/bs_mfi_obrestne_mere_posojila_gospodinjstva_latest.json";
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return;
+        const doc = await res.json();
+        const rows = Array.isArray(doc?.rows) ? doc.rows : [];
+
+        const byCode = new Map(
+            rows
+                .map((r) => ({
+                    code: String(r?.postavke_code ?? "").trim(),
+                    rate: Number(r?.rate),
+                }))
+                .filter((x) => x.code !== "" && Number.isFinite(x.rate))
+                .map((x) => [x.code, x.rate])
+        );
+
+        const stanovanjski = byCode.get("9");
+        const gotovinski = byCode.get("10");
+        const other = byCode.get("11");
+
+        const next = { ...fpBsLoanDefaults };
+        if (Number.isFinite(stanovanjski)) next.stanovanjski = stanovanjski;
+        if (Number.isFinite(gotovinski)) next.gotovinski = gotovinski;
+        if (Number.isFinite(other)) {
+            next.avto = other;
+            next.prenova = other;
+            next.konsolidacija = other;
+            next.izobrazevanje = other;
+            next.drugo = other;
+        }
+
+        fpBsLoanDefaults = next;
+        applyLoanDefaultRateFromBsPurpose();
+    } catch (e) {
+        console.warn("loadBsLoanDefaults failed", e);
+    }
+}
 
 function applyLoanDefaultRateFromBsPurpose() {
     try {
@@ -312,7 +352,7 @@ function applyLoanDefaultRateFromBsPurpose() {
         const purpose = purposeEl ? String(purposeEl.value ?? "").trim() : "";
         if (!purpose) return;
 
-        const next = FP_BS_LOAN_DEFAULT_RATES_FEB2026[purpose];
+        const next = fpBsLoanDefaults[purpose];
         if (!Number.isFinite(next)) return;
 
         const overridden = String(rateEl.dataset.userOverride ?? "") === "1";
@@ -5306,6 +5346,10 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("ensureFavicon", ensureFavicon);
 
     safeInit("injectBreadcrumbJsonLd", injectBreadcrumbJsonLd);
+
+    safeInit("loadBsLoanDefaults", () => {
+        loadBsLoanDefaults();
+    });
 
     safeInit("initShareUi", initShareUi);
 
