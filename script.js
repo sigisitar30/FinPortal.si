@@ -17,37 +17,64 @@ function formatSI(num) {
     return parts.join(',') + " €";
 }
 
-function renderLoanAmortizationTable(schedule) {
+function getLoanAmortizationRowsForUi(schedule) {
+    const rows = Array.isArray(schedule?.rows) ? schedule.rows : [];
+    if (rows.length <= 0) return [];
+
+    const lastMonth = Number(rows[rows.length - 1]?.month);
+    const isValidLastMonth = Number.isFinite(lastMonth) && lastMonth > 0;
+
+    const monthsToKeep = new Set();
+    for (let m = 1; m <= 12; m++) monthsToKeep.add(m);
+    if (isValidLastMonth) {
+        for (let m = 24; m <= lastMonth; m += 12) monthsToKeep.add(m);
+        monthsToKeep.add(lastMonth);
+    }
+
+    return rows.filter((r) => monthsToKeep.has(Number(r?.month)));
+}
+
+function buildLoanAmortizationTableBodyHtml(rows) {
+    const fmt = (n) => {
+        const v = Number(n);
+        if (!Number.isFinite(v)) return "–";
+        return formatSI(v);
+    };
+
+    return rows
+        .map((r) => {
+            return `
+<tr>
+  <td class="px-3 py-2 border-b border-gray-200">${Number(r.month)}</td>
+  <td class="px-3 py-2 border-b border-gray-200">${fmt(r.payment)}</td>
+  <td class="px-3 py-2 border-b border-gray-200">${fmt(r.interest)}</td>
+  <td class="px-3 py-2 border-b border-gray-200">${fmt(r.principal)}</td>
+  <td class="px-3 py-2 border-b border-gray-200">${fmt(r.extra)}</td>
+  <td class="px-3 py-2 border-b border-gray-200">${fmt(r.balance)}</td>
+</tr>`;
+        })
+        .join("");
+}
+
+function renderLoanAmortizationTable(schedule, mode) {
     try {
         const tbody = document.getElementById("loan-amortization-table");
         if (!tbody) return;
 
-        if (!schedule || !Array.isArray(schedule.rows) || schedule.rows.length === 0) {
-            tbody.innerHTML = `<tr><td class="px-4 py-3" colspan="6">–</td></tr>`;
+        const rowsAll = Array.isArray(schedule?.rows) ? schedule.rows : [];
+        if (!schedule || rowsAll.length === 0) {
+            tbody.innerHTML = `<tr><td class="px-3 py-2" colspan="6">–</td></tr>`;
             return;
         }
 
-        const fmt = (n) => {
-            const v = Number(n);
-            if (!Number.isFinite(v)) return "–";
-            return formatSI(v);
-        };
+        const useMode = String(mode || "ui");
+        const rows = useMode === "full" ? rowsAll : getLoanAmortizationRowsForUi(schedule);
+        if (!Array.isArray(rows) || rows.length === 0) {
+            tbody.innerHTML = `<tr><td class="px-3 py-2" colspan="6">–</td></tr>`;
+            return;
+        }
 
-        const html = schedule.rows
-            .map((r) => {
-                return `
-<tr>
-  <td class="px-4 py-3 border-b border-gray-200">${r.month}</td>
-  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.payment)}</td>
-  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.interest)}</td>
-  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.principal)}</td>
-  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.extra)}</td>
-  <td class="px-4 py-3 border-b border-gray-200">${fmt(r.balance)}</td>
-</tr>`;
-            })
-            .join("");
-
-        tbody.innerHTML = html;
+        tbody.innerHTML = buildLoanAmortizationTableBodyHtml(rows);
     } catch (e) {
         console.warn("renderLoanAmortizationTable failed", e);
     }
@@ -4905,6 +4932,8 @@ function calculateLoan() {
             scheduleWithExtra
         );
 
+        window.__fpLoanLastSchedule = scheduleWithExtra;
+
         fpTrack("calculator_used", {
             calculator: "loan",
             currency: "EUR",
@@ -4925,8 +4954,24 @@ function exportLoanToPdf() {
         const origin = String(window.location.origin || "").trim();
         const cssHref = origin ? `${origin}/style.css?v=2026-04-08-1` : "./style.css?v=2026-04-08-1";
 
-        const table = document.querySelector("table tbody#loan-amortization-table")?.closest("table");
-        const tableHtml = table ? table.outerHTML : "";
+        const schedule = window.__fpLoanLastSchedule;
+        const rowsAll = Array.isArray(schedule?.rows) ? schedule.rows : [];
+        const fullTableBody = rowsAll.length ? buildLoanAmortizationTableBodyHtml(rowsAll) : "";
+        const tableHtml = fullTableBody
+            ? `<table class="min-w-full text-sm border border-gray-200 rounded-xl overflow-hidden">
+  <thead class="bg-gray-50">
+    <tr>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Mesec</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Obrok</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Obresti</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Glavnica</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Predčasno</th>
+      <th class="text-left px-4 py-3 border-b border-gray-200">Stanje</th>
+    </tr>
+  </thead>
+  <tbody class="bg-white">${fullTableBody}</tbody>
+</table>`
+            : "";
 
         const getText = (id) => {
             const el = document.getElementById(id);
