@@ -5228,6 +5228,7 @@ const FP_ARTICLES = [
     { slug: "revolut-flexible-account-furs.html", datePublished: "2026-04-05", title: "Revolut in davki 2026: Kako prijaviti obresti iz Flexible Account" },
     { slug: "enaka-obrestna-mera-ni-enak-kredit.html", datePublished: "2026-04-08", title: "Zakaj sta dva kredita z enako obrestno mero lahko več tisoč evrov različna?" },
     { slug: "eom-zakaj-ti-banka-o-tem-ne-govori.html", datePublished: "2026-04-08", title: "EOM stanovanjskega kredita in zakaj ti banka o tem ne govori?" },
+    { slug: "izbira-med-varcevanjem-in-investiranjem.html", datePublished: "2026-04-12", title: "Izbira med varčevanjem in investiranjem" },
 ];
 
 function initArticlePrevNext() {
