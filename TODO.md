@@ -18,16 +18,18 @@
   - [x] Cloudflare Bulk Redirects: dodana lista `finportal_legacy_urls` + rule (301) za stare URL-je (/kalkulatorji/* → root, /clanki/primerjava-depozitov.html → /primerjava-depozitov.html)
   - [ ] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek”
   - [ ] GSC: čez 3–7 dni preveri, da se status premika v validating/passed in da se število 404 zmanjšuje
+- [ ] **[63]** GitHub Issues: uvedi sledenje bugov/feature requestov (labels + bug report template), da bo odpravljanje bolj sistematično.
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
--   - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
--   - [x] Cloudflare Redirect Rules: izjema za `https://www.finportal.si/index.html` → `https://finportal.si/` (redirect chain 2 → 1) + GSC “Preveri popravek” kliknjen
+  - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
+  - [x] Cloudflare Redirect Rules: izjema za `https://www.finportal.si/index.html` → `https://finportal.si/` (redirect chain 2 → 1) + GSC “Preveri popravek” kliknjen
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
 - [ ] **[52]** Internal linking: dodaj povezave iz home/"kalkulatorji" na ključne podstrani + povezovanje člankov → kalkulatorji (dvigne SEO)
 - [ ] **[59]** Internal linking: dodaj povezave iz kalkulatorjev → relevantni članki (modul "Povezani članki" na kalkulatorjih; po potrebi tudi članki → kalkulatorji) + Dodaj “lead form” v članke Npr. pod člankom o EURIBOR.
 - [ ] **[53]** FAQ + FAQPage schema na ključnih straneh (kreditni kalkulator, kreditna sposobnost, primerjava depozitov)
--   - [x] `kreditni-kalkulator.html`: dodan `FAQPage` JSON-LD
--   - [x] `kreditna-sposobnost.html`: dodan `FAQPage` JSON-LD
--   - [x] `clanki/eom-zakaj-ti-banka-o-tem-ne-govori.html`: dodan `FAQPage` JSON-LD
+  - [x] `kreditni-kalkulator.html`: dodan `FAQPage` JSON-LD
+  - [x] `kreditna-sposobnost.html`: dodan `FAQPage` JSON-LD
+  - [x] `clanki/eom-zakaj-ti-banka-o-tem-ne-govori.html`: dodan `FAQPage` JSON-LD
+  - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
 -   - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
 - [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
 - [x] **[55]** Članki (`clanki/index.html`): dodaj iskalnik + client-side filtriranje po kategorijah prek `data-category` (zaenkrat: `krediti`, `varcevanje`, `investicije`) + stanje "ni zadetkov" + fallback, da je brez JS seznam še vedno viden
@@ -42,6 +44,8 @@
    - [x] Po kliku na "Izračunaj": auto-scroll na rezultate + pulse highlight na modrem CTA
    - [x] Cache-busting: `style.css?v=2026-04-08-1` + `script.js?v=2026-04-08-1` (da se spremembe vidijo tudi na telefonu)
    - [ ] B: tap targeti + odstrani horizontal overflow (če/ko opazimo na mobilnem)
+   - [ ] Kreditni kalkulator (mobilno): odstrani horizontalni “slajder” (overflow-x) in naredi layout v eni koloni.
+   - [ ] Primerjava depozitov (mobilno): tekst pod tabelo se trenutno skrola skupaj s tabelo pri slajdanju levo/desno — popraviti (prioritetno).
 - [ ] **[25C]** Mobilni pilot: izberi 1 kalkulator in tam najprej uredi mobile quick wins (sticky CTA + tap targeti + overflow), nato razširi na ostale.
 - [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
