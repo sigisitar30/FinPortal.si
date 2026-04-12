@@ -44,8 +44,8 @@
    - [x] Po kliku na "Izračunaj": auto-scroll na rezultate + pulse highlight na modrem CTA
    - [x] Cache-busting: `style.css?v=2026-04-08-1` + `script.js?v=2026-04-08-1` (da se spremembe vidijo tudi na telefonu)
    - [ ] B: tap targeti + odstrani horizontal overflow (če/ko opazimo na mobilnem)
-   - [ ] Kreditni kalkulator (mobilno): odstrani horizontalni “slajder” (overflow-x) in naredi layout v eni koloni (v delu)
-   - [ ] Primerjava depozitov (mobilno): tekst pod tabelo se trenutno skrola skupaj s tabelo pri slajdanju levo/desno — popraviti (prioritetno).
+   - [x] Kreditni kalkulator (mobilno): odstrani horizontalni “slajder” (overflow-x) in naredi layout v eni koloni (v delu)
+   - [x] Primerjava depozitov (mobilno): tekst pod tabelo se trenutno skrola skupaj s tabelo pri slajdanju levo/desno — popraviti (prioritetno).
 - [ ] **[25C]** Mobilni pilot: izberi 1 kalkulator in tam najprej uredi mobile quick wins (sticky CTA + tap targeti + overflow), nato razširi na ostale.
 - [ ] **[30]** Označi najboljše ponudbe v tabeli z depoziti - oblika kot v članku, kjer primerjam EOM med bankami?
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
