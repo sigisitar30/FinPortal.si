@@ -3,14 +3,11 @@
 ## Naslednje (prioriteta / največji ROI)
 - [ ] **[22]** Modernizirati lead page `povprasevanje.html` (trust blok, boljši form UI)
 - [ ] **[20]** Modernizirati UI kalkulatorjev (inputs, rezultat kartice, CTA)
-- [x] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
 - [ ] **[24]** Preveri ali so na vseh straneh slike optimizirane (alt, size, format)
 - [ ] **[21]** Modernizirati izgled člankov (tipografija, max širina, TOC, spacing)
 - [ ] **[48]** Google Discover - dodaj vsebino za Google Discover (+ velike slike za članke)
-- [x] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
-- [x] **[61]** Pri vrsti kredita naj se ob izbiri avtomatično izpiše neka pričakovana vrednost za OM (najdi podatek o povprečni OM pri BS) in dopiši nekam da je to pravilo in se lahko pe vedno spremeni vrednost ročno.
 - [ ] **[62]** Naredi tabelo pričakovanih OM za različne vreste kreditov in naredi članek iz tega in povezavo do kalkulatorja. Dodaj simulacijo ali neko dodatno analizo kaj se zgodi če se bo OM spremenila navzgor, kot je pričakovano zaradi EURIBORA.
 
 ## Predlogi (novi hitri win-i)
@@ -32,11 +29,9 @@
   - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
 -   - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
 - [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
-- [x] **[55]** Članki (`clanki/index.html`): dodaj iskalnik + client-side filtriranje po kategorijah prek `data-category` (zaenkrat: `krediti`, `varcevanje`, `investicije`) + stanje "ni zadetkov" + fallback, da je brez JS seznam še vedno viden
 
 ## Tehnično (perf + struktura)
 - [ ] **[9]** Poenotiti structured data (JSON-LD) še na vseh ostalih “legal/info” straneh inline (brez odvisnosti od JS)
-- [x] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
 
 ## Večji projekti / kasneje
 - [ ] **[25]** Izboljšaj mobilno izkušnjo (največ uporabnikov bo tam)
@@ -51,13 +46,11 @@
 - [ ] **[31]** Dodaj KDO SMO, v sekciji O NAS
 - [ ] **[34]** lead_form naj se avtomatično zapolne s podatki, ki so bili zadnji vnešeni s strani uporabnika
 - [ ] **[35]** Dodaj Google Tag Manager (GTM) - je to smiselno? koliko dela?
-- [x] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
 - [ ] **[38]** povpraševanja (leadi) in z njimi povezani kontaktni podatki: do 90 dni od oddaje povpraševanja - kako zagotoviti?! avtomatizirati? Odloženo do sestanka z banko: implementacija audit log + 90-dnevna hramba.
-- [x] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
 - [ ] **[42]** dodaj "pošlji izračun na mail" in "shrani izračun"
 - [ ] **[45]** DODAJ PRIMORSKO HRANILNICO - naredi nov scraper in razširi bazo bank. https://phv.si/obrestne-mere/#obrestne-pasivni-posli 
 - [ ] **[46]** Lahko bi dodal se tarife za potrosniske & stanovanjske kredite vseh bank.
-- [x] **[49]** Prihranek obresti: primerjava obresti po rednem amortizacijskem načrtu vs z predčasnimi vplačili (razlika 2 amortizacij). Dodan prikaz baseline obresti in pravilno osveževanje rezultatov.
+
 - [ ] **[57]** Cache rate dvigniti na 60-80 %
 
 ## Completed
@@ -76,3 +69,11 @@
 - [x] **[43]** faviconi niso WebP - morda lahko to izboljšamo v nadaljevanju - ODLOČITEV: “ne delamo WebP za favicon”
 - [x] **[47]** Dodati v kalkulator za kredit, da bi lahko dolocil še mesecna/letna vplačila za predhodno poplačilo kredita. Predlog? na tej strani je ena ideja https://jsfiddle.net/bjs475gw/
 - [x] **[56]** template članka ima zdaj [[...]] placeholderje + [[KATEGORIJA]] + articleSection v JSON-LD.
+- [x] **[49]** Prihranek obresti: primerjava obresti po rednem amortizacijskem načrtu vs z predčasnimi vplačili (razlika 2 amortizacij). Dodan prikaz baseline obresti in pravilno osveževanje rezultatov.
+- [x] **[36]** Dodaj varovalke, da se v tabele lahko vnašajo samo smiselne vsebine (znesek, ročnost, telefon- samo številke, ime in priimek samo črke, mail mora vsegovati @ in .), itd.
+- [x] **[39]** v script.js je treba narediti link, kjer pod tabelo za depozite piše info@finportal.si mail - povezava do kontaktnega obrazca
+- [x] **[55]** Članki (`clanki/index.html`): dodaj iskalnik + client-side filtriranje po kategorijah prek `data-category` (zaenkrat: `krediti`, `varcevanje`, `investicije`) + stanje "ni zadetkov" + fallback, da je brez JS seznam še vedno viden
+- [x] **[37]** v google je še vedno viden modri planet, in ne favicon (urejeno: preveri čez par dni)
+- [x] **[61]** Pri vrsti kredita naj se ob izbiri avtomatično izpiše neka pričakovana vrednost za OM (najdi podatek o povprečni OM pri BS) in dopiši nekam da je to pravilo in se lahko pe vedno spremeni vrednost ročno.
+- [x] **[26]** Dodaj "back to top" gumb na dolgih straneh
+- [x] **[44]** social proof: Podatki 11 slovenskih bank, Neodvisen finančni portal, Brezplačna uporaba, Narejeno v Sloveniji (dodati eno kratko sekcijo na začetku strani)
