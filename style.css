@@ -606,6 +606,14 @@ button[id$="-calc-btn"]:hover,
         padding-left: 1rem !important;
         padding-right: 1rem !important;
     }
+
+    .fp-share-scroll {
+        overflow-x: visible !important;
+        flex-wrap: wrap !important;
+        justify-content: flex-start;
+        padding-left: 0;
+        padding-right: 0;
+    }
 }
 
 /* Performance optimizations */

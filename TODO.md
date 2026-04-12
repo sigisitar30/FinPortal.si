@@ -10,8 +10,8 @@
 - [x] **[26]** Dodaj "back to top" gumb na dolgih straneh
 - [ ] **[28]** Poenostavi navigacijo (kjer lahko)
 - [ ] **[29]** Izboljšaj vizualno hierarhijo
-- [ ] **[61]** Pri vrsti kredita naj se ob izbiri avtomatično izpiše neka pričakovana vrednost za OM (najdi podatek o povprečni OM pri BS) in dopiši nekam da je to pravilo in se lahko pe vedno spremeni vrednost ročno.
-- [ ] **[62]** Naredit tabelo pričakovanih OM za različne vreste kreditov in naredi članek iz tega in povezavo do kalkulatorja. Dodaj simulacijo ali neko dodatno analizo kaj se zgodi če se bo OM spremenila navzgor, kot je pričakovano zaradi EURIBORA.
+- [x] **[61]** Pri vrsti kredita naj se ob izbiri avtomatično izpiše neka pričakovana vrednost za OM (najdi podatek o povprečni OM pri BS) in dopiši nekam da je to pravilo in se lahko pe vedno spremeni vrednost ročno.
+- [ ] **[62]** Naredi tabelo pričakovanih OM za različne vreste kreditov in naredi članek iz tega in povezavo do kalkulatorja. Dodaj simulacijo ali neko dodatno analizo kaj se zgodi če se bo OM spremenila navzgor, kot je pričakovano zaradi EURIBORA.
 
 ## Predlogi (novi hitri win-i)
 - [ ] **[51]** GSC: pregled in odprava 404 URL-jev
