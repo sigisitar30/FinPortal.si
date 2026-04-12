@@ -37,6 +37,30 @@ body {
         overflow-x: hidden;
     }
 
+    .calc-panel,
+    .calc-panel>* {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    .calc-result-card,
+    .fp-share-scroll {
+        max-width: 100%;
+    }
+
+    .overflow-x-auto {
+        max-width: 100%;
+    }
+
+    canvas {
+        display: block;
+        max-width: 100%;
+    }
+
+    table {
+        max-width: 100%;
+    }
+
     @supports (overflow: clip) {
 
         html,
