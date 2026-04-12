@@ -30,6 +30,22 @@ body {
     margin: 0;
 }
 
+@media (max-width: 640px) {
+
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    @supports (overflow: clip) {
+
+        html,
+        body {
+            overflow-x: clip;
+        }
+    }
+}
+
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible,
