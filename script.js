@@ -4953,7 +4953,8 @@ function calculateLoan() {
 function exportLoanToPdf() {
     try {
         const origin = String(window.location.origin || "").trim();
-        const cssHref = origin ? `${origin}/style.css?v=2026-04-08-1` : "./style.css?v=2026-04-08-1";
+        const cssHref = origin ? `${origin}/style.css?v=2026-04-12-1` : "./style.css?v=2026-04-12-1";
+        const logoSrc = origin ? `${origin}/images/scit8.webp` : "./images/scit8.webp";
 
         const schedule = window.__fpLoanLastSchedule;
         const rowsAll = Array.isArray(schedule?.rows) ? schedule.rows : [];
@@ -5013,7 +5014,26 @@ function exportLoanToPdf() {
         if (!w) return;
 
         const today = new Date();
-        const dateText = today.toLocaleDateString("sl-SI");
+        const dateText = today.toLocaleString("sl-SI", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+
+        const pad2 = (n) => String(n).padStart(2, "0");
+        const pad3 = (n) => String(n).padStart(3, "0");
+        const y = today.getFullYear();
+        const mo = pad2(today.getMonth() + 1);
+        const d = pad2(today.getDate());
+        const hh = pad2(today.getHours());
+        const mm = pad2(today.getMinutes());
+        const ss = pad2(today.getSeconds());
+        const ms = pad3(today.getMilliseconds());
+        const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+        const calcId = `FP-${y}${mo}${d}-${hh}${mm}${ss}-${ms}-${rand}`;
 
         w.document.open();
         w.document.write(`<!doctype html>
@@ -5028,17 +5048,96 @@ function exportLoanToPdf() {
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="${cssHref}" />
   <style>
-    @media print { button { display: none !important; } }
+    @media print {
+      button { display: none !important; }
+      #fp-print-header { display: flex !important; }
+      #fp-print-watermark { display: flex !important; }
+      body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      main { padding-top: 86px !important; }
+    }
+
+    #fp-print-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-bottom: 1px solid #e5e7eb;
+      padding: 12px 24px;
+      z-index: 50;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    #fp-print-watermark {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    #fp-print-watermark .fp-wm {
+      opacity: 0.14;
+      transform: rotate(-20deg);
+      text-align: center;
+    }
+
+    #fp-print-watermark .fp-wm img {
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 8px;
+    }
+
+    #fp-print-watermark .fp-wm .fp-wm-text {
+      font-weight: 800;
+      font-size: 64px;
+      letter-spacing: 1px;
+      color: #0b6b3a;
+      line-height: 1;
+    }
+
+    main { position: relative; z-index: 1; }
   </style>
 </head>
 <body class="bg-white text-[#111111] font-inter">
+  <div id="fp-print-watermark" aria-hidden="true">
+    <div class="fp-wm">
+      <img src="${logoSrc}" alt="FinPortal.si" />
+      <div class="fp-wm-text">FinPortal.si</div>
+    </div>
+  </div>
+
+  <header id="fp-print-header" role="presentation" aria-hidden="true">
+    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+      <img src="${logoSrc}" alt="FinPortal.si" style="width:44px;height:44px;border-radius:10px;object-fit:contain;" />
+      <div style="display:flex;flex-direction:column;line-height:1.1;min-width:0;">
+        <div style="font-weight:800;font-size:16px;">FinPortal.si</div>
+        <div style="font-size:12px;color:#6b7280;">Kreditni izračun (informativno)</div>
+      </div>
+    </div>
+    <div style="text-align:right;white-space:nowrap;">
+      <div style="font-size:12px;color:#6b7280;">Datum izračuna: ${dateText}</div>
+      <div style="font-size:12px;color:#6b7280;">ID: ${calcId}</div>
+    </div>
+  </header>
+
   <main class="max-w-4xl mx-auto px-6 py-10">
     <div class="flex items-start justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold">Kreditni izračun</h1>
-        <div class="mt-1 text-sm text-gray-600">Datum: ${dateText}</div>
+        <div class="mt-1 text-sm text-gray-600">Datum izračuna: ${dateText} · ID: ${calcId}</div>
       </div>
       <button type="button" class="px-4 py-2 rounded-lg bg-[#0B6B3A] text-white" onclick="window.print()">Natisni / Shrani v PDF</button>
+    </div>
+
+    <div class="mt-4 text-sm text-gray-600 leading-snug">
+      Izračun je informativen in ne predstavlja ponudbe banke. Pogoji se lahko spremenijo. Pred odločitvijo preverite aktualne pogoje pri izbrani banki.
+      <span class="block mt-1">Vir: https://finportal.si/kreditni-kalkulator.html</span>
     </div>
 
     <section class="mt-6">
