@@ -5054,10 +5054,18 @@ function exportLoanToPdf() {
       #fp-print-watermark { display: flex !important; }
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       #fp-print-header img { filter: grayscale(100%); }
+
+      /* Prevent scroll wrappers from clipping content across page breaks */
+      .overflow-x-auto { overflow: visible !important; }
+
+      table { page-break-inside: auto; }
+      tr { break-inside: avoid-page; page-break-inside: avoid; }
+      thead { display: table-header-group; }
+      tfoot { display: table-footer-group; }
     }
 
     @page {
-      margin: 28mm 14mm 18mm 14mm;
+      margin: 20mm 12mm 16mm 12mm;
     }
 
     #fp-print-header {
@@ -5068,7 +5076,7 @@ function exportLoanToPdf() {
       right: 0;
       background: white;
       border-bottom: 1px solid #e5e7eb;
-      padding: 12px 24px;
+      padding: 8px 16px;
       z-index: 50;
       align-items: center;
       justify-content: space-between;
@@ -5087,9 +5095,9 @@ function exportLoanToPdf() {
 
     #fp-print-watermark .fp-wm-text {
       opacity: 0.05;
-      transform: rotate(-20deg);
+      transform: rotate(-32deg);
       font-weight: 800;
-      font-size: 72px;
+      font-size: 120px;
       letter-spacing: 1px;
       color: #111111;
       white-space: nowrap;
