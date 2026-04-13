@@ -5050,7 +5050,6 @@ function exportLoanToPdf() {
   <style>
     @media print {
       button { display: none !important; }
-      #fp-print-header { display: flex !important; }
       #fp-print-watermark { display: flex !important; }
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
       #fp-print-header img { filter: grayscale(100%); }
@@ -5069,15 +5068,13 @@ function exportLoanToPdf() {
     }
 
     #fp-print-header {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
       background: white;
       border-bottom: 1px solid #e5e7eb;
       padding: 8px 16px;
-      z-index: 50;
+    }
+
+    #fp-print-header-wrap {
+      display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
@@ -5110,21 +5107,32 @@ function exportLoanToPdf() {
     <div class="fp-wm-text">FinPortal.si</div>
   </div>
 
-  <header id="fp-print-header" role="presentation" aria-hidden="true">
-    <div style="display:flex;align-items:center;gap:12px;min-width:0;">
-      <img src="${logoSrc}" alt="FinPortal.si" style="width:44px;height:44px;border-radius:10px;object-fit:contain;" />
-      <div style="display:flex;flex-direction:column;line-height:1.1;min-width:0;">
-        <div style="font-weight:800;font-size:16px;">FinPortal.si</div>
-        <div style="font-size:12px;color:#6b7280;">Kreditni izračun (informativno)</div>
-      </div>
-    </div>
-    <div style="text-align:right;white-space:nowrap;">
-      <div style="font-size:12px;color:#6b7280;">Datum izračuna: ${dateText}</div>
-      <div style="font-size:12px;color:#6b7280;">ID: ${calcId}</div>
-    </div>
-  </header>
-
-  <main class="max-w-4xl mx-auto px-6 py-10">
+  <table class="w-full" style="border-collapse: collapse;">
+    <thead>
+      <tr>
+        <td>
+          <div id="fp-print-header" role="presentation" aria-hidden="true">
+            <div id="fp-print-header-wrap">
+              <div style="display:flex;align-items:center;gap:12px;min-width:0;">
+                <img src="${logoSrc}" alt="FinPortal.si" style="width:44px;height:44px;border-radius:10px;object-fit:contain;" />
+                <div style="display:flex;flex-direction:column;line-height:1.1;min-width:0;">
+                  <div style="font-weight:800;font-size:16px;">FinPortal.si</div>
+                  <div style="font-size:12px;color:#6b7280;">Kreditni izračun (informativno)</div>
+                </div>
+              </div>
+              <div style="text-align:right;white-space:nowrap;">
+                <div style="font-size:12px;color:#6b7280;">Datum izračuna: ${dateText}</div>
+                <div style="font-size:12px;color:#6b7280;">ID: ${calcId}</div>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <main class="max-w-4xl mx-auto px-6 py-10">
     <div class="flex items-start justify-between gap-4">
       <div>
         <h1 class="text-2xl font-bold">Kreditni izračun</h1>
@@ -5147,7 +5155,11 @@ function exportLoanToPdf() {
       <h2 class="text-lg font-semibold mb-3">Amortizacijski načrt</h2>
       <div class="overflow-x-auto">${tableHtml || "<div class=\"text-gray-600\">Tabela ni na voljo.</div>"}</div>
     </section>
-  </main>
+          </main>
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <script>
     window.addEventListener('load', () => { setTimeout(() => { try { window.print(); } catch(e) {} }, 250); });
   </script>
