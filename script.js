@@ -5053,7 +5053,11 @@ function exportLoanToPdf() {
       #fp-print-header { display: flex !important; }
       #fp-print-watermark { display: flex !important; }
       body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-      main { padding-top: 86px !important; }
+      #fp-print-header img { filter: grayscale(100%); }
+    }
+
+    @page {
+      margin: 28mm 14mm 18mm 14mm;
     }
 
     #fp-print-header {
@@ -5075,41 +5079,27 @@ function exportLoanToPdf() {
       display: none;
       position: fixed;
       inset: 0;
-      z-index: 0;
+      z-index: 20;
       align-items: center;
       justify-content: center;
       pointer-events: none;
     }
 
-    #fp-print-watermark .fp-wm {
-      opacity: 0.14;
+    #fp-print-watermark .fp-wm-text {
+      opacity: 0.05;
       transform: rotate(-20deg);
-      text-align: center;
-    }
-
-    #fp-print-watermark .fp-wm img {
-      width: 160px;
-      height: 160px;
-      margin: 0 auto 8px;
-    }
-
-    #fp-print-watermark .fp-wm .fp-wm-text {
       font-weight: 800;
-      font-size: 64px;
+      font-size: 72px;
       letter-spacing: 1px;
-      color: #0b6b3a;
+      color: #111111;
+      white-space: nowrap;
       line-height: 1;
     }
-
-    main { position: relative; z-index: 1; }
   </style>
 </head>
 <body class="bg-white text-[#111111] font-inter">
   <div id="fp-print-watermark" aria-hidden="true">
-    <div class="fp-wm">
-      <img src="${logoSrc}" alt="FinPortal.si" />
-      <div class="fp-wm-text">FinPortal.si</div>
-    </div>
+    <div class="fp-wm-text">FinPortal.si</div>
   </div>
 
   <header id="fp-print-header" role="presentation" aria-hidden="true">
