@@ -5350,6 +5350,20 @@ function initArticlePrevNext() {
         const article = document.querySelector("article");
         if (!article) return;
 
+        const normalizeSlug = (s) => {
+            try {
+                return decodeURIComponent(String(s || ""))
+                    .trim()
+                    .replace(/^\.\/?/, "")
+                    .toLowerCase();
+            } catch {
+                return String(s || "")
+                    .trim()
+                    .replace(/^\.\/?/, "")
+                    .toLowerCase();
+            }
+        };
+
         const file = (() => {
             const p = path.split("?")[0].split("#")[0];
             const last = p.split("/").filter(Boolean).pop() || "";
@@ -5375,7 +5389,8 @@ function initArticlePrevNext() {
                 return a._idx - b._idx;
             });
 
-        const idx = items.findIndex((a) => a.slug === file);
+        const fileKey = normalizeSlug(file);
+        const idx = items.findIndex((a) => normalizeSlug(a.slug) === fileKey);
         const inRegistry = idx >= 0;
 
         const prev = inRegistry && items.length > 1 ? (idx > 0 ? items[idx - 1] : items[items.length - 1]) : null;
@@ -5437,6 +5452,11 @@ function initArticlePrevNext() {
             return section;
         };
 
+        if (!inRegistry) {
+            console.warn("initArticlePrevNext: article not found in FP_ARTICLES", { file });
+            return;
+        }
+
         const section = ensureNavSection();
         const row = section.querySelector("div") || (() => {
             const d = document.createElement("div");
@@ -5453,14 +5473,8 @@ function initArticlePrevNext() {
             }
         });
 
-        if (!inRegistry) {
-            console.warn("initArticlePrevNext: article not found in FP_ARTICLES", { file });
-            row.appendChild(ensureNavLink({ kind: "prev", href: "/clanki/" }));
-            row.appendChild(ensureNavLink({ kind: "next", href: "/clanki/" }));
-        } else {
-            if (prev) row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
-            if (next) row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
-        }
+        if (prev) row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
+        if (next) row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
 
         // If only one link exists for some reason, keep layout nice.
         if (row.children.length === 1) {
