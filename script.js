@@ -5338,6 +5338,7 @@ const FP_ARTICLES = [
     { slug: "enaka-obrestna-mera-ni-enak-kredit.html", datePublished: "2026-04-08", title: "Zakaj sta dva kredita z enako obrestno mero lahko več tisoč evrov različna?" },
     { slug: "eom-zakaj-ti-banka-o-tem-ne-govori.html", datePublished: "2026-04-08", title: "EOM stanovanjskega kredita in zakaj ti banka o tem ne govori?" },
     { slug: "izbira-med-varcevanjem-in-investiranjem.html", datePublished: "2026-04-12", title: "Izbira med varčevanjem in investiranjem" },
+    { slug: "vrste-kreditov-in-zakaj-imajo-razlicne-obrestne-mere.html", datePublished: "2026-04-15", title: "Vrste kreditov in zakaj imajo različne obrestne mere" },
 ];
 
 function initArticlePrevNext() {
