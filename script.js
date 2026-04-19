@@ -80,6 +80,26 @@ function renderLoanAmortizationTable(schedule, mode) {
     }
 }
 
+function normalizeIndexHashLinks() {
+    try {
+        const anchors = Array.from(document.querySelectorAll("a[href]"));
+        if (anchors.length === 0) return;
+
+        for (const a of anchors) {
+            const href = a.getAttribute("href");
+            if (!href) continue;
+
+            const m = href.match(/^(?:\.\.\/)?index\.html(#.*)$/);
+            if (!m) continue;
+
+            const hash = m[1] || "";
+            a.setAttribute("href", `/${hash}`);
+        }
+    } catch (e) {
+        console.warn("normalizeIndexHashLinks failed", e);
+    }
+}
+
 function escapeHtml(str) {
     const s = String(str ?? "");
     return s
@@ -2736,10 +2756,10 @@ function initMobileMenu() {
 
     const currentFile = String(window.location.pathname ?? "").split("/").pop() || "";
     const isIndex = currentFile === "" || currentFile === "index.html";
-    const home = isIndex ? "#home" : "index.html#home";
-    const kalkulatorji = isIndex ? "#kalkulatorji" : "index.html#kalkulatorji";
-    const onas = isIndex ? "#onas" : "index.html#onas";
-    const kontakt = isIndex ? "#kontakt" : "index.html#kontakt";
+    const home = isIndex ? "#home" : "/#home";
+    const kalkulatorji = isIndex ? "#kalkulatorji" : "/#kalkulatorji";
+    const onas = isIndex ? "#onas" : "/#onas";
+    const kontakt = isIndex ? "#kontakt" : "/#kontakt";
 
     const links = [
         { href: home, text: "Domov" },
@@ -5216,378 +5236,34 @@ function initNumberFormatting() {
             formatEl(this);
         });
 
-        // Format initial value on page load
-        formatEl(input);
     });
 }
-
-function initArticleShare() {
-    try {
-        const path = String(window.location.pathname || "");
-        if (!path.includes("/clanki/")) return;
-
-        const article = document.querySelector("article");
-        if (!article) return;
-
-        const h1 = article.querySelector("h1");
-        if (!h1) return;
-
-        const existing = document.getElementById("fp-article-share");
-        if (existing) return;
-
-        const slot = document.getElementById("fp-article-share-slot");
-
-        const findMetaRow = () => {
-            const candidates = Array.from(article.querySelectorAll("div"));
-            return candidates.find((el) => {
-                const t = String(el.textContent || "");
-                if (!t) return false;
-                return t.includes("Avtor") && (t.includes("Objavljeno") || t.includes("Posodobljeno"));
-            }) || null;
-        };
-
-        const metaRow = slot ? null : findMetaRow();
-        const wrap = slot || document.createElement("div");
-        if (!slot) wrap.className = "fp-article-share-wrap";
-
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.id = "fp-article-share";
-        btn.setAttribute("aria-label", "Deli članek");
-        btn.className = "fp-article-share-btn glow-hover";
-        btn.textContent = "Deli";
-
-        const getSharePayload = () => {
-            const url = window.location.href;
-            const title = String(document.title || "").trim();
-            const metaDesc = document.querySelector('meta[name="description"]');
-            const text = metaDesc ? String(metaDesc.getAttribute("content") || "").trim() : "";
-            return { url, title, text };
-        };
-
-        const setTempText = (text) => {
-            const prev = btn.textContent;
-            btn.textContent = text;
-            window.setTimeout(() => {
-                btn.textContent = prev;
-            }, 1500);
-        };
-
-        btn.addEventListener("click", async () => {
-            const { url, title, text } = getSharePayload();
-            try {
-                if (navigator.share) {
-                    await navigator.share({ title, text, url });
-                    return;
-                }
-            } catch {
-                // fallback below
-            }
-
-            try {
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(url);
-                    setTempText("Kopirano");
-                    return;
-                }
-            } catch {
-                // fallback below
-            }
-
-            try {
-                const input = document.createElement("input");
-                input.value = url;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand("copy");
-                document.body.removeChild(input);
-                setTempText("Kopirano");
-            } catch {
-                setTempText("Ne gre");
-            }
-        });
-
-        wrap.appendChild(btn);
-        if (slot) return;
-
-        if (metaRow) {
-            metaRow.classList.add("fp-article-meta");
-            metaRow.appendChild(wrap);
-            return;
-        }
-
-        h1.insertAdjacentElement("afterend", wrap);
-    } catch (e) {
-        console.warn("initArticleShare failed", e);
-    }
-}
-
-const FP_ARTICLES = [
-    { slug: "psihologija-investiranja.html", datePublished: "2026-03-10", title: "Psihologija investiranja - skriti vplivi, ki odločajo o vašem finančnem uspehu" },
-    { slug: "vrednost-denarja-v-casu.html", datePublished: "2026-03-10", title: "Vrednost denarja v času" },
-    { slug: "najcenejsi-potrosniski-kredit.html", datePublished: "2026-03-10", title: "Kaj je EOM in zakaj je pomembnejša od nominalne obrestne mere?" },
-    { slug: "kredit-2026.html", datePublished: "2026-03-14", title: "Krediti 2026 - najcenejši ponudniki in priporočena obrestna mera" },
-    { slug: "prednosti-bancnega-varcevanja.html", datePublished: "2026-03-16", title: "Prednosti bančnega varčevanja" },
-    { slug: "najboljsi-depozit.html", datePublished: "2026-03-19", title: "Najboljši depozit v Sloveniji 2026 - kako izbrati in primerjati ponudbe" },
-    { slug: "jamstvo-vlog-100000.html", datePublished: "2026-03-22", title: "Jamstvo za vloge do 100.000 € - kako deluje in kaj je dejansko zaščiteno" },
-    { slug: "kreditna-sposobnost-kako-banke-racunajo.html", datePublished: "2026-03-23", title: "Kreditna sposobnost: kako jo banke v Sloveniji računajo in kako jo izboljšaš" },
-    { slug: "kako-banke-izracunajo-kreditno-sposobnost.html", datePublished: "2026-03-25", title: "Kako banke izračunajo kreditno sposobnost - razlaga za vsakdanje uporabnike" },
-    { slug: "predcasno-poplacilo-kredita.html", datePublished: "2026-03-30", title: "Predčasno plačilo kredita - kaj je dobro, kaj slabo in kako izračunati koristi" },
-    { slug: "zakaj-bodo-obrestne-mere-na-bankah-rasle.html", datePublished: "2026-04-03", title: "Zakaj bodo obrestne mere na bankah rasle, ko bo rasel EURIBOR?" },
-    { slug: "revolut-flexible-account-furs.html", datePublished: "2026-04-05", title: "Revolut in davki 2026: Kako prijaviti obresti iz Flexible Account" },
-    { slug: "enaka-obrestna-mera-ni-enak-kredit.html", datePublished: "2026-04-08", title: "Zakaj sta dva kredita z enako obrestno mero lahko več tisoč evrov različna?" },
-    { slug: "eom-zakaj-ti-banka-o-tem-ne-govori.html", datePublished: "2026-04-08", title: "EOM stanovanjskega kredita in zakaj ti banka o tem ne govori?" },
-    { slug: "izbira-med-varcevanjem-in-investiranjem.html", datePublished: "2026-04-12", title: "Izbira med varčevanjem in investiranjem" },
-    { slug: "vrste-kreditov-in-zakaj-imajo-razlicne-obrestne-mere.html", datePublished: "2026-04-15", title: "Vrste kreditov in zakaj imajo različne obrestne mere" },
-];
-
-function initArticlePrevNext() {
-    try {
-        const path = String(window.location.pathname || "");
-        const looksLikeArticle = path.includes("/clanki/") && !path.endsWith("/clanki/") && !path.endsWith("/clanki/index.html");
-        if (!looksLikeArticle) return;
-
-        const article = document.querySelector("article");
-        if (!article) return;
-
-        const normalizeSlug = (s) => {
-            try {
-                return decodeURIComponent(String(s || ""))
-                    .trim()
-                    .replace(/^\.\/?/, "")
-                    .toLowerCase();
-            } catch {
-                return String(s || "")
-                    .trim()
-                    .replace(/^\.\/?/, "")
-                    .toLowerCase();
-            }
-        };
-
-        const file = (() => {
-            const p = path.split("?")[0].split("#")[0];
-            const last = p.split("/").filter(Boolean).pop() || "";
-            let f = String(last || "").trim();
-            if (f !== "" && !f.toLowerCase().endsWith(".html")) {
-                f = `${f}.html`;
-            }
-            return f;
-        })();
-
-        if (!file || file === "template-clanek.html") return;
-
-        const items = FP_ARTICLES
-            .map((a, i) => ({
-                ...a,
-                _idx: i,
-                _ts: Date.parse(`${String(a.datePublished || "").slice(0, 10)}T00:00:00Z`),
-            }))
-            .filter((a) => a.slug && Number.isFinite(a._ts))
-            .sort((a, b) => {
-                const dt = a._ts - b._ts;
-                if (dt !== 0) return dt;
-                return a._idx - b._idx;
-            });
-
-        const fileKey = normalizeSlug(file);
-        const idx = items.findIndex((a) => normalizeSlug(a.slug) === fileKey);
-        const inRegistry = idx >= 0;
-
-        const prev = inRegistry && items.length > 1 ? (idx > 0 ? items[idx - 1] : items[items.length - 1]) : null;
-        const next = inRegistry && items.length > 1 ? (idx < items.length - 1 ? items[idx + 1] : items[0]) : null;
-
-        const norm = (s) => String(s || "").replace(/\s+/g, " ").trim();
-        const links = Array.from(document.querySelectorAll("a"));
-        const prevLink = links.find((a) => norm(a.textContent).includes("Prejšnji članek")) || null;
-        const nextLink = links.find((a) => norm(a.textContent).includes("Naslednji članek")) || null;
-
-        const ensureNavLink = ({ kind, href }) => {
-            const isPrev = kind === "prev";
-            const label = isPrev ? "Prejšnji članek" : "Naslednji članek";
-
-            const a = document.createElement("a");
-            a.setAttribute("href", href);
-            a.className = "inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 py-3 font-semibold text-gray-900 hover:bg-gray-50 transition glow-hover";
-
-            if (isPrev) {
-                const arrow = document.createElement("span");
-                arrow.setAttribute("aria-hidden", "true");
-                arrow.className = "text-2xl font-extrabold leading-none";
-                arrow.textContent = "←";
-                a.appendChild(arrow);
-
-                const text = document.createElement("span");
-                text.textContent = label;
-                a.appendChild(text);
-            } else {
-                const text = document.createElement("span");
-                text.textContent = label;
-                a.appendChild(text);
-
-                const arrow = document.createElement("span");
-                arrow.setAttribute("aria-hidden", "true");
-                arrow.className = "text-2xl font-extrabold leading-none";
-                arrow.textContent = "→";
-                a.appendChild(arrow);
-            }
-
-            return a;
-        };
-
-        const ensureNavSection = () => {
-            const existingAny = prevLink || nextLink;
-            if (existingAny) {
-                const section = existingAny.closest("section") || existingAny.parentElement;
-                if (section && section.tagName && section.tagName.toLowerCase() === "section") return section;
-            }
-
-            const section = document.createElement("section");
-            section.className = "mt-10";
-
-            const row = document.createElement("div");
-            row.className = "flex items-stretch justify-between gap-3";
-            section.appendChild(row);
-
-            article.appendChild(section);
-            return section;
-        };
-
-        if (!inRegistry) {
-            console.warn("initArticlePrevNext: article not found in FP_ARTICLES", { file });
-            return;
-        }
-
-        const section = ensureNavSection();
-        const row = section.querySelector("div") || (() => {
-            const d = document.createElement("div");
-            d.className = "flex items-stretch justify-between gap-3";
-            section.appendChild(d);
-            return d;
-        })();
-
-        // Remove any existing prev/next links inside the row to avoid duplicates and enforce consistent markup.
-        Array.from(row.querySelectorAll("a")).forEach((a) => {
-            const t = norm(a.textContent);
-            if (t.includes("Prejšnji članek") || t.includes("Naslednji članek")) {
-                a.remove();
-            }
-        });
-
-        if (prev) row.appendChild(ensureNavLink({ kind: "prev", href: prev.slug }));
-        if (next) row.appendChild(ensureNavLink({ kind: "next", href: next.slug }));
-
-        // If only one link exists for some reason, keep layout nice.
-        if (row.children.length === 1) {
-            row.classList.remove("justify-between");
-            row.classList.add("justify-end");
-        } else {
-            row.classList.remove("justify-end");
-            row.classList.add("justify-between");
-        }
-
-        if (inRegistry) {
-            console.log("initArticlePrevNext: wired", { file, prev: prev ? prev.slug : null, next: next ? next.slug : null });
-        }
-    } catch (e) {
-        console.warn("initArticlePrevNext failed", e);
-    }
-}
-
-const FP_CALC_RELATED_ARTICLES = {
-    "kreditni-kalkulator.html": [
-        "enaka-obrestna-mera-ni-enak-kredit.html",
-        "eom-zakaj-ti-banka-o-tem-ne-govori.html",
-        "predcasno-poplacilo-kredita.html",
-        "kredit-2026.html",
-        "kreditna-sposobnost-kako-banke-racunajo.html",
-    ],
-    "eom-kalkulator.html": [
-        "najcenejsi-potrosniski-kredit.html",
-        "eom-zakaj-ti-banka-o-tem-ne-govori.html",
-        "enaka-obrestna-mera-ni-enak-kredit.html",
-        "kredit-2026.html",
-    ],
-    "kreditna-sposobnost.html": [
-        "kako-banke-izracunajo-kreditno-sposobnost.html",
-        "kreditna-sposobnost-kako-banke-racunajo.html",
-        "kredit-2026.html",
-        "enaka-obrestna-mera-ni-enak-kredit.html",
-    ],
-    "depozitni-kalkulator.html": [
-        "najboljsi-depozit.html",
-        "prednosti-bancnega-varcevanja.html",
-        "jamstvo-vlog-100000.html",
-        "zakaj-bodo-obrestne-mere-na-bankah-rasle.html",
-    ],
-    "primerjava-depozitov.html": [
-        "najboljsi-depozit.html",
-        "prednosti-bancnega-varcevanja.html",
-        "jamstvo-vlog-100000.html",
-        "zakaj-bodo-obrestne-mere-na-bankah-rasle.html",
-    ],
-    "investicijski-kalkulator.html": [
-        "psihologija-investiranja.html",
-        "vrednost-denarja-v-casu.html",
-    ],
-    "izgubljene-obresti.html": [
-        "vrednost-denarja-v-casu.html",
-        "prednosti-bancnega-varcevanja.html",
-        "psihologija-investiranja.html",
-    ],
-    "leasing-vs-kredit.html": [
-        "enaka-obrestna-mera-ni-enak-kredit.html",
-        "kredit-2026.html",
-        "najcenejsi-potrosniski-kredit.html",
-    ],
-};
 
 function initCalculatorRelatedArticles() {
     try {
         const path = String(window.location.pathname || "");
         const last = path.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
         let file = String(last || "").trim();
-        if (file !== "" && !file.toLowerCase().endsWith(".html")) {
-            file = `${file}.html`;
-        }
-        if (!file) return;
-        if (file.startsWith("clanki")) return;
-        if (file === "index.html" || file === "") return;
+        if (!file) file = "index.html";
+        if (!file.includes(".")) file = `${file}.html`;
 
-        const slugs = FP_CALC_RELATED_ARTICLES[file];
+        const isArticle = path.includes("/clanki/");
+        if (isArticle) return;
+        if (file === "index.html") return;
+        if (file === "povprasevanje.html") return;
+
+        const mapping = (typeof FP_CALC_RELATED_ARTICLES === "object" && FP_CALC_RELATED_ARTICLES) ? FP_CALC_RELATED_ARTICLES : {};
+        const slugs = mapping[file];
         if (!Array.isArray(slugs) || slugs.length === 0) return;
 
-        const main = document.querySelector("main");
-        const footer = document.querySelector("footer");
-        const anchor = footer || null;
-        if (!main && !anchor) return;
+        if (document.getElementById("fp-related-articles")) return;
 
-        const normalize = (s) => String(s || "").replace(/\s+/g, " ").trim().toLowerCase();
+        const anchor = document.querySelector("footer") || null;
+        const main = document.querySelector("main") || null;
 
-        // Prefer reusing an existing hardcoded section to keep layout consistent across pages.
-        const existingSections = Array.from(document.querySelectorAll("section")).filter((s) => {
-            if (s.querySelector("footer")) return false;
-            const text = normalize(s.textContent);
-            return text.includes("povezani članki");
-        });
-
-        let section = document.getElementById("fp-related-articles") || existingSections[0] || null;
-
-        // Remove duplicates (keep the first).
-        existingSections.slice(1).forEach((s) => {
-            if (s === section) return;
-            s.remove();
-        });
-
-        if (!section) {
-            section = document.createElement("section");
-            section.className = "bg-white border-t border-gray-200";
-        }
-
+        const section = document.createElement("section");
         section.id = "fp-related-articles";
-        section.className = "bg-white border-t border-gray-200";
-
-        // Normalize section content: always render our JS pills.
-        section.innerHTML = "";
+        section.className = "border-t border-gray-200 bg-white";
 
         const wrap = document.createElement("div");
         wrap.className = "max-w-7xl mx-auto px-6 py-8";
@@ -5600,16 +5276,16 @@ function initCalculatorRelatedArticles() {
         const row = document.createElement("div");
         row.className = "flex flex-wrap gap-2 text-sm";
 
-        const bySlug = new Map(FP_ARTICLES.map((a) => [a.slug, a]));
+        const bySlug = new Map((Array.isArray(FP_ARTICLES) ? FP_ARTICLES : []).map((a) => [a.slug, a]));
 
         for (const slug of slugs) {
             const meta = bySlug.get(slug);
             const a = document.createElement("a");
             const s = String(slug ?? "").trim();
-            const file = s !== "" && !s.endsWith(".html") ? `${s}.html` : s;
-            a.href = `/clanki/${file}`;
+            const articleFile = s !== "" && !s.endsWith(".html") ? `${s}.html` : s;
+            a.href = `/clanki/${articleFile}`;
             a.className = "px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100";
-            a.textContent = meta?.title ? String(meta.title) : slug;
+            a.textContent = meta?.title ? String(meta.title) : s;
             row.appendChild(a);
         }
 
@@ -5622,25 +5298,23 @@ function initCalculatorRelatedArticles() {
         wrap.appendChild(row);
         section.appendChild(wrap);
 
-        // If section was newly created, insert it before footer.
-        if (!section.parentNode) {
-            if (anchor && anchor.parentNode) {
-                anchor.parentNode.insertBefore(section, anchor);
-                return;
-            }
+        if (anchor && anchor.parentNode) {
+            anchor.parentNode.insertBefore(section, anchor);
+            return;
+        }
 
-            if (main) {
-                main.insertAdjacentElement("afterend", section);
-            }
+        if (main) {
+            main.insertAdjacentElement("afterend", section);
         }
     } catch (e) {
         console.warn("initCalculatorRelatedArticles failed", e);
     }
 }
-
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
+
+    normalizeIndexHashLinks();
 
     const safeInit = (name, fn) => {
         try {
