@@ -15,6 +15,7 @@
   - [x] Cloudflare Bulk Redirects: dodana lista `finportal_legacy_urls` + rule (301) za stare URL-je (/kalkulatorji/* → root, /clanki/primerjava-depozitov.html → /primerjava-depozitov.html)
   - [x] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek” (začeto 19. 4. 2026)
   - [ ] GSC: čez 3–7 dni preveri, da se status premika v validating/passed in da se število 404 zmanjšuje
+- [ ] **[64]** GSC: “Stran s preusmeritvijo” (Page with redirect) — čez nekaj dni preveri z URL Inspection (Test live) za 5–10 URL-jev, da je 1× 301 → final URL (brez redirect chainov) + Google-selected canonical je pravilen
 - [ ] **[63]** GitHub Issues: uvedi sledenje bugov/feature requestov (labels + bug report template), da bo odpravljanje bolj sistematično.
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
   - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
