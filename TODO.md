@@ -13,7 +13,7 @@
 ## Predlogi (novi hitri win-i)
 - [ ] **[51]** GSC: pregled in odprava 404 URL-jev
   - [x] Cloudflare Bulk Redirects: dodana lista `finportal_legacy_urls` + rule (301) za stare URL-je (/kalkulatorji/* → root, /clanki/primerjava-depozitov.html → /primerjava-depozitov.html)
-  - [ ] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek”
+  - [x] GSC: v poročilu “Ni bilo mogoče najti (404)” klikni “Preveri popravek” (začeto 19. 4. 2026)
   - [ ] GSC: čez 3–7 dni preveri, da se status premika v validating/passed in da se število 404 zmanjšuje
 - [ ] **[63]** GitHub Issues: uvedi sledenje bugov/feature requestov (labels + bug report template), da bo odpravljanje bolj sistematično.
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
