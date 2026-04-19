@@ -18,6 +18,7 @@
 - [ ] **[64]** GSC: “Stran s preusmeritvijo” (Page with redirect) — čez nekaj dni preveri z URL Inspection (Test live) za 5–10 URL-jev, da je 1× 301 → final URL (brez redirect chainov) + Google-selected canonical je pravilen
 - [ ] **[63]** GitHub Issues: uvedi sledenje bugov/feature requestov (labels + bug report template), da bo odpravljanje bolj sistematično.
 - [ ] **[60]** URL kanonikalizacija: poenoti internal linke + canonicale + sitemap na isto končno verzijo (https, brez www, brez /index.html, konsistentno .html) + preveri Cloudflare Bulk Redirects, da ni redirect verig
+  - [ ] Clean URLs (Cloudflare Pages): Pages globalno dela 308 preusmeritev iz `*.html` na URL brez `.html` (npr. `/kreditni-kalkulator.html` → `/kreditni-kalkulator`) — poenoti internal linke + canonical + `og:url` + `sitemap.xml` + Bulk Redirects targete na URL-je brez `.html` (da ne nastajajo redirect chaini)
   - [x] `script.js`: “Povezani članki” linki na članke so konsistentno z `.html`
   - [x] Cloudflare Redirect Rules: izjema za `https://www.finportal.si/index.html` → `https://finportal.si/` (redirect chain 2 → 1) + GSC “Preveri popravek” kliknjen
 - [ ] **[58]** Breadcrumbs + kategorijske strani za članke: ponovno preveri, ko bo 50+ člankov (odločitev A vs B2: samo UI breadcrumbs vs indexable kategorije `/clanki/varcevanje/` ipd.)
