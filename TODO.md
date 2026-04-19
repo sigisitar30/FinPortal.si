@@ -26,8 +26,8 @@
   - [x] `kreditni-kalkulator.html`: dodan `FAQPage` JSON-LD
   - [x] `kreditna-sposobnost.html`: dodan `FAQPage` JSON-LD
   - [x] `clanki/eom-zakaj-ti-banka-o-tem-ne-govori.html`: dodan `FAQPage` JSON-LD
-  - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
--   - [ ] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
+  - [x] `primerjava-depozitov.html`: dodaj FAQ sekcijo + `FAQPage` (če/ko ima smisel)
+  - [x] `depozitni-kalkulator.html`: dodaj FAQ sekcijo + `FAQPage`
 - [ ] **[54]** Core Web Vitals: audit LCP/CLS/INP na mobilnih (PageSpeed) + popravki (hero image, font loading, lazy/eager)
 
 ## Tehnično (perf + struktura)
