@@ -5358,12 +5358,31 @@ function initCalculatorRelatedArticles() {
 
 function initArticleShare() {
     try {
-        const slot = document.getElementById("fp-article-share-slot");
-        if (!slot) return;
-
         const path = String(window.location.pathname || "");
         const isArticle = path.includes("/clanki/") && !path.endsWith("/clanki/");
         if (!isArticle) return;
+
+        let slot = document.getElementById("fp-article-share-slot");
+        if (!slot) {
+            const article = document.querySelector("main article");
+            if (!article) return;
+
+            const metaRowCandidates = Array.from(article.children).filter((el) => {
+                if (!el || el.tagName !== "DIV") return false;
+                const txt = String(el.textContent || "");
+                return txt.includes("Objavljeno:") || txt.includes("Posodobljeno:") || txt.includes("Avtor:");
+            });
+
+            const metaRow = metaRowCandidates.length > 0 ? metaRowCandidates[0] : null;
+            if (!metaRow) return;
+
+            metaRow.classList.add("flex", "items-start", "justify-between", "gap-3");
+
+            slot = document.createElement("div");
+            slot.id = "fp-article-share-slot";
+            slot.className = "flex justify-end";
+            metaRow.appendChild(slot);
+        }
 
         if (slot.dataset.fpBound === "1") return;
         slot.dataset.fpBound = "1";
