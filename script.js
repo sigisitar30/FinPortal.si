@@ -3089,6 +3089,51 @@ function initArticleInlineLinks() {
     }
 }
 
+function initArticleNormalizeCalculatorLinks() {
+    try {
+        const article = document.querySelector("main article");
+        if (!article) return;
+
+        const anchors = Array.from(article.querySelectorAll("a[href]"));
+        if (anchors.length === 0) return;
+
+        const normalizeHref = (href) => {
+            const h = String(href || "").trim();
+            if (!h) return h;
+            if (h.startsWith("http://") || h.startsWith("https://") || h.startsWith("mailto:") || h.startsWith("tel:")) return h;
+            if (h.startsWith("/#") || h.startsWith("#")) return h;
+
+            const calcFiles = new Set([
+                "kreditna-sposobnost.html",
+                "kreditni-kalkulator.html",
+                "eom-kalkulator.html",
+                "depozitni-kalkulator.html",
+                "izgubljene-obresti.html",
+                "menjalniski-kalkulator.html",
+                "primerjava-depozitov.html",
+                "investicijski-kalkulator.html",
+                "leasing-vs-kredit.html",
+            ]);
+
+            const cleaned = h.replace(/^\.\//, "");
+            const file = cleaned.replace(/^\.\.\//, "").replace(/^\//, "");
+
+            if (file === "kalkulatorji/" || file === "kalkulatorji") return "/kalkulatorji/";
+            if (calcFiles.has(file)) return `/${file}`;
+
+            return h;
+        };
+
+        for (const a of anchors) {
+            const href = a.getAttribute("href") || "";
+            const next = normalizeHref(href);
+            if (next !== href) a.setAttribute("href", next);
+        }
+    } catch (e) {
+        console.warn("initArticleNormalizeCalculatorLinks failed", e);
+    }
+}
+
 /* ============================
    TAB SWITCHING
 ============================ */
@@ -5310,6 +5355,191 @@ function initCalculatorRelatedArticles() {
         console.warn("initCalculatorRelatedArticles failed", e);
     }
 }
+
+async function fpFetchArticlesIndexMeta() {
+    try {
+        const res = await fetch("/clanki/", { credentials: "same-origin" });
+        if (!res.ok) return [];
+        const html = await res.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+
+        const cards = Array.from(doc.querySelectorAll("[data-article-card]"));
+        return cards
+            .map((card) => {
+                const hrefRaw = card.getAttribute("href") || "";
+                const href = hrefRaw.startsWith("http") ? hrefRaw : `/clanki/${hrefRaw.replace(/^\/+/, "")}`;
+                const title = (card.querySelector("[data-article-title]")?.textContent || "").trim();
+                const desc = (card.querySelector("[data-article-desc]")?.textContent || "").trim();
+                const category = String(card.getAttribute("data-category") || "").trim().toLowerCase();
+                const categoriesRaw = String(card.getAttribute("data-categories") || "").trim().toLowerCase();
+                const categories = categoriesRaw
+                    ? categoriesRaw.split(/[\s,]+/).map((x) => x.trim()).filter(Boolean)
+                    : (category ? [category] : []);
+
+                const file = hrefRaw.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
+                const slug = file.replace(/\.html$/i, "");
+
+                return { href, hrefRaw, title, desc, category, categories, slug };
+            })
+            .filter((a) => a.slug);
+    } catch (e) {
+        console.warn("fpFetchArticlesIndexMeta failed", e);
+        return [];
+    }
+}
+
+function fpGetCurrentArticleSlug() {
+    const path = String(window.location.pathname || "");
+    if (!path.includes("/clanki/")) return "";
+    const last = path.split("?")[0].split("#")[0].split("/").filter(Boolean).pop() || "";
+    if (!last) return "";
+    return last.replace(/\.html$/i, "");
+}
+
+function fpInferArticleCategoryFromDom() {
+    const article = document.querySelector("main article");
+    if (!article) return "";
+
+    const categoryEl = article.querySelector(".text-\[\#0B6B3A\]");
+    const raw = (categoryEl?.textContent || "").trim().toLowerCase();
+    if (raw === "krediti") return "krediti";
+    if (raw === "varčevanje" || raw === "varcevanje") return "varcevanje";
+    if (raw === "investicije") return "investicije";
+    return "";
+}
+
+function fpInferArticleCategoryFromText() {
+    const article = document.querySelector("main article");
+    const text = (article?.textContent || "").toLowerCase();
+    if (!text) return "";
+
+    if (text.includes("euribor") || text.includes("eom") || text.includes("kredit") || text.includes("obrok")) return "krediti";
+    if (text.includes("depozit") || text.includes("obresti") || text.includes("varčev") || text.includes("varce")) return "varcevanje";
+    if (text.includes("etf") || text.includes("invest") || text.includes("donos")) return "investicije";
+    return "";
+}
+
+function fpBuildArticleRelatedCalculators(category) {
+    const article = document.querySelector("main article");
+    const text = (article?.textContent || "").toLowerCase();
+
+    const calcs = [];
+    const add = (href, label) => {
+        if (calcs.some((c) => c.href === href)) return;
+        calcs.push({ href, label });
+    };
+
+    if (category === "krediti") {
+        add("/kreditni-kalkulator.html", "Kreditni kalkulator");
+        add("/eom-kalkulator.html", "EOM kalkulator");
+        add("/kreditna-sposobnost.html", "Kreditna sposobnost");
+        add("/leasing-vs-kredit.html", "Leasing vs kredit");
+    }
+
+    if (category === "varcevanje") {
+        add("/depozitni-kalkulator.html", "Depozitni kalkulator");
+        add("/primerjava-depozitov.html", "Primerjava depozitov");
+        add("/izgubljene-obresti.html", "Izgubljene obresti");
+    }
+
+    if (category === "investicije") {
+        add("/investicijski-kalkulator.html", "Investicijski kalkulator");
+        add("/izgubljene-obresti.html", "Izgubljene obresti");
+    }
+
+    if (text.includes("eom")) add("/eom-kalkulator.html", "EOM kalkulator");
+    if (text.includes("kreditna sposobnost")) add("/kreditna-sposobnost.html", "Kreditna sposobnost");
+    if (text.includes("depozit")) add("/depozitni-kalkulator.html", "Depozitni kalkulator");
+    if (text.includes("leasing")) add("/leasing-vs-kredit.html", "Leasing vs kredit");
+
+    return calcs.slice(0, 6);
+}
+
+async function initArticleRelatedLinks() {
+    try {
+        const path = String(window.location.pathname || "");
+        const isArticle = path.includes("/clanki/") && !path.endsWith("/clanki/");
+        if (!isArticle) return;
+
+        const article = document.querySelector("main article");
+        if (!article) return;
+        if (document.getElementById("fp-article-related")) return;
+
+        const slug = fpGetCurrentArticleSlug();
+        const category = fpInferArticleCategoryFromDom() || fpInferArticleCategoryFromText();
+
+        const allMeta = await fpFetchArticlesIndexMeta();
+        if (!Array.isArray(allMeta) || allMeta.length === 0) return;
+
+        const sameCategory = category
+            ? allMeta.filter((a) => a.slug !== slug && Array.isArray(a.categories) && a.categories.includes(category))
+            : [];
+        const others = allMeta.filter((a) => a.slug !== slug);
+        const related = [...sameCategory];
+        for (const a of others) {
+            if (related.length >= 6) break;
+            if (related.some((x) => x.slug === a.slug)) continue;
+            related.push(a);
+        }
+
+        const section = document.createElement("section");
+        section.id = "fp-article-related";
+        section.className = "mt-10 rounded-2xl border border-gray-200 bg-gray-50 p-6";
+
+        const title = document.createElement("div");
+        title.className = "text-sm font-semibold text-gray-900";
+        title.textContent = "Povezani članki";
+        section.appendChild(title);
+
+        const row = document.createElement("div");
+        row.className = "mt-3 flex flex-wrap gap-2 text-sm";
+        for (const m of related.slice(0, 6)) {
+            const a = document.createElement("a");
+            a.href = m.href;
+            a.className = "px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100";
+            a.textContent = m.title || m.slug;
+            row.appendChild(a);
+        }
+
+        const all = document.createElement("a");
+        all.href = "/clanki/";
+        all.className = "px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-900 hover:bg-blue-100";
+        all.textContent = "Vsi članki";
+        row.appendChild(all);
+
+        section.appendChild(row);
+
+        const calcLinks = fpBuildArticleRelatedCalculators(category);
+        const calcSection = article.querySelector("section.mt-10.rounded-2xl.border.border-gray-200.bg-gray-50.p-6");
+        if (calcSection) {
+            const calcRow = calcSection.querySelector(".mt-3.flex.flex-wrap.gap-2.text-sm");
+            if (calcRow && Array.isArray(calcLinks) && calcLinks.length > 0) {
+                calcRow.innerHTML = "";
+                for (const c of calcLinks) {
+                    const a = document.createElement("a");
+                    a.href = c.href;
+                    a.className = "px-3 py-1 rounded-full border border-gray-300 bg-white hover:bg-gray-100";
+                    a.textContent = c.label;
+                    calcRow.appendChild(a);
+                }
+                const allCalcs = document.createElement("a");
+                allCalcs.href = "/kalkulatorji/";
+                allCalcs.className = "px-3 py-1 rounded-full border border-blue-200 bg-blue-50 text-blue-900 hover:bg-blue-100";
+                allCalcs.textContent = "Vsi kalkulatorji";
+                calcRow.appendChild(allCalcs);
+            }
+        }
+
+        const beforePrevNext = article.querySelector("section.mt-10");
+        if (beforePrevNext && beforePrevNext.parentNode) {
+            beforePrevNext.parentNode.insertBefore(section, beforePrevNext);
+            return;
+        }
+        article.appendChild(section);
+    } catch (e) {
+        console.warn("initArticleRelatedLinks failed", e);
+    }
+}
 // Initialize application
 document.addEventListener('DOMContentLoaded', function () {
     console.log("DOM loaded, initializing FinPortal.si");
@@ -5372,6 +5602,8 @@ document.addEventListener('DOMContentLoaded', function () {
     safeInit("highlightKalkulatorjiNav", highlightKalkulatorjiNav);
     safeInit("groupKalkulatorjiDropdown", groupKalkulatorjiDropdown);
     safeInit("initArticleInlineLinks", initArticleInlineLinks);
+    safeInit("initArticleNormalizeCalculatorLinks", initArticleNormalizeCalculatorLinks);
+    safeInit("initArticleRelatedLinks", initArticleRelatedLinks);
 
     safeInit("addLexiconNavLink", () => {
         const nav = document.querySelector('nav[aria-label="Glavna navigacija"]');
