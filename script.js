@@ -5356,6 +5356,67 @@ function initCalculatorRelatedArticles() {
     }
 }
 
+function initArticleShare() {
+    try {
+        const slot = document.getElementById("fp-article-share-slot");
+        if (!slot) return;
+
+        const path = String(window.location.pathname || "");
+        const isArticle = path.includes("/clanki/") && !path.endsWith("/clanki/");
+        if (!isArticle) return;
+
+        if (slot.dataset.fpBound === "1") return;
+        slot.dataset.fpBound = "1";
+
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "inline-flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm font-semibold text-gray-900 hover:bg-gray-50 transition";
+        btn.innerHTML = `<span aria-hidden="true" class="text-base">⤴</span><span>Deli</span>`;
+
+        const getShareUrl = () => {
+            try {
+                return new URL(window.location.href).toString();
+            } catch {
+                return String(window.location.href || "");
+            }
+        };
+
+        const getShareTitle = () => {
+            const h1 = document.querySelector("main article h1");
+            const t = (h1?.textContent || document.title || "").trim();
+            return t || "FinPortal.si";
+        };
+
+        btn.addEventListener("click", async () => {
+            pressAnimate(btn);
+
+            const url = getShareUrl();
+            const title = getShareTitle();
+
+            try {
+                if (navigator.share) {
+                    await navigator.share({ title, url });
+                    return;
+                }
+            } catch {
+            }
+
+            const prev = btn.innerHTML;
+            const ok = await copyToClipboard(url);
+            btn.innerHTML = ok
+                ? `<span aria-hidden="true" class="text-base">✓</span><span>Kopirano</span>`
+                : `<span aria-hidden="true" class="text-base">!</span><span>Ni uspelo</span>`;
+            setTimeout(() => {
+                btn.innerHTML = prev;
+            }, ok ? 900 : 1400);
+        });
+
+        slot.replaceChildren(btn);
+    } catch (e) {
+        console.warn("initArticleShare failed", e);
+    }
+}
+
 async function fpFetchArticlesIndexMeta() {
     try {
         const res = await fetch("/clanki/", { credentials: "same-origin" });
