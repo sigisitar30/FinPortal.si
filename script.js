@@ -3559,7 +3559,10 @@ function getElementValue(id) {
     const element = document.getElementById(id);
     if (!element) return 0;
 
-    const cleaned = element.value
+    const cleaned = String(element.value ?? "")
+        .trim()
+        .replace(/\u00a0/g, "")
+        .replace(/\s+/g, "")
         .replace(/\./g, "")   // odstrani tisočice
         .replace(",", ".");   // decimalna vejica → pika
 
