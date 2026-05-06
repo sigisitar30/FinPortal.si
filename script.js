@@ -7951,6 +7951,33 @@ function initDepositCompareBindings() {
     }
 }
 
+function fpAutoInitDepositCompare() {
+    try {
+        if (window.__fpDepositCompareAutoInit === true) return;
+
+        const hasUi = !!document.getElementById("deposit-table-container")
+            && !!document.getElementById("deposit-compare-amount")
+            && !!document.getElementById("deposit-compare-term")
+            && !!document.getElementById("deposit-compare-unit");
+        if (!hasUi) return;
+
+        window.__fpDepositCompareAutoInit = true;
+        initDepositCompareBindings();
+    } catch (e) {
+        console.warn("fpAutoInitDepositCompare failed", e);
+    }
+}
+
+try {
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", fpAutoInitDepositCompare);
+    } else {
+        fpAutoInitDepositCompare();
+    }
+} catch (e) {
+    console.warn("deposit compare auto-init failed", e);
+}
+
 /* =======================
 Generiraj dropdown bank
 ======================= */
