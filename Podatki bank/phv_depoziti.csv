@@ -1,0 +1,9 @@
+id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;term_unit;rate_branch;rate_klik_bonus;rate_klik_total;url;last_updated;notes;offer_type;source
+12;Primorska hranilnica;Vezana vloga od 15 do 30 dni;500;;EUR;15;30;days;0.005;0;0.005;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 31 do 60 dni;500;;EUR;31;60;days;0.3;0;0.3;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 61 do 90 dni;500;;EUR;61;90;days;0.5;0;0.5;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 91 do 180 dni;500;;EUR;91;180;days;0.5;0;0.5;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 181 do 270 dni;500;;EUR;181;270;days;0.5;0;0.5;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 271 dni do 12 mesecev;500;;EUR;271;365;days;0.5;0;0.5;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 12 mesecev do 24 mesecev;500;;EUR;12;24;months;1.4;0;1.4;https://phv.si/obrestne-mere/;2026-04-01;;regular;web
+12;Primorska hranilnica;Vezana vloga od 24 mesecev do 36 mesecev;500;;EUR;24;36;months;1.1;0;1.1;https://phv.si/obrestne-mere/;2026-04-01;;regular;web

@@ -38,6 +38,14 @@ id;bank;product_name;amount_min;amount_max;amount_currency;min_term;max_term;ter
 9;Gorenjska banka d.d.;Depozit 271–365 dni;250;500000.0;EUR;271;365.0;days;0.9;0.0;0.9;regular;pdf;https://www.gbkr.si/wp-content/uploads/pdfs/obrestne-mere-za-depozite-za-prebivalstvo.pdf;2026-05-06;scraped via PDF;gbkr_depoziti.csv
 9;Gorenjska banka d.d.;Depozit 13–23M;250;500000.0;EUR;13;23.0;months;1.2;0.0;1.2;regular;pdf;https://www.gbkr.si/wp-content/uploads/pdfs/obrestne-mere-za-depozite-za-prebivalstvo.pdf;2026-05-06;scraped via PDF;gbkr_depoziti.csv
 9;Gorenjska banka d.d.;Depozit 24–35M;250;500000.0;EUR;24;35.0;months;1.3;0.0;1.3;regular;pdf;https://www.gbkr.si/wp-content/uploads/pdfs/obrestne-mere-za-depozite-za-prebivalstvo.pdf;2026-05-06;scraped via PDF;gbkr_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 15 do 30 dni;500;;EUR;15;30.0;days;0.005;0.0;0.005;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 31 do 60 dni;500;;EUR;31;60.0;days;0.3;0.0;0.3;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 61 do 90 dni;500;;EUR;61;90.0;days;0.5;0.0;0.5;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 91 do 180 dni;500;;EUR;91;180.0;days;0.5;0.0;0.5;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 181 do 270 dni;500;;EUR;181;270.0;days;0.5;0.0;0.5;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 271 dni do 12 mesecev;500;;EUR;271;365.0;days;0.5;0.0;0.5;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 12 mesecev do 24 mesecev;500;;EUR;12;24.0;months;1.4;0.0;1.4;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
+12;Primorska hranilnica;Vezana vloga od 24 mesecev do 36 mesecev;500;;EUR;24;36.0;months;1.1;0.0;1.1;regular;web;https://phv.si/obrestne-mere/;2026-04-01;;phv_depoziti.csv
 3;Intesa Sanpaolo Bank;Depozit 1M;300;100000.0;EUR;1;1.0;months;0.01;0.0;0.01;regular;pdf;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;06/05/2026;redna ponudba;intesa_depoziti.csv
 3;Intesa Sanpaolo Bank;Depozit 2M;300;100000.0;EUR;2;2.0;months;0.01;0.0;0.01;regular;pdf;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;06/05/2026;redna ponudba;intesa_depoziti.csv
 3;Intesa Sanpaolo Bank;Depozit 3M;300;100000.0;EUR;3;3.0;months;0.01;0.0;0.01;regular;pdf;https://www.intesasanpaolobank.si/document/documents/ISPSLOVENIA/dokumenti-splosni/Obrestne-mere_varcevanja-in-depoziti.pdf;06/05/2026;redna ponudba;intesa_depoziti.csv
