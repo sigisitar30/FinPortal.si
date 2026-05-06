@@ -1,6 +1,7 @@
 import csv
 import os
 import re
+import sys
 from datetime import datetime
 
 import requests
@@ -8,6 +9,35 @@ from bs4 import BeautifulSoup
 
 
 URL = "https://phv.si/obrestne-mere/"
+
+
+def _sanity_check_rows(rows):
+    if not isinstance(rows, list) or len(rows) == 0:
+        raise RuntimeError("PHV: sanity check failed: no rows")
+
+    if len(rows) < 6:
+        raise RuntimeError(
+            f"PHV: sanity check failed: too few rows ({len(rows)})")
+
+    required = [
+        (15, 30, "days"),
+        (31, 60, "days"),
+        (12, 24, "months"),
+        (24, 36, "months"),
+    ]
+
+    got = set()
+    for r in rows:
+        try:
+            got.add((int(r.get("min_term")), int(
+                r.get("max_term")), str(r.get("term_unit"))))
+        except Exception:
+            continue
+
+    missing = [x for x in required if x not in got]
+    if missing:
+        raise RuntimeError(
+            f"PHV: sanity check failed: missing buckets {missing}")
 
 
 def _parse_float_rate(text: str):
@@ -171,6 +201,7 @@ def main():
     out_path = os.path.join(base_dir, "phv_depoziti.csv")
 
     rows = scrape_phv_deposits_for_population()
+    _sanity_check_rows(rows)
 
     fieldnames = [
         "id",
@@ -202,4 +233,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        print(f"[WARN] PHV scraper failed: {e}")
+        sys.exit(1)
