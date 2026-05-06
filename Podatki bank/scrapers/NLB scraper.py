@@ -329,7 +329,76 @@ def _scrape_nlb_from_api():
             f"⚠ OPOZORILO: amount_max se je spremenil! Trenutno: {amount_max}, pričakovano: {EXPECTED_MAX_AMOUNT}")
 
     print(f"\n✓ NLB: uspešno scrapano {len(results)} zapisov.")
-    return results
+
+    # Stabiliziraj output (da je primerljiv s PDF scraperjem in validacijo):
+    # PDF verzija vrača 3 vrstice (31-365 dni, 13-24 M, 25-60 M). API vrača granularne ročnosti.
+    return _collapse_api_results(results)
+
+
+def _collapse_api_results(rows):
+    if not rows:
+        return rows
+
+    def _pick_rate(bucket_rows):
+        # Če so OM različne, vzemi najvišjo Klik total (konzervativno za "največ kar lahko dobiš").
+        best = None
+        best_rate = None
+        for r in bucket_rows:
+            try:
+                rt = float(r.get("rate_klik_total"))
+            except Exception:
+                rt = None
+            if best is None:
+                best = r
+                best_rate = rt
+                continue
+            if rt is not None and (best_rate is None or rt > best_rate):
+                best = r
+                best_rate = rt
+        return best
+
+    buckets = {
+        "days_31_365": [],
+        "months_13_24": [],
+        "months_25_60": [],
+    }
+
+    for r in rows:
+        unit = str(r.get("term_unit") or "")
+        try:
+            t = int(r.get("min_term"))
+        except Exception:
+            continue
+
+        if unit == "days":
+            if 31 <= t <= 365:
+                buckets["days_31_365"].append(r)
+        elif unit == "months":
+            if 13 <= t <= 24:
+                buckets["months_13_24"].append(r)
+            elif 25 <= t <= 60:
+                buckets["months_25_60"].append(r)
+
+    out = []
+
+    def _make_row(key, label, min_term, max_term, unit):
+        brs = buckets[key]
+        if not brs:
+            return
+        base = dict(_pick_rate(brs) or brs[0])
+        base["product_name"] = label
+        base["min_term"] = min_term
+        base["max_term"] = max_term
+        base["term_unit"] = unit
+        base["notes"] = "scraped from NLB API (Klik obrestna mera)"
+        out.append(base)
+
+    _make_row("days_31_365", "Depozit 31-365 dni", 31, 365, "days")
+    _make_row("months_13_24", "Depozit 13-24 M", 13, 24, "months")
+    _make_row("months_25_60", "Depozit 25-60 M", 25, 60, "months")
+
+    # Če bucket logika ni ujela ničesar (nepričakovane ročnosti), vrni original.
+    return out if out else rows
 
 
 def save_to_csv(rows, filename="nlb_depoziti.csv"):

@@ -7,6 +7,31 @@ import glob
 import sys
 
 
+def _safe_write_csv(df, out_path: str):
+    base_dir = os.path.dirname(out_path)
+    base_name = os.path.basename(out_path)
+    tmp_path = os.path.join(base_dir, f".{base_name}.tmp")
+
+    df.to_csv(tmp_path, sep=";", index=False)
+    try:
+        os.replace(tmp_path, out_path)
+        return out_path
+    except PermissionError:
+        ts = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        fallback = os.path.join(base_dir, f"all_banks_{ts}.csv")
+        os.replace(tmp_path, fallback)
+        print(
+            f"WRN all_banks.csv je zaklenjen (verjetno odprt v Excelu). Ustvarjen je fallback: {fallback}"
+        )
+        return fallback
+    finally:
+        try:
+            if os.path.exists(tmp_path):
+                os.remove(tmp_path)
+        except Exception:
+            pass
+
+
 REQUIRED_COLUMNS = [
     "id", "bank", "product_name",
     "amount_min", "amount_max", "amount_currency",
@@ -436,7 +461,8 @@ for file in CSV_FILES:
             diff_warns = _diff_metrics(df, df_prev, source_file=file)
 
         if schema_errs or inv_errs:
-            print(f"WRN Validacija FAIL za {file} (banka bo izlocena iz all_banks.csv):")
+            print(
+                f"WRN Validacija FAIL za {file} (banka bo izlocena iz all_banks.csv):")
             for msg in (schema_errs + inv_errs):
                 print(f" - {msg}")
             failed_csvs.add(file)
@@ -458,20 +484,20 @@ for file in CSV_FILES:
 # 8) Ustvarimo master CSV
 if dfs:
     combined = pd.concat(dfs, ignore_index=True)
-    combined.to_csv(os.path.join(BASE_DIR, "all_banks.csv"),
-                    sep=";", index=False)
-    print("OK all_banks.csv uspesno ustvarjen.")
+    all_banks_path = _safe_write_csv(
+        combined, os.path.join(BASE_DIR, "all_banks.csv"))
+    print(f"OK Master CSV uspesno ustvarjen -> {all_banks_path}")
 else:
     print("WRN Ni CSV datotek za zdruziti.")
     sys.exit(1)
 
 if failed_csvs:
     failed_list = ", ".join(sorted(failed_csvs))
-    print(f"WRN all_banks.csv je bil ustvarjen brez nekaterih bank (manjkajoci CSV-ji): {failed_list}")
+    print(
+        f"WRN all_banks.csv je bil ustvarjen brez nekaterih bank (manjkajoci CSV-ji): {failed_list}")
 
 # 9) Arhiviranje master CSV-ja
 archive_master = f"archive/all_banks_{today}.csv"
-all_banks_path = os.path.join(BASE_DIR, "all_banks.csv")
 if os.path.exists(all_banks_path):
     try:
         shutil.copy(all_banks_path, archive_master)
