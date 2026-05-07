@@ -442,7 +442,7 @@ function applyLoanDefaultRateFromBsPurpose() {
 
         const rateTypeEl = document.getElementById("loan-rate-type");
         const rateType = rateTypeEl ? String(rateTypeEl.value ?? "fixed").trim() : "fixed";
-        if (rateType === "euribor") return;
+        const marginEl = document.getElementById("loan-margin");
 
         const purposeEl = document.getElementById("loan-purpose");
         const purpose = purposeEl ? String(purposeEl.value ?? "").trim() : "";
@@ -451,12 +451,39 @@ function applyLoanDefaultRateFromBsPurpose() {
         const next = fpBsLoanDefaults[purpose];
         if (!Number.isFinite(next)) return;
 
+        const force = arguments.length >= 1 ? !!arguments[0] : false;
+
+        if (rateType === "euribor" && marginEl) {
+            const tenorEl = document.getElementById("loan-euribor-tenor");
+            const tenor = tenorEl ? String(tenorEl.value ?? "3m") : "3m";
+            const eur = euriborCache[tenor] || euriborCache["3m"];
+            const eurVal = eur && Number.isFinite(eur.value) ? eur.value : NaN;
+            if (!Number.isFinite(eurVal)) return;
+
+            const overridden = String(marginEl.dataset.userOverride ?? "") === "1";
+            if (overridden && !force) return;
+
+            const nextMargin = next - eurVal;
+            if (!Number.isFinite(nextMargin)) return;
+
+            marginEl.value = formatRateSI(nextMargin);
+            normalizeRateInput("loan-margin");
+            marginEl.dataset.autoMargin = String(nextMargin);
+            if (force) {
+                delete marginEl.dataset.userOverride;
+            }
+            return;
+        }
+
         const overridden = String(rateEl.dataset.userOverride ?? "") === "1";
-        if (overridden) return;
+        if (overridden && !force) return;
 
         rateEl.value = formatRateSI(next);
         normalizeRateInput("loan-rate");
         rateEl.dataset.autoRate = String(next);
+        if (force) {
+            delete rateEl.dataset.userOverride;
+        }
     } catch (e) {
         console.warn("applyLoanDefaultRateFromBsPurpose failed", e);
     }
@@ -4578,6 +4605,7 @@ async function loadEuriborRates() {
     }
 
     updateLoanRateUi();
+    applyLoanDefaultRateFromBsPurpose();
     // Also refresh lost-interest benchmark if EURIBOR is selected.
     const benchmarkEl = document.getElementById("lost-benchmark");
     if (benchmarkEl) {
@@ -5871,6 +5899,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const loanMarginEl = document.getElementById("loan-margin");
     if (loanMarginEl) {
+        const markOverride = () => {
+            loanMarginEl.dataset.userOverride = "1";
+        };
+        loanMarginEl.addEventListener("input", markOverride);
+        loanMarginEl.addEventListener("change", markOverride);
         loanMarginEl.addEventListener("blur", () => normalizeRateInput("loan-margin"));
     }
 
@@ -5882,9 +5915,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const loanPurposeEl = document.getElementById("loan-purpose");
     if (loanPurposeEl) {
-        loanPurposeEl.addEventListener("change", applyLoanDefaultRateFromBsPurpose);
-        loanPurposeEl.addEventListener("input", applyLoanDefaultRateFromBsPurpose);
-        applyLoanDefaultRateFromBsPurpose();
+        const applyPurposeDefaults = () => applyLoanDefaultRateFromBsPurpose(true);
+        loanPurposeEl.addEventListener("change", applyPurposeDefaults);
+        loanPurposeEl.addEventListener("input", applyPurposeDefaults);
+        applyPurposeDefaults();
     }
 
     const loanEuriborTenorEl = document.getElementById("loan-euribor-tenor");
@@ -5964,6 +5998,13 @@ function initLoanUiBindings() {
 
     const purposeEl = document.getElementById("loan-purpose");
     if (purposeEl) {
+        if (purposeEl.dataset.fpBsDefaultsBound !== "1") {
+            purposeEl.dataset.fpBsDefaultsBound = "1";
+            const applyDefaults = () => applyLoanDefaultRateFromBsPurpose(true);
+            purposeEl.addEventListener("change", applyDefaults);
+            purposeEl.addEventListener("input", applyDefaults);
+            applyDefaults();
+        }
         purposeEl.addEventListener("change", updateLoanOfferLink);
         purposeEl.addEventListener("input", updateLoanOfferLink);
     }
