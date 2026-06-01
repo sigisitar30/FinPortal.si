@@ -69,6 +69,35 @@ def _absolute_url(base: str, href: str) -> str:
     return base.rsplit("/", 1)[0] + "/" + href
 
 
+def _score_pdf_candidate(u: str) -> tuple:
+    low = str(u or "").lower()
+    score = 0
+    if "tarife_in_obrestne_mere" in low:
+        score += 100
+    if "izvlecek_iz_tarife" in low or "izvle" in low:
+        score += 60
+    if "obrest" in low:
+        score += 40
+    if "sklep" in low:
+        score += 20
+
+    # Strongly penalize unrelated PDFs we observed.
+    if "jamstvo" in low or "vloge" in low:
+        score -= 200
+    if "splosni-pogoji" in low or "splošni" in low or "pogoj" in low:
+        score -= 80
+
+    m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", u)
+    date_key = None
+    if m:
+        try:
+            dd, mm, yyyy = int(m.group(1)), int(m.group(2)), int(m.group(3))
+            date_key = (yyyy, mm, dd)
+        except Exception:
+            date_key = None
+    return (score, date_key or (0, 0, 0), u)
+
+
 def discover_pdf_urls(session: requests.Session) -> list[str]:
     """Try to find current UniCredit interest-rate PDF links from the product page."""
 
@@ -111,30 +140,7 @@ def discover_pdf_urls(session: requests.Session) -> list[str]:
                 except Exception:
                     return None
 
-            def _score(u: str) -> tuple:
-                low = u.lower()
-                # Hard prefer the known tariff/interest folder if present.
-                score = 0
-                if "tarife_in_obrestne_mere" in low:
-                    score += 100
-                if "izvlecek_iz_tarife" in low or "izvle" in low:
-                    score += 60
-                if "obrest" in low:
-                    score += 40
-                if "sklep" in low:
-                    score += 20
-
-                # Strongly penalize unrelated PDFs we observed.
-                if "jamstvo" in low or "vloge" in low:
-                    score -= 200
-                if "splosni-pogoji" in low or "splošni" in low or "pogoj" in low:
-                    score -= 80
-
-                date_key = _parse_date_key(u)
-                # Sort by score first, then by date (newest first), then by URL.
-                return (score, date_key or (0, 0, 0), u)
-
-            scored = sorted(uniq, key=_score, reverse=True)
+            scored = sorted(uniq, key=_score_pdf_candidate, reverse=True)
             if not scored:
                 return []
 
@@ -142,7 +148,7 @@ def discover_pdf_urls(session: requests.Session) -> list[str]:
             out = []
             for u in scored:
                 try:
-                    if _score(u)[0] >= 20:
+                    if _score_pdf_candidate(u)[0] >= 20:
                         out.append(u)
                 except Exception:
                     pass
@@ -283,12 +289,29 @@ def discover_pdf_urls_playwright() -> list[str]:
         return []
 
     try:
-        if urls:
-            print(
-                f"INFO UniCredit: playwright discovered pdf urls={len(urls)}")
+        seen = set()
+        uniq = []
+        for u in urls:
+            if not u:
+                continue
+            if u not in seen:
+                seen.add(u)
+                uniq.append(u)
+
+        scored = sorted(uniq, key=_score_pdf_candidate, reverse=True)
+        out = []
+        for u in scored:
+            try:
+                if _score_pdf_candidate(u)[0] >= 20:
+                    out.append(u)
+            except Exception:
+                pass
+
+        if out:
+            print(f"INFO UniCredit: playwright discovered pdf urls={len(out)}")
+        return out
     except Exception:
-        pass
-    return urls
+        return urls
 
 
 def discover_pdf_urls_sitemap(session: requests.Session, max_urls: int = 40) -> list[str]:
@@ -587,9 +610,6 @@ def scrape_unicredit_from_pdf():
     discovered_urls_pw = discover_pdf_urls_playwright()
     discovered_urls_sm = discover_pdf_urls_sitemap(SESSION)
     candidates = []
-    for u in generated_urls:
-        if u and u not in candidates:
-            candidates.append(u)
     for u in discovered_urls:
         if u and u not in candidates:
             candidates.append(u)
@@ -597,6 +617,10 @@ def scrape_unicredit_from_pdf():
         if u and u not in candidates:
             candidates.append(u)
     for u in discovered_urls_sm:
+        if u and u not in candidates:
+            candidates.append(u)
+    # Generated monthly URLs are a fallback only (in case the bank removes/changes links).
+    for u in generated_urls:
         if u and u not in candidates:
             candidates.append(u)
     if PDF_URL and PDF_URL not in candidates:
@@ -608,12 +632,16 @@ def scrape_unicredit_from_pdf():
         )
         try:
             best = (
-                generated_urls[0]
-                if generated_urls
+                discovered_urls[0]
+                if discovered_urls
                 else (
-                    discovered_urls[0]
-                    if discovered_urls
-                    else (discovered_urls_sm[0] if discovered_urls_sm else "")
+                    discovered_urls_pw[0]
+                    if discovered_urls_pw
+                    else (
+                        discovered_urls_sm[0]
+                        if discovered_urls_sm
+                        else (generated_urls[0] if generated_urls else "")
+                    )
                 )
             )
             if best:
