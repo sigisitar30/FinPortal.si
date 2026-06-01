@@ -58,8 +58,8 @@ def _absolute_url(base: str, href: str) -> str:
     return base.rsplit("/", 1)[0] + "/" + href
 
 
-def discover_pdf_url(session: requests.Session) -> str:
-    """Try to find the current UniCredit interest-rate PDF linked from the product page."""
+def discover_pdf_urls(session: requests.Session) -> list[str]:
+    """Try to find current UniCredit interest-rate PDF links from the product page."""
     try:
         r = session.get(URL, timeout=30)
         r.raise_for_status()
@@ -123,16 +123,116 @@ def discover_pdf_url(session: requests.Session) -> str:
 
         scored = sorted(uniq, key=_score, reverse=True)
         if not scored:
-            return ""
+            return []
 
-        best = scored[0]
-        best_score = _score(best)[0]
-        # If the best candidate still looks unrelated, don't return it.
-        if best_score < 20:
-            return ""
-        return best
+        # Only keep reasonable-looking candidates.
+        out = []
+        for u in scored:
+            try:
+                if _score(u)[0] >= 20:
+                    out.append(u)
+            except Exception:
+                pass
+        return out
     except Exception:
-        return ""
+        return []
+
+
+def discover_pdf_url(session: requests.Session) -> str:
+    urls = discover_pdf_urls(session)
+    return urls[0] if urls else ""
+
+
+def discover_pdf_urls_playwright() -> list[str]:
+    urls = []
+    try:
+        with sync_playwright() as p:
+            browser = p.chromium.launch(
+                headless=True,
+                args=["--disable-blink-features=AutomationControlled"],
+            )
+            context = browser.new_context(
+                ignore_https_errors=True,
+                locale="sl-SI",
+                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+            )
+            page = context.new_page()
+
+            def _remember(u: str | None):
+                u = str(u or "").strip()
+                if not u:
+                    return
+                if ".pdf" not in u.lower():
+                    return
+                if u not in urls:
+                    urls.append(u)
+
+            try:
+                page.on("response", lambda resp: _remember(
+                    getattr(resp, "url", None)))
+            except Exception:
+                pass
+
+            try:
+                page.goto(URL, wait_until="domcontentloaded", timeout=60000)
+            except Exception:
+                try:
+                    page.goto(URL, wait_until="networkidle", timeout=60000)
+                except Exception:
+                    pass
+
+            try:
+                hrefs = page.eval_on_selector_all(
+                    "a[href]",
+                    "els => els.map(e => e.getAttribute('href'))",
+                )
+                for h in hrefs or []:
+                    _remember(_absolute_url(URL, h))
+            except Exception:
+                pass
+
+            try:
+                html = page.content() or ""
+                for m in re.finditer(r"href=\"([^\"]+\.pdf)\"", html, flags=re.IGNORECASE):
+                    _remember(_absolute_url(URL, m.group(1)))
+                for m in re.finditer(r"(https?://[^\s'\"]+\.pdf)", html, flags=re.IGNORECASE):
+                    _remember(m.group(1))
+            except Exception:
+                pass
+
+            try:
+                context.close()
+            except Exception:
+                pass
+            try:
+                browser.close()
+            except Exception:
+                pass
+    except Exception:
+        return []
+
+    return urls
+
+
+def _is_unicredit_404_url(u: str) -> bool:
+    low = str(u or "").lower()
+    return "error404" in low or low.rstrip("/").endswith("/404")
+
+
+def _looks_like_pdf_response(resp: requests.Response) -> bool:
+    try:
+        ct = (resp.headers.get("Content-Type") or "").lower()
+        if "pdf" in ct:
+            return True
+    except Exception:
+        pass
+    try:
+        u = str(getattr(resp, "url", "") or "")
+        if u.lower().endswith(".pdf"):
+            return True
+    except Exception:
+        pass
+    return False
 
 
 # -----------------------------
@@ -276,10 +376,30 @@ def _extract_pdf_text(pdf_bytes: bytes) -> str:
 def scrape_unicredit_from_pdf():
     print("INFO UniCredit: prenos PDF ...")
 
-    discovered = discover_pdf_url(SESSION)
-    pdf_url = discovered or PDF_URL
-    if discovered:
-        print(f"INFO UniCredit: discovered PDF url={discovered}")
+    discovered_urls = discover_pdf_urls(SESSION)
+    discovered_urls_pw = discover_pdf_urls_playwright()
+    candidates = []
+    for u in discovered_urls:
+        if u and u not in candidates:
+            candidates.append(u)
+    for u in discovered_urls_pw:
+        if u and u not in candidates:
+            candidates.append(u)
+    if PDF_URL and PDF_URL not in candidates:
+        candidates.append(PDF_URL)
+
+    if discovered_urls or discovered_urls_pw:
+        print(
+            f"INFO UniCredit: discovered PDF urls={len(discovered_urls)} requests + {len(discovered_urls_pw)} playwright"
+        )
+        try:
+            best = discovered_urls[0] if discovered_urls else (
+                discovered_urls_pw[0] if discovered_urls_pw else ""
+            )
+            if best:
+                print(f"INFO UniCredit: discovered best PDF url={best}")
+        except Exception:
+            pass
     else:
         print("WRN UniCredit: PDF discovery ni uspela, uporabljam fallback PDF_URL")
 
@@ -338,28 +458,62 @@ def scrape_unicredit_from_pdf():
                 pass
             return pdf_data
 
-    print(f"INFO UniCredit: PDF url={pdf_url}")
+    last_err = None
+    pdf_url_used = None
+    pdf_bytes = None
+    for pdf_url in candidates:
+        if not pdf_url or _is_unicredit_404_url(pdf_url):
+            continue
 
-    r = SESSION.get(
-        pdf_url,
-        headers={
-            "Accept": "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
-            "Accept-Language": "sl-SI,sl;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Referer": URL,
-            "Upgrade-Insecure-Requests": "1",
-            "Sec-Fetch-Dest": "document",
-            "Sec-Fetch-Mode": "navigate",
-            "Sec-Fetch-Site": "same-origin",
-            "Sec-Fetch-User": "?1",
-        },
-        timeout=30,
-    )
-    if r.status_code == 403:
-        # Playwright request uses the currently discovered URL as well.
-        pdf_bytes = _download_pdf_via_playwright(pdf_url)
-    else:
-        r.raise_for_status()
-        pdf_bytes = r.content
+        print(f"INFO UniCredit: PDF url={pdf_url}")
+
+        try:
+            r = SESSION.get(
+                pdf_url,
+                headers={
+                    "Accept": "application/pdf,application/octet-stream;q=0.9,*/*;q=0.8",
+                    "Accept-Language": "sl-SI,sl;q=0.9,en-US;q=0.8,en;q=0.7",
+                    "Referer": URL,
+                    "Upgrade-Insecure-Requests": "1",
+                    "Sec-Fetch-Dest": "document",
+                    "Sec-Fetch-Mode": "navigate",
+                    "Sec-Fetch-Site": "same-origin",
+                    "Sec-Fetch-User": "?1",
+                },
+                timeout=30,
+                allow_redirects=True,
+            )
+
+            if _is_unicredit_404_url(getattr(r, "url", "")):
+                raise requests.HTTPError(
+                    f"404 redirect page reached: {getattr(r, 'url', '')}", response=r
+                )
+
+            if r.status_code == 403:
+                pdf_data = _download_pdf_via_playwright(pdf_url)
+                pdf_url_used = pdf_url
+                pdf_bytes = pdf_data
+                break
+
+            r.raise_for_status()
+            if not _looks_like_pdf_response(r) and not str(pdf_url).lower().endswith(".pdf"):
+                raise RuntimeError(
+                    f"Response does not look like PDF (content-type={r.headers.get('Content-Type')})"
+                )
+            if not r.content or len(r.content) < 5000:
+                raise RuntimeError("Downloaded PDF too small")
+
+            pdf_url_used = pdf_url
+            pdf_bytes = r.content
+            break
+        except Exception as e:
+            last_err = e
+            continue
+
+    if pdf_bytes is None or pdf_url_used is None:
+        if last_err is not None:
+            raise last_err
+        raise RuntimeError("UniCredit PDF download failed")
 
     txt = _extract_pdf_text(pdf_bytes)
     if not txt or len(txt.strip()) < 200:
@@ -813,9 +967,9 @@ def scrape_unicredit_from_pdf():
             "rate_klik_total": ro,
             "offer_type": "regular",
             "source": "pdf",
-            "url": pdf_url,
+            "url": pdf_url_used,
             "last_updated": today,
-            "notes": f"scraped from UniCredit PDF: {pdf_url}",
+            "notes": f"scraped from UniCredit PDF: {pdf_url_used}",
         })
 
     print(f"[OK] UniCredit: PDF vir uporabljen ({len(results)} zapisov)")
