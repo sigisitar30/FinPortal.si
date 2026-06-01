@@ -7,13 +7,24 @@ import os
 import re
 import io
 import sys
+import xml.etree.ElementTree as ET
+from urllib.parse import quote
 
 import requests
 
 URL = "https://www.unicreditbank.si/si/prebivalstvo/nalozbe/klasicni-depozit.html"
+MOBILE_URL = "https://mobile.unicreditbank.si/content/cee2020-pws-si/si/prebivalstvo/nalozbe/klasicni-depozit.html"
 PREVIOUS_FILE = "unicredit_previous.json"
 
 PDF_URL = "https://www.unicreditbank.si/content/dam/cee2020-pws-si/SI-DOK/Tarife_in_obrestne_mere/Izvlecek_iz_tarife_PI/Izvle%C4%8Dek%20Sklepa%20o%20obrestnih%20merah%20banke%2001.03.2026.pdf"
+
+PDF_BASE_DIR = "https://www.unicreditbank.si/content/dam/cee2020-pws-si/SI-DOK/Tarife_in_obrestne_mere/Izvlecek_iz_tarife_PI/"
+
+# Update when UniCredit publishes a new monthly PDF. The scraper also generates
+# candidate URLs (01.MM.YYYY) automatically, so this is just a safety net.
+PDF_URL = PDF_BASE_DIR + quote(
+    "Izvleček Sklepa o obrestnih merah banke 01.06.2026.pdf"
+)
 
 EXPECTED_MIN_AMOUNT = 500
 EXPECTED_MAX_AMOUNT = 100000
@@ -60,82 +71,91 @@ def _absolute_url(base: str, href: str) -> str:
 
 def discover_pdf_urls(session: requests.Session) -> list[str]:
     """Try to find current UniCredit interest-rate PDF links from the product page."""
-    try:
-        r = session.get(URL, timeout=30)
-        r.raise_for_status()
-        html = r.text or ""
 
-        # Prefer a PDF that looks like the interest-rate decision/extract.
-        candidates = []
+    def _discover_from_page(page_url: str) -> list[str]:
+        try:
+            r = session.get(page_url, timeout=30)
+            r.raise_for_status()
+            html = r.text or ""
 
-        for m in re.finditer(r"href=\"([^\"]+\.pdf)\"", html, flags=re.IGNORECASE):
-            u = _absolute_url(URL, m.group(1))
-            if u:
-                candidates.append(u)
+            # Prefer a PDF that looks like the interest-rate decision/extract.
+            candidates = []
 
-        for m in re.finditer(r"(https?://[^\s'\"]+\.pdf)", html, flags=re.IGNORECASE):
-            u = m.group(1)
-            if u:
-                candidates.append(u)
+            for m in re.finditer(r"href=\"([^\"]+\.pdf)\"", html, flags=re.IGNORECASE):
+                u = _absolute_url(page_url, m.group(1))
+                if u:
+                    candidates.append(u)
 
-        # Keep order, de-dupe
-        seen = set()
-        uniq = []
-        for u in candidates:
-            if u not in seen:
-                seen.add(u)
-                uniq.append(u)
+            for m in re.finditer(r"(https?://[^\s'\"]+\.pdf)", html, flags=re.IGNORECASE):
+                u = m.group(1)
+                if u:
+                    candidates.append(u)
 
-        def _parse_date_key(u: str):
-            # Prefer PDFs that encode a date like 01.03.2026 in the filename.
-            m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", u)
-            if not m:
-                return None
-            try:
-                dd, mm, yyyy = int(m.group(1)), int(
-                    m.group(2)), int(m.group(3))
-                return (yyyy, mm, dd)
-            except Exception:
-                return None
+            # Keep order, de-dupe
+            seen = set()
+            uniq = []
+            for u in candidates:
+                if u not in seen:
+                    seen.add(u)
+                    uniq.append(u)
 
-        def _score(u: str) -> tuple:
-            low = u.lower()
-            # Hard prefer the known tariff/interest folder if present.
-            score = 0
-            if "tarife_in_obrestne_mere" in low:
-                score += 100
-            if "izvlecek_iz_tarife" in low or "izvle" in low:
-                score += 60
-            if "obrest" in low:
-                score += 40
-            if "sklep" in low:
-                score += 20
+            def _parse_date_key(u: str):
+                # Prefer PDFs that encode a date like 01.03.2026 in the filename.
+                m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", u)
+                if not m:
+                    return None
+                try:
+                    dd, mm, yyyy = int(m.group(1)), int(
+                        m.group(2)), int(m.group(3))
+                    return (yyyy, mm, dd)
+                except Exception:
+                    return None
 
-            # Strongly penalize unrelated PDFs we observed.
-            if "jamstvo" in low or "vloge" in low:
-                score -= 200
-            if "splosni-pogoji" in low or "splošni" in low or "pogoj" in low:
-                score -= 80
+            def _score(u: str) -> tuple:
+                low = u.lower()
+                # Hard prefer the known tariff/interest folder if present.
+                score = 0
+                if "tarife_in_obrestne_mere" in low:
+                    score += 100
+                if "izvlecek_iz_tarife" in low or "izvle" in low:
+                    score += 60
+                if "obrest" in low:
+                    score += 40
+                if "sklep" in low:
+                    score += 20
 
-            date_key = _parse_date_key(u)
-            # Sort by score first, then by date (newest first), then by URL.
-            return (score, date_key or (0, 0, 0), u)
+                # Strongly penalize unrelated PDFs we observed.
+                if "jamstvo" in low or "vloge" in low:
+                    score -= 200
+                if "splosni-pogoji" in low or "splošni" in low or "pogoj" in low:
+                    score -= 80
 
-        scored = sorted(uniq, key=_score, reverse=True)
-        if not scored:
+                date_key = _parse_date_key(u)
+                # Sort by score first, then by date (newest first), then by URL.
+                return (score, date_key or (0, 0, 0), u)
+
+            scored = sorted(uniq, key=_score, reverse=True)
+            if not scored:
+                return []
+
+            # Only keep reasonable-looking candidates.
+            out = []
+            for u in scored:
+                try:
+                    if _score(u)[0] >= 20:
+                        out.append(u)
+                except Exception:
+                    pass
+            return out
+        except Exception:
             return []
 
-        # Only keep reasonable-looking candidates.
-        out = []
-        for u in scored:
-            try:
-                if _score(u)[0] >= 20:
-                    out.append(u)
-            except Exception:
-                pass
-        return out
-    except Exception:
-        return []
+    out = []
+    for page in (URL, MOBILE_URL):
+        for u in _discover_from_page(page):
+            if u and u not in out:
+                out.append(u)
+    return out
 
 
 def discover_pdf_url(session: requests.Session) -> str:
@@ -174,12 +194,63 @@ def discover_pdf_urls_playwright() -> list[str]:
                 pass
 
             try:
-                page.goto(URL, wait_until="domcontentloaded", timeout=60000)
+                for start_url in (URL, MOBILE_URL):
+                    try:
+                        page.goto(
+                            start_url, wait_until="domcontentloaded", timeout=60000)
+                    except Exception:
+                        try:
+                            page.goto(
+                                start_url, wait_until="networkidle", timeout=60000)
+                        except Exception:
+                            pass
             except Exception:
-                try:
-                    page.goto(URL, wait_until="networkidle", timeout=60000)
-                except Exception:
-                    pass
+                pass
+
+            # Some UniCredit pages generate the PDF link only after JS navigation.
+            # We try to click a few likely links to trigger loading those URLs.
+            try:
+                candidates_text = [
+                    "tarife",
+                    "obrest",
+                    "izvle",
+                    "sklep",
+                    "pdf",
+                ]
+                anchors = page.locator("a[href]")
+                count = anchors.count()
+                for i in range(min(count, 60)):
+                    try:
+                        a = anchors.nth(i)
+                        txt = (a.inner_text(timeout=250) or "").strip().lower()
+                        if not txt:
+                            continue
+                        if not any(k in txt for k in candidates_text):
+                            continue
+
+                        href = (a.get_attribute("href") or "").strip()
+                        if href and ".pdf" in href.lower():
+                            _remember(_absolute_url(URL, href))
+                            continue
+
+                        # Click and wait briefly (best-effort).
+                        try:
+                            a.click(timeout=800)
+                            try:
+                                page.wait_for_load_state(
+                                    "domcontentloaded", timeout=4000)
+                            except Exception:
+                                pass
+                            try:
+                                page.wait_for_timeout(500)
+                            except Exception:
+                                pass
+                        except Exception:
+                            pass
+                    except Exception:
+                        continue
+            except Exception:
+                pass
 
             try:
                 hrefs = page.eval_on_selector_all(
@@ -211,7 +282,118 @@ def discover_pdf_urls_playwright() -> list[str]:
     except Exception:
         return []
 
+    try:
+        if urls:
+            print(
+                f"INFO UniCredit: playwright discovered pdf urls={len(urls)}")
+    except Exception:
+        pass
     return urls
+
+
+def discover_pdf_urls_sitemap(session: requests.Session, max_urls: int = 40) -> list[str]:
+    def _fetch_xml(url: str) -> str:
+        r = session.get(url, timeout=30)
+        r.raise_for_status()
+        return r.text or ""
+
+    def _parse_locs(xml_text: str) -> list[str]:
+        try:
+            root = ET.fromstring(xml_text)
+        except Exception:
+            return []
+
+        locs = []
+        for el in root.iter():
+            if not str(getattr(el, "tag", "") or "").lower().endswith("loc"):
+                continue
+            try:
+                t = (el.text or "").strip()
+            except Exception:
+                t = ""
+            if t:
+                locs.append(t)
+        return locs
+
+    def _score(u: str) -> tuple:
+        low = (u or "").lower()
+        score = 0
+        if "tarife_in_obrestne_mere" in low:
+            score += 100
+        if "izvlecek_iz_tarife" in low or "izvle" in low:
+            score += 60
+        if "obrest" in low:
+            score += 40
+        if "sklep" in low:
+            score += 20
+        m = re.search(r"(\d{2})\.(\d{2})\.(\d{4})", u)
+        date_key = None
+        if m:
+            try:
+                dd, mm, yyyy = int(m.group(1)), int(
+                    m.group(2)), int(m.group(3))
+                date_key = (yyyy, mm, dd)
+            except Exception:
+                date_key = None
+        return (score, date_key or (0, 0, 0), u)
+
+    try:
+        xml0 = _fetch_xml("https://www.unicreditbank.si/sitemap.xml")
+    except Exception:
+        return []
+
+    pdfs = []
+    sitemaps = []
+
+    # Robust approach: pull PDF links directly from the XML text, regardless of
+    # whether the root is a sitemapindex or urlset.
+    try:
+        for u in re.findall(r'https?://[^\s<>"]+\.pdf', xml0, flags=re.IGNORECASE):
+            pdfs.append(u)
+    except Exception:
+        pass
+
+    # If this sitemap references nested sitemaps, scan a few of them too.
+    try:
+        for u in re.findall(r'https?://[^\s<>"]+\.xml', xml0, flags=re.IGNORECASE):
+            if u not in sitemaps and "sitemap" in u.lower():
+                sitemaps.append(u)
+    except Exception:
+        pass
+
+    for sm in sitemaps[:8]:
+        try:
+            xml1 = _fetch_xml(sm)
+            try:
+                for u in re.findall(r'https?://[^\s<>"]+\.pdf', xml1, flags=re.IGNORECASE):
+                    pdfs.append(u)
+            except Exception:
+                pass
+        except Exception:
+            continue
+
+    seen = set()
+    uniq = []
+    for u in pdfs:
+        if not u:
+            continue
+        if _is_unicredit_404_url(u):
+            continue
+        if u not in seen:
+            seen.add(u)
+            uniq.append(u)
+
+    scored = sorted(uniq, key=_score, reverse=True)
+    out = []
+    for u in scored:
+        try:
+            if _score(u)[0] >= 20:
+                out.append(u)
+        except Exception:
+            pass
+        if len(out) >= max_urls:
+            break
+    return out
 
 
 def _is_unicredit_404_url(u: str) -> bool:
@@ -233,6 +415,30 @@ def _looks_like_pdf_response(resp: requests.Response) -> bool:
     except Exception:
         pass
     return False
+
+
+def _generate_monthly_pdf_candidates(months_back: int = 24) -> list[str]:
+    # UniCredit historically uses filenames like:
+    # "Izvleček Sklepa o obrestnih merah banke 01.MM.YYYY.pdf"
+    # We generate a small window backwards so the scraper keeps working when
+    # the bank publishes a new PDF and removes the old one.
+    try:
+        now = datetime.today()
+    except Exception:
+        return []
+
+    out = []
+    y = now.year
+    m = now.month
+    for _ in range(max(1, int(months_back))):
+        date_str = f"01.{m:02d}.{y:04d}"
+        filename = f"Izvleček Sklepa o obrestnih merah banke {date_str}.pdf"
+        out.append(PDF_BASE_DIR + quote(filename))
+        m -= 1
+        if m <= 0:
+            m = 12
+            y -= 1
+    return out
 
 
 # -----------------------------
@@ -376,25 +582,39 @@ def _extract_pdf_text(pdf_bytes: bytes) -> str:
 def scrape_unicredit_from_pdf():
     print("INFO UniCredit: prenos PDF ...")
 
+    generated_urls = _generate_monthly_pdf_candidates(24)
     discovered_urls = discover_pdf_urls(SESSION)
     discovered_urls_pw = discover_pdf_urls_playwright()
+    discovered_urls_sm = discover_pdf_urls_sitemap(SESSION)
     candidates = []
+    for u in generated_urls:
+        if u and u not in candidates:
+            candidates.append(u)
     for u in discovered_urls:
         if u and u not in candidates:
             candidates.append(u)
     for u in discovered_urls_pw:
         if u and u not in candidates:
             candidates.append(u)
+    for u in discovered_urls_sm:
+        if u and u not in candidates:
+            candidates.append(u)
     if PDF_URL and PDF_URL not in candidates:
         candidates.append(PDF_URL)
 
-    if discovered_urls or discovered_urls_pw:
+    if generated_urls or discovered_urls or discovered_urls_pw or discovered_urls_sm:
         print(
-            f"INFO UniCredit: discovered PDF urls={len(discovered_urls)} requests + {len(discovered_urls_pw)} playwright"
+            f"INFO UniCredit: discovered PDF urls={len(generated_urls)} generated + {len(discovered_urls)} requests + {len(discovered_urls_pw)} playwright + {len(discovered_urls_sm)} sitemap"
         )
         try:
-            best = discovered_urls[0] if discovered_urls else (
-                discovered_urls_pw[0] if discovered_urls_pw else ""
+            best = (
+                generated_urls[0]
+                if generated_urls
+                else (
+                    discovered_urls[0]
+                    if discovered_urls
+                    else (discovered_urls_sm[0] if discovered_urls_sm else "")
+                )
             )
             if best:
                 print(f"INFO UniCredit: discovered best PDF url={best}")
