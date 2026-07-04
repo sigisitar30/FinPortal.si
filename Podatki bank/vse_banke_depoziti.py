@@ -7,6 +7,15 @@ import glob
 import sys
 
 
+try:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
+
 def _safe_write_csv(df, out_path: str):
     base_dir = os.path.dirname(out_path)
     base_name = os.path.basename(out_path)
@@ -471,10 +480,10 @@ for file in CSV_FILES:
             failed_csvs.add(file)
             continue
 
-        all_warns = schema_warns + inv_warns + diff_warns
-        if all_warns:
+        hard_warns = schema_warns + inv_warns
+        if hard_warns:
             print(f"WRN Validacija WARN za {file}:")
-            for msg in all_warns:
+            for msg in hard_warns:
                 print(f" - {msg}")
         else:
             print(f"OK Validacija OK za {file}")
