@@ -1,7 +1,14 @@
-name: Refresh BS macro data
+name: Refresh site data (BS macro + bank deposit rates)
 
 # Site is GitHub Pages (auto-builds on push to main), so committing fresh
 # data here is the whole deploy — no separate build/upload step needed.
+#
+# Bank scrapers are resilient by design: vse_banke_depoziti.py runs each
+# bank scraper independently and excludes only the ones that fail from
+# all_banks.csv (see its own WRN output) rather than failing the whole
+# run. Several scrapers (DH/OTP/UniCredit) fall back to parsing the
+# bank's published PDF rate sheet when live scraping isn't available, so
+# this works without a real browser driver installed in CI.
 
 on:
   schedule:
@@ -13,13 +20,13 @@ permissions:
   contents: write
 
 concurrency:
-  group: refresh-macro
+  group: refresh-data
   cancel-in-progress: false
 
 jobs:
   refresh:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
@@ -30,19 +37,29 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install Python deps
+        run: pip install pandas requests beautifulsoup4 lxml pdfplumber selenium
+
       - name: Run BS macro scraper
         run: python "Podatki bank/scrapers/BS_MFI_OBR_MERE_i2_4_6as_scraper.py"
+
+      - name: Run bank deposit scrapers
+        # Tolerated: individual bank failures don't fail the job (see
+        # vse_banke_depoziti.py's own per-scraper error handling). Only
+        # fails if literally no CSV could be produced at all.
+        run: python vse_banke_depoziti.py
+        working-directory: "Podatki bank"
 
       - name: Commit and push if data changed
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "Podatki makro"
+          git add "Podatki makro" "Podatki bank"
           if git diff --cached --quiet; then
             echo "No data changes, nothing to commit."
             exit 0
           fi
           period=$(node -pe "JSON.parse(require('fs').readFileSync('Podatki makro/BS/bs_mfi_obrestne_mere_posojila_latest.json')).period" 2>/dev/null || echo "")
-          git commit -m "data(makro): refresh BS MFI interest rates${period:+ to $period}"
+          git commit -m "data: refresh BS MFI rates${period:+ ($period)} + bank deposit rates"
           git push
