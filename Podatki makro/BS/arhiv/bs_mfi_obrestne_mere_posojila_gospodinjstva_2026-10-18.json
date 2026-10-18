@@ -1,0 +1,44 @@
+{
+  "dataset": "i2_4_6as.px",
+  "title": "Obrestne mere monetarnih finančnih institucij - posojila gospodinjstvom po vrsti posojila in nefinančnim družbam po velikosti družbe",
+  "period": "2026M08",
+  "fetched_at": "2026-10-18T09:29:43",
+  "source": "https://px.bsi.si/",
+  "rows": [
+    {
+      "postavke_code": "0",
+      "postavke_text": "Gospodinjstva, obstoječa stanovanjska posojila",
+      "rate": 3.05
+    },
+    {
+      "postavke_code": "1",
+      "postavke_text": "Gospodinjstva, obstoječa potrošniška posojila",
+      "rate": 6.09
+    },
+    {
+      "postavke_code": "2",
+      "postavke_text": "Gospodinjstva, obstoječa druga posojila",
+      "rate": 5.69
+    },
+    {
+      "postavke_code": "9",
+      "postavke_text": "Gospodinjstva, nova stanovanjska posojila",
+      "rate": 3.22
+    },
+    {
+      "postavke_code": "10",
+      "postavke_text": "Gospodinjstva, nova potrošniška posojila",
+      "rate": 5.88
+    },
+    {
+      "postavke_code": "11",
+      "postavke_text": "Gospodinjstva, nova druga posojila",
+      "rate": 5.75
+    },
+    {
+      "postavke_code": "18",
+      "postavke_text": "Gospodinjstva, okvirna, revolving in p. po kred. k.",
+      "rate": 6.93
+    }
+  ]
+}
